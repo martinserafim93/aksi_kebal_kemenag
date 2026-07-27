@@ -53,3 +53,16 @@ next-env.d.ts
 /build/
 
 # End of https://www.toptal.com/developers/gitignore/api/phpunit,nextjs
+
+### AKSI KEBAL ###
+# Uploaded files (keep directory structure with .gitkeep)
+public/uploads/foto_absensi/*
+!public/uploads/foto_absensi/.gitkeep
+
+# Temporary script files
+*.ps1
+prompt.txt
+
+# IDE
+.vscode/
+.idea/

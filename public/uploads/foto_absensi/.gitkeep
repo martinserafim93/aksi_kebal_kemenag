@@ -1,0 +1,3 @@
+# Folder ini digunakan untuk menyimpan foto absensi pegawai.
+# File foto akan otomatis dikompresi oleh sistem sebelum disimpan.
+# Format penamaan: {nip}_{id_kegiatan}_{timestamp}.jpg
