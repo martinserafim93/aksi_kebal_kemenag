@@ -97,7 +97,7 @@ class Database
     /**
      * Fetch satu baris hasil
      */
-    public function fetch(): mixed
+    public function fetch()
     {
         $this->execute();
         return $this->stmt->fetch();
