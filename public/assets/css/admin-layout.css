@@ -1,0 +1,356 @@
+/**
+ * AKSI KEBAL - Admin Layout Styles
+ * 
+ * Desain utama untuk halaman admin (Sidebar + Header + Content).
+ * Tampilan minimalis, profesional, responsif, mirip AdminLTE.
+ */
+
+/* ============================================================
+   Google Fonts & Variables Import
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+    /* Colors */
+    --primary: #10b981; /* Tema hijau admin */
+    --primary-hover: #059669;
+    --primary-light: #d1fae5;
+    
+    --sidebar-bg: #1e293b;
+    --sidebar-color: #cbd5e1;
+    --sidebar-hover: #334155;
+    --sidebar-active: #primary; /* Will use the primary color */
+    
+    --header-bg: #ffffff;
+    --content-bg: #f8fafc;
+    
+    --text-main: #334155;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    
+    /* Layout Dimensions */
+    --sidebar-width: 260px;
+    --header-height: 64px;
+    
+    /* Transitions */
+    --transition: all 0.3s ease;
+}
+
+/* ============================================================
+   Reset & Base
+   ============================================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--content-bg);
+    color: var(--text-main);
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* ============================================================
+   Wrapper
+   ============================================================ */
+.admin-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ============================================================
+   Sidebar
+   ============================================================ */
+.admin-sidebar {
+    width: var(--sidebar-width);
+    background-color: var(--sidebar-bg);
+    color: var(--sidebar-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 100;
+    transition: var(--transition);
+    overflow-y: auto;
+    box-shadow: var(--shadow-md);
+}
+
+.admin-sidebar.collapsed {
+    transform: translateX(-100%);
+}
+
+.sidebar-header {
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+    padding: 0 1.5rem;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sidebar-brand {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.sidebar-brand i {
+    color: var(--primary);
+}
+
+.sidebar-user {
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+.user-info {
+    flex: 1;
+    overflow: hidden;
+}
+
+.user-name {
+    font-weight: 600;
+    color: #ffffff;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-role {
+    font-size: 0.75rem;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+    margin-top: 0.25rem;
+}
+
+/* Sidebar Menu */
+.sidebar-menu {
+    padding: 1rem 0;
+    list-style: none;
+}
+
+.menu-label {
+    padding: 0.5rem 1.5rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-top: 0.5rem;
+}
+
+.sidebar-menu li {
+    margin-bottom: 0.25rem;
+}
+
+.sidebar-menu a {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1.5rem;
+    color: var(--sidebar-color);
+    transition: var(--transition);
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.sidebar-menu a i {
+    width: 20px;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+.sidebar-menu a:hover {
+    background-color: var(--sidebar-hover);
+    color: #ffffff;
+}
+
+.sidebar-menu a.active {
+    background-color: var(--primary);
+    color: #ffffff;
+    border-left: 4px solid #ffffff;
+}
+
+.sidebar-menu a.active i {
+    margin-left: -4px; /* Adjust for border */
+}
+
+/* ============================================================
+   Main Content Area
+   ============================================================ */
+.admin-main {
+    flex: 1;
+    margin-left: var(--sidebar-width);
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.admin-main.expanded {
+    margin-left: 0;
+}
+
+/* ============================================================
+   Header / Topbar
+   ============================================================ */
+.admin-header {
+    height: var(--header-height);
+    background-color: var(--header-bg);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 90;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+.sidebar-toggle {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    color: var(--text-main);
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.sidebar-toggle:hover {
+    background-color: var(--content-bg);
+    color: var(--primary);
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* ============================================================
+   Content Area
+   ============================================================ */
+.admin-content {
+    padding: 1.5rem;
+    flex: 1;
+}
+
+/* Cards used in dashboard/content */
+.card {
+    background: #ffffff;
+    border-radius: 0.5rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    margin-bottom: 1.5rem;
+}
+
+.card-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* ============================================================
+   Footer
+   ============================================================ */
+.admin-footer {
+    background-color: var(--header-bg);
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid var(--border-color);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.admin-footer a {
+    color: var(--primary);
+    font-weight: 500;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 991px) {
+    .admin-sidebar {
+        transform: translateX(-100%);
+    }
+    
+    .admin-sidebar.show {
+        transform: translateX(0);
+    }
+    
+    .admin-main {
+        margin-left: 0;
+    }
+    
+    /* Overlay for mobile */
+    .sidebar-overlay {
+        position: fixed;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 95;
+        opacity: 0;
+        visibility: hidden;
+        transition: var(--transition);
+    }
+    
+    .sidebar-overlay.show {
+        opacity: 1;
+        visibility: visible;
+    }
+}
