@@ -134,15 +134,24 @@ class AdminController extends Controller
 
     /**
      * Dashboard Admin
-     * Halaman utama setelah login (placeholder)
+     * Halaman utama setelah login menampilkan statistik
      */
     public function dashboard(): void
     {
         // Proteksi halaman — hanya admin yang login
         Middleware::authAdmin();
 
-        $this->view('admin/dashboard', [
-            'title' => 'Dashboard - ' . APP_NAME
-        ]);
+        $dashboardModel = $this->model('DashboardModel');
+
+        $data = [
+            'title' => 'Dashboard - ' . APP_NAME,
+            'total_pegawai' => $dashboardModel->getTotalPegawai(),
+            'total_kegiatan' => $dashboardModel->getTotalKegiatan(),
+            'total_kegiatan_published' => $dashboardModel->getTotalKegiatanPublished(),
+            'total_absensi_hari_ini' => $dashboardModel->getTotalAbsensiHariIni(),
+            'kegiatan_terbaru' => $dashboardModel->getKegiatanTerbaru(5)
+        ];
+
+        $this->view('admin/dashboard', $data);
     }
 }
