@@ -154,4 +154,232 @@ class AdminController extends Controller
 
         $this->view('admin/dashboard', $data);
     }
+
+    // =========================================================================
+    // MANAJEMEN PEGAWAI (CRUD)
+    // =========================================================================
+
+    /**
+     * Halaman Daftar Pegawai (Read)
+     */
+    public function pegawai(): void
+    {
+        Middleware::authAdmin();
+
+        $pegawaiModel = $this->model('PegawaiModel');
+
+        // Parameter pencarian & paginasi
+        $search = query('search', '');
+        $page = (int) query('page', 1);
+        $limit = 10;
+        $offset = ($page - 1) * $limit;
+
+        // Ambil data
+        $pegawai = $pegawaiModel->getAllPaginated($search, $limit, $offset);
+        $total_data = $pegawaiModel->countAll($search);
+        $total_page = ceil($total_data / $limit);
+
+        $this->view('admin/pegawai/index', [
+            'title'      => 'Manajemen Pegawai - ' . APP_NAME,
+            'pegawai'    => $pegawai,
+            'search'     => $search,
+            'page'       => $page,
+            'total_page' => $total_page,
+            'active_menu'=> 'pegawai'
+        ]);
+    }
+
+    /**
+     * Halaman Tambah Pegawai (Create)
+     */
+    public function pegawai_create(): void
+    {
+        Middleware::authAdmin();
+        $pegawaiModel = $this->model('PegawaiModel');
+
+        // POST Request - Proses simpan
+        if (isPost()) {
+            // Validasi CSRF
+            $csrfToken = input('csrf_token');
+            if (!$csrfToken || !Middleware::validateCsrfToken($csrfToken)) {
+                setFlash('error', 'Sesi tidak valid. Silakan coba lagi.');
+                $this->redirect('admin/pegawai-create');
+                return;
+            }
+
+            $nip = input('nip');
+            $nama = input('nama_lengkap');
+            $id_jabatan = input('id_jabatan');
+            $id_tim_kerja = input('id_tim_kerja');
+            $email = input('email');
+            $password = input('password');
+            $role = input('role', 'pegawai');
+
+            // Validasi Input
+            $errors = [];
+            if (empty($nip)) $errors[] = 'NIP wajib diisi.';
+            if (empty($nama)) $errors[] = 'Nama lengkap wajib diisi.';
+            if (empty($password)) $errors[] = 'Password wajib diisi.';
+            
+            if ($pegawaiModel->isNipExists($nip)) {
+                $errors[] = 'NIP sudah terdaftar.';
+            }
+
+            if (!empty($errors)) {
+                setFlash('error', implode('<br>', $errors));
+                $this->redirect('admin/pegawai-create');
+                return;
+            }
+
+            // Eksekusi Simpan
+            $data = [
+                'nip' => $nip,
+                'nama_lengkap' => $nama,
+                'id_jabatan' => $id_jabatan,
+                'id_tim_kerja' => $id_tim_kerja,
+                'email' => $email,
+                'password' => password_hash($password, PASSWORD_DEFAULT),
+                'role' => $role
+            ];
+
+            if ($pegawaiModel->create($data)) {
+                setFlash('success', 'Data pegawai berhasil ditambahkan.');
+                $this->redirect('admin/pegawai');
+            } else {
+                setFlash('error', 'Terjadi kesalahan sistem saat menyimpan data.');
+                $this->redirect('admin/pegawai-create');
+            }
+            return;
+        }
+
+        // GET Request - Tampilkan form
+        $this->view('admin/pegawai/create', [
+            'title'      => 'Tambah Pegawai - ' . APP_NAME,
+            'jabatan'    => $pegawaiModel->getAllJabatan(),
+            'tim_kerja'  => $pegawaiModel->getAllTimKerja(),
+            'active_menu'=> 'pegawai'
+        ]);
+    }
+
+    /**
+     * Halaman Edit Pegawai (Update)
+     * 
+     * @param string $nip NIP Pegawai
+     */
+    public function pegawai_edit($nip = null): void
+    {
+        Middleware::authAdmin();
+
+        if (empty($nip)) {
+            $this->redirect('admin/pegawai');
+            return;
+        }
+
+        $pegawaiModel = $this->model('PegawaiModel');
+        $pegawai = $pegawaiModel->findByNip($nip);
+
+        if (!$pegawai) {
+            setFlash('error', 'Data pegawai tidak ditemukan.');
+            $this->redirect('admin/pegawai');
+            return;
+        }
+
+        // POST Request - Proses update
+        if (isPost()) {
+            // Validasi CSRF
+            $csrfToken = input('csrf_token');
+            if (!$csrfToken || !Middleware::validateCsrfToken($csrfToken)) {
+                setFlash('error', 'Sesi tidak valid. Silakan coba lagi.');
+                $this->redirect('admin/pegawai-edit/' . urlencode($nip));
+                return;
+            }
+
+            $nip_baru = input('nip');
+            $nama = input('nama_lengkap');
+            $id_jabatan = input('id_jabatan');
+            $id_tim_kerja = input('id_tim_kerja');
+            $email = input('email');
+            $password = input('password');
+            $role = input('role', 'pegawai');
+
+            // Validasi Input
+            $errors = [];
+            if (empty($nip_baru)) $errors[] = 'NIP wajib diisi.';
+            if (empty($nama)) $errors[] = 'Nama lengkap wajib diisi.';
+            
+            if ($pegawaiModel->isNipExists($nip_baru, $nip)) {
+                $errors[] = 'NIP sudah terdaftar pada pegawai lain.';
+            }
+
+            if (!empty($errors)) {
+                setFlash('error', implode('<br>', $errors));
+                $this->redirect('admin/pegawai-edit/' . urlencode($nip));
+                return;
+            }
+
+            // Eksekusi Update
+            $data = [
+                'nip' => $nip_baru,
+                'nama_lengkap' => $nama,
+                'id_jabatan' => $id_jabatan,
+                'id_tim_kerja' => $id_tim_kerja,
+                'email' => $email,
+                'role' => $role
+            ];
+
+            if (!empty($password)) {
+                $data['password'] = password_hash($password, PASSWORD_DEFAULT);
+            }
+
+            if ($pegawaiModel->update($nip, $data)) {
+                setFlash('success', 'Data pegawai berhasil diperbarui.');
+                $this->redirect('admin/pegawai');
+            } else {
+                setFlash('error', 'Terjadi kesalahan sistem saat memperbarui data.');
+                $this->redirect('admin/pegawai-edit/' . urlencode($nip));
+            }
+            return;
+        }
+
+        // GET Request - Tampilkan form
+        $this->view('admin/pegawai/edit', [
+            'title'      => 'Edit Pegawai - ' . APP_NAME,
+            'pegawai'    => $pegawai,
+            'jabatan'    => $pegawaiModel->getAllJabatan(),
+            'tim_kerja'  => $pegawaiModel->getAllTimKerja(),
+            'active_menu'=> 'pegawai'
+        ]);
+    }
+
+    /**
+     * Proses Hapus Pegawai (Delete)
+     * 
+     * @param string $nip NIP Pegawai
+     */
+    public function pegawai_delete($nip = null): void
+    {
+        Middleware::authAdmin();
+
+        if (isPost() && !empty($nip)) {
+            // Validasi CSRF
+            $csrfToken = input('csrf_token');
+            if (!$csrfToken || !Middleware::validateCsrfToken($csrfToken)) {
+                setFlash('error', 'Sesi tidak valid.');
+            } else {
+                // Cegah admin menghapus akunnya sendiri
+                if ($nip === adminData('nip')) {
+                    setFlash('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
+                } else {
+                    $pegawaiModel = $this->model('PegawaiModel');
+                    if ($pegawaiModel->delete($nip)) {
+                        setFlash('success', 'Data pegawai berhasil dihapus.');
+                    } else {
+                        setFlash('error', 'Gagal menghapus data pegawai.');
+                    }
+                }
+            }
+        }
+        
+        $this->redirect('admin/pegawai');
+    }
 }
