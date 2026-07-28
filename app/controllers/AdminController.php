@@ -530,4 +530,152 @@ class AdminController extends Controller
         
         $this->redirect('admin/tim-kerja');
     }
+
+    // ==========================================
+    // MANAJEMEN JABATAN
+    // ==========================================
+
+    /**
+     * Halaman Daftar Jabatan
+     */
+    public function jabatan(): void
+    {
+        Middleware::authAdmin();
+        $model = $this->model('JabatanModel');
+        $jabatan = $model->getAll();
+        
+        $this->view('admin/jabatan/index', [
+            'title' => 'Manajemen Jabatan - AKSI KEBAL',
+            'jabatan' => $jabatan,
+            'active_menu' => 'jabatan'
+        ]);
+    }
+
+    /**
+     * Proses Tambah Jabatan
+     */
+    public function jabatan_create(): void
+    {
+        Middleware::authAdmin();
+        $model = $this->model('JabatanModel');
+
+        if (isPost()) {
+            $csrfToken = input('csrf_token');
+            if (!$csrfToken || !Middleware::validateCsrfToken($csrfToken)) {
+                setFlash('error', 'Sesi tidak valid.');
+                $this->redirect('admin/jabatan-create');
+                return;
+            }
+
+            $nama_jabatan = input('nama_jabatan');
+
+            if (empty($nama_jabatan)) {
+                setFlash('error', 'Nama jabatan tidak boleh kosong.');
+                $this->redirect('admin/jabatan-create');
+                return;
+            }
+
+            if ($model->isNameExists($nama_jabatan)) {
+                setFlash('error', 'Nama jabatan sudah terdaftar.');
+                $this->redirect('admin/jabatan-create');
+                return;
+            }
+
+            if ($model->create(['nama_jabatan' => $nama_jabatan])) {
+                setFlash('success', 'Jabatan berhasil ditambahkan.');
+                $this->redirect('admin/jabatan');
+                return;
+            } else {
+                setFlash('error', 'Gagal menambahkan jabatan.');
+            }
+        }
+
+        $this->view('admin/jabatan/create', [
+            'title' => 'Tambah Jabatan - AKSI KEBAL',
+            'active_menu' => 'jabatan'
+        ]);
+    }
+
+    /**
+     * Proses Edit Jabatan
+     */
+    public function jabatan_edit($id = null): void
+    {
+        Middleware::authAdmin();
+        if (!$id) {
+            $this->redirect('admin/jabatan');
+            return;
+        }
+
+        $model = $this->model('JabatanModel');
+        $jabatan = $model->findById((int)$id);
+
+        if (!$jabatan) {
+            setFlash('error', 'Jabatan tidak ditemukan.');
+            $this->redirect('admin/jabatan');
+            return;
+        }
+
+        if (isPost()) {
+            $csrfToken = input('csrf_token');
+            if (!$csrfToken || !Middleware::validateCsrfToken($csrfToken)) {
+                setFlash('error', 'Sesi tidak valid.');
+                $this->redirect('admin/jabatan-edit/' . $id);
+                return;
+            }
+
+            $nama_jabatan = input('nama_jabatan');
+
+            if (empty($nama_jabatan)) {
+                setFlash('error', 'Nama jabatan tidak boleh kosong.');
+                $this->redirect('admin/jabatan-edit/' . $id);
+                return;
+            }
+
+            if ($model->isNameExists($nama_jabatan, (int)$id)) {
+                setFlash('error', 'Nama jabatan sudah terdaftar.');
+                $this->redirect('admin/jabatan-edit/' . $id);
+                return;
+            }
+
+            if ($model->update((int)$id, ['nama_jabatan' => $nama_jabatan])) {
+                setFlash('success', 'Jabatan berhasil diperbarui.');
+                $this->redirect('admin/jabatan');
+                return;
+            } else {
+                setFlash('error', 'Gagal memperbarui jabatan.');
+            }
+        }
+
+        $this->view('admin/jabatan/edit', [
+            'title' => 'Edit Jabatan - AKSI KEBAL',
+            'jabatan' => $jabatan,
+            'active_menu' => 'jabatan'
+        ]);
+    }
+
+    /**
+     * Proses Hapus Jabatan
+     */
+    public function jabatan_delete($id = null): void
+    {
+        Middleware::authAdmin();
+
+        if (isPost() && $id) {
+            $csrfToken = input('csrf_token');
+            if (!$csrfToken || !Middleware::validateCsrfToken($csrfToken)) {
+                setFlash('error', 'Sesi tidak valid.');
+            } else {
+                $model = $this->model('JabatanModel');
+                
+                if ($model->delete((int)$id)) {
+                    setFlash('success', 'Jabatan berhasil dihapus.');
+                } else {
+                    setFlash('error', 'Gagal menghapus! Jabatan ini masih memiliki anggota pegawai.');
+                }
+            }
+        }
+        
+        $this->redirect('admin/jabatan');
+    }
 }
