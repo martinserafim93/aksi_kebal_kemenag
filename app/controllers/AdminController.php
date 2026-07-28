@@ -382,4 +382,152 @@ class AdminController extends Controller
         
         $this->redirect('admin/pegawai');
     }
+
+    // ==========================================
+    // MANAJEMEN TIM KERJA
+    // ==========================================
+
+    /**
+     * Halaman Daftar Tim Kerja
+     */
+    public function tim_kerja(): void
+    {
+        Middleware::authAdmin();
+        $model = $this->model('TimKerjaModel');
+        $tim_kerja = $model->getAll();
+        
+        $this->view('admin/tim-kerja/index', [
+            'title' => 'Manajemen Tim Kerja - AKSI KEBAL',
+            'tim_kerja' => $tim_kerja,
+            'active_menu' => 'tim_kerja'
+        ]);
+    }
+
+    /**
+     * Proses Tambah Tim Kerja
+     */
+    public function tim_kerja_create(): void
+    {
+        Middleware::authAdmin();
+        $model = $this->model('TimKerjaModel');
+
+        if (isPost()) {
+            $csrfToken = input('csrf_token');
+            if (!$csrfToken || !Middleware::validateCsrfToken($csrfToken)) {
+                setFlash('error', 'Sesi tidak valid.');
+                $this->redirect('admin/tim-kerja-create');
+                return;
+            }
+
+            $nama_tim_kerja = input('nama_tim_kerja');
+
+            if (empty($nama_tim_kerja)) {
+                setFlash('error', 'Nama tim kerja tidak boleh kosong.');
+                $this->redirect('admin/tim-kerja-create');
+                return;
+            }
+
+            if ($model->isNameExists($nama_tim_kerja)) {
+                setFlash('error', 'Nama tim kerja sudah terdaftar.');
+                $this->redirect('admin/tim-kerja-create');
+                return;
+            }
+
+            if ($model->create(['nama_tim_kerja' => $nama_tim_kerja])) {
+                setFlash('success', 'Tim Kerja berhasil ditambahkan.');
+                $this->redirect('admin/tim-kerja');
+                return;
+            } else {
+                setFlash('error', 'Gagal menambahkan tim kerja.');
+            }
+        }
+
+        $this->view('admin/tim-kerja/create', [
+            'title' => 'Tambah Tim Kerja - AKSI KEBAL',
+            'active_menu' => 'tim_kerja'
+        ]);
+    }
+
+    /**
+     * Proses Edit Tim Kerja
+     */
+    public function tim_kerja_edit($id = null): void
+    {
+        Middleware::authAdmin();
+        if (!$id) {
+            $this->redirect('admin/tim-kerja');
+            return;
+        }
+
+        $model = $this->model('TimKerjaModel');
+        $tim_kerja = $model->findById((int)$id);
+
+        if (!$tim_kerja) {
+            setFlash('error', 'Tim kerja tidak ditemukan.');
+            $this->redirect('admin/tim-kerja');
+            return;
+        }
+
+        if (isPost()) {
+            $csrfToken = input('csrf_token');
+            if (!$csrfToken || !Middleware::validateCsrfToken($csrfToken)) {
+                setFlash('error', 'Sesi tidak valid.');
+                $this->redirect('admin/tim-kerja-edit/' . $id);
+                return;
+            }
+
+            $nama_tim_kerja = input('nama_tim_kerja');
+
+            if (empty($nama_tim_kerja)) {
+                setFlash('error', 'Nama tim kerja tidak boleh kosong.');
+                $this->redirect('admin/tim-kerja-edit/' . $id);
+                return;
+            }
+
+            if ($model->isNameExists($nama_tim_kerja, (int)$id)) {
+                setFlash('error', 'Nama tim kerja sudah terdaftar.');
+                $this->redirect('admin/tim-kerja-edit/' . $id);
+                return;
+            }
+
+            if ($model->update((int)$id, ['nama_tim_kerja' => $nama_tim_kerja])) {
+                setFlash('success', 'Tim Kerja berhasil diperbarui.');
+                $this->redirect('admin/tim-kerja');
+                return;
+            } else {
+                setFlash('error', 'Gagal memperbarui tim kerja.');
+            }
+        }
+
+        $this->view('admin/tim-kerja/edit', [
+            'title' => 'Edit Tim Kerja - AKSI KEBAL',
+            'tim_kerja' => $tim_kerja,
+            'active_menu' => 'tim_kerja'
+        ]);
+    }
+
+    /**
+     * Proses Hapus Tim Kerja
+     */
+    public function tim_kerja_delete($id = null): void
+    {
+        Middleware::authAdmin();
+
+        if (isPost() && $id) {
+            $csrfToken = input('csrf_token');
+            if (!$csrfToken || !Middleware::validateCsrfToken($csrfToken)) {
+                setFlash('error', 'Sesi tidak valid.');
+            } else {
+                $model = $this->model('TimKerjaModel');
+                
+                if ($model->delete((int)$id)) {
+                    setFlash('success', 'Tim Kerja berhasil dihapus.');
+                } else {
+                    setFlash('error', 'Gagal menghapus! Tim Kerja ini masih memiliki anggota pegawai.');
+                }
+            }
+        }
+        
+        $this->redirect('admin/tim-kerja');
+    }
 }
