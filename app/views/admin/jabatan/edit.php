@@ -16,19 +16,6 @@ ob_start();
     </div>
 </div>
 
-<?php $flash = getFlash(); ?>
-<?php if ($flash): ?>
-    <?php if ($flash['type'] === 'success'): ?>
-        <div class="alert alert-success" style="background: #d1fae5; color: #065f46; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1.5rem; border: 1px solid #34d399;">
-            <?= $flash['message'] ?>
-        </div>
-    <?php elseif ($flash['type'] === 'error'): ?>
-        <div class="alert alert-danger" style="background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1.5rem; border: 1px solid #f87171;">
-            <?= $flash['message'] ?>
-        </div>
-    <?php endif; ?>
-<?php endif; ?>
-
 <div class="card" style="max-width: 600px;">
     <div class="card-header">
         <h3 class="card-title">Form Edit Jabatan</h3>
@@ -43,7 +30,7 @@ ob_start();
             </div>
 
             <div style="text-align: right;">
-                <button type="submit" class="btn btn-primary" style="padding: 0.75rem 2rem; font-size: 1rem;">
+                <button type="submit" class="btn btn-gradient-success">
                     <i class='bx bx-save'></i> Simpan Perubahan
                 </button>
             </div>
