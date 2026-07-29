@@ -678,4 +678,195 @@ class AdminController extends Controller
         
         $this->redirect('admin/jabatan');
     }
+
+    // ==========================================
+    // MANAJEMEN KEGIATAN
+    // ==========================================
+
+    public function kegiatan(): void
+    {
+        Middleware::authAdmin();
+        $model = $this->model('KegiatanModel');
+        
+        $search = input('search') ?? '';
+        $status = input('status') ?? '';
+        $jenis = input('jenis') ?? '';
+        
+        $kegiatan = $model->getAll($search, $status, $jenis);
+
+        $this->view('admin/kegiatan/index', [
+            'title' => 'Manajemen Kegiatan - AKSI KEBAL',
+            'kegiatan' => $kegiatan,
+            'search' => $search,
+            'status' => $status,
+            'jenis' => $jenis,
+            'active_menu' => 'kegiatan'
+        ]);
+    }
+
+    public function kegiatan_create(): void
+    {
+        Middleware::authAdmin();
+        $model = $this->model('KegiatanModel');
+
+        if (isPost()) {
+            $csrfToken = input('csrf_token');
+            if (!$csrfToken || !Middleware::validateCsrfToken($csrfToken)) {
+                setFlash('error', 'Sesi tidak valid.');
+                $this->redirect('admin/kegiatan-create');
+                return;
+            }
+
+            $data = [
+                'nama_kegiatan' => input('nama_kegiatan'),
+                'jenis_kegiatan' => input('jenis_kegiatan'),
+                'tanggal_kegiatan' => input('tanggal_kegiatan'),
+                'waktu_mulai' => input('waktu_mulai'),
+                'waktu_selesai' => input('waktu_selesai'),
+                'lokasi_kegiatan' => input('lokasi_kegiatan'),
+                'deskripsi_kegiatan' => input('deskripsi_kegiatan')
+            ];
+
+            if (empty($data['nama_kegiatan']) || empty($data['jenis_kegiatan']) || empty($data['tanggal_kegiatan']) || empty($data['waktu_mulai']) || empty($data['waktu_selesai'])) {
+                setFlash('error', 'Semua kolom wajib (*) harus diisi.');
+            } else {
+                if ($model->create($data)) {
+                    setFlash('success', 'Kegiatan baru berhasil ditambahkan.');
+                    $this->redirect('admin/kegiatan');
+                    return;
+                } else {
+                    setFlash('error', 'Terjadi kesalahan sistem.');
+                }
+            }
+        }
+
+        $this->view('admin/kegiatan/create', [
+            'title' => 'Tambah Kegiatan - AKSI KEBAL',
+            'active_menu' => 'kegiatan'
+        ]);
+    }
+
+    public function kegiatan_edit($id = null): void
+    {
+        Middleware::authAdmin();
+        if (!$id) {
+            $this->redirect('admin/kegiatan');
+            return;
+        }
+
+        $model = $this->model('KegiatanModel');
+        $kegiatan = $model->findById((int)$id);
+
+        if (!$kegiatan) {
+            setFlash('error', 'Kegiatan tidak ditemukan.');
+            $this->redirect('admin/kegiatan');
+            return;
+        }
+
+        if (isPost()) {
+            $csrfToken = input('csrf_token');
+            if (!$csrfToken || !Middleware::validateCsrfToken($csrfToken)) {
+                setFlash('error', 'Sesi tidak valid.');
+                $this->redirect("admin/kegiatan-edit/$id");
+                return;
+            }
+
+            $data = [
+                'nama_kegiatan' => input('nama_kegiatan'),
+                'jenis_kegiatan' => input('jenis_kegiatan'),
+                'tanggal_kegiatan' => input('tanggal_kegiatan'),
+                'waktu_mulai' => input('waktu_mulai'),
+                'waktu_selesai' => input('waktu_selesai'),
+                'lokasi_kegiatan' => input('lokasi_kegiatan'),
+                'deskripsi_kegiatan' => input('deskripsi_kegiatan')
+            ];
+
+            if (empty($data['nama_kegiatan']) || empty($data['jenis_kegiatan']) || empty($data['tanggal_kegiatan']) || empty($data['waktu_mulai']) || empty($data['waktu_selesai'])) {
+                setFlash('error', 'Semua kolom wajib (*) harus diisi.');
+            } else {
+                if ($model->update((int)$id, $data)) {
+                    setFlash('success', 'Kegiatan berhasil diperbarui.');
+                    $this->redirect('admin/kegiatan');
+                    return;
+                } else {
+                    setFlash('error', 'Terjadi kesalahan sistem.');
+                }
+            }
+        }
+
+        $this->view('admin/kegiatan/edit', [
+            'title' => 'Edit Kegiatan - AKSI KEBAL',
+            'kegiatan' => $kegiatan,
+            'active_menu' => 'kegiatan'
+        ]);
+    }
+
+    public function kegiatan_delete($id = null): void
+    {
+        Middleware::authAdmin();
+
+        if (isPost() && $id) {
+            $csrfToken = input('csrf_token');
+            if (!$csrfToken || !Middleware::validateCsrfToken($csrfToken)) {
+                setFlash('error', 'Sesi tidak valid.');
+            } else {
+                $model = $this->model('KegiatanModel');
+                if ($model->delete((int)$id)) {
+                    setFlash('success', 'Kegiatan berhasil dihapus.');
+                } else {
+                    setFlash('error', 'Gagal menghapus! Kegiatan ini memiliki data absensi terikat.');
+                }
+            }
+        }
+        $this->redirect('admin/kegiatan');
+    }
+
+    public function kegiatan_publish($id = null): void
+    {
+        Middleware::authAdmin();
+
+        if (isPost() && $id) {
+            $csrfToken = input('csrf_token');
+            if (!$csrfToken || !Middleware::validateCsrfToken($csrfToken)) {
+                setFlash('error', 'Sesi tidak valid.');
+            } else {
+                $model = $this->model('KegiatanModel');
+                $kegiatan = $model->findById((int)$id);
+                if ($kegiatan) {
+                    // Pastikan config app URL digunakan dengan baik, url() function ada dari helpers.php
+                    $url = url("absensi?kegiatan=" . $id);
+                    if ($model->publish((int)$id, $url)) {
+                        setFlash('success', 'Kegiatan berhasil di-publish!');
+                    } else {
+                        setFlash('error', 'Gagal mem-publish kegiatan.');
+                    }
+                }
+            }
+        }
+        $this->redirect('admin/kegiatan');
+    }
+
+    public function kegiatan_qrcode($id = null): void
+    {
+        Middleware::authAdmin();
+        if (!$id) {
+            $this->redirect('admin/kegiatan');
+            return;
+        }
+
+        $model = $this->model('KegiatanModel');
+        $kegiatan = $model->findById((int)$id);
+
+        if (!$kegiatan || $kegiatan['status_kegiatan'] !== 'Published') {
+            setFlash('error', 'Kegiatan tidak valid atau belum di-publish.');
+            $this->redirect('admin/kegiatan');
+            return;
+        }
+
+        $this->view('admin/kegiatan/qrcode', [
+            'title' => 'QR Code Kegiatan - AKSI KEBAL',
+            'kegiatan' => $kegiatan,
+            'active_menu' => 'kegiatan'
+        ]);
+    }
 }
