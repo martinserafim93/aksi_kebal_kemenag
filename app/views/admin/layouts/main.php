@@ -30,6 +30,9 @@ $admin_role = adminData('nama_jabatan') ?? 'Administrator';
     <!-- Boxicons for Icons -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <!-- Custom Layout CSS -->
     <link rel="stylesheet" href="<?= asset('css/admin-layout.css') ?>">
     
@@ -137,14 +140,6 @@ $admin_role = adminData('nama_jabatan') ?? 'Administrator';
             <!-- Content -->
             <div class="admin-content">
                 
-                <!-- Flash Messages Area -->
-                <?php $flash = getFlash(); ?>
-                <?php if ($flash): ?>
-                    <div class="alert alert-<?= e($flash['type']) ?>" style="margin-bottom: 1.5rem; padding: 1rem; border-radius: 0.5rem; background-color: <?= $flash['type'] === 'success' ? '#d1fae5' : '#fee2e2' ?>; color: <?= $flash['type'] === 'success' ? '#065f46' : '#991b1b' ?>; border: 1px solid <?= $flash['type'] === 'success' ? '#34d399' : '#f87171' ?>;">
-                        <?= $flash['message'] ?>
-                    </div>
-                <?php endif; ?>
-
                 <!-- Render the unique page content here -->
                 <?= $content ?? '' ?>
 
@@ -195,6 +190,52 @@ $admin_role = adminData('nama_jabatan') ?? 'Administrator';
                 }
             });
         });
+    </script>
+
+    <!-- SweetAlert2: Delete Confirmation & Flash Messages -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle semua form delete dengan SweetAlert2
+        document.querySelectorAll('form.form-delete').forEach(function(form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                var formEl = this;
+                Swal.fire({
+                    title: 'Apakah Anda Yakin?',
+                    text: 'Data yang dihapus tidak dapat dikembalikan!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ef4444',
+                    cancelButtonColor: '#64748b',
+                    confirmButtonText: '<i class="bx bx-trash"></i> Ya, Hapus!',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true,
+                    customClass: {
+                        popup: 'swal-popup-custom'
+                    }
+                }).then(function(result) {
+                    if (result.isConfirmed) {
+                        formEl.submit();
+                    }
+                });
+            });
+        });
+
+        // Tampilkan flash message sebagai SweetAlert toast
+        <?php $swalFlash = getFlash(); ?>
+        <?php if ($swalFlash): ?>
+            Swal.fire({
+                icon: '<?= $swalFlash['type'] === 'success' ? 'success' : 'error' ?>',
+                title: '<?= $swalFlash['type'] === 'success' ? 'Berhasil!' : 'Gagal!' ?>',
+                text: '<?= addslashes($swalFlash['message']) ?>',
+                timer: 3000,
+                timerProgressBar: true,
+                showConfirmButton: false,
+                toast: true,
+                position: 'top-end'
+            });
+        <?php endif; ?>
+    });
     </script>
     
     <!-- Custom Page JS (optional) -->

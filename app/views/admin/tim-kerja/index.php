@@ -9,25 +9,12 @@ ob_start();
             <p style="margin: 0.25rem 0 0 0; color: var(--text-muted); font-size: 0.95rem;">Kelola data referensi Tim Kerja untuk penugasan pegawai.</p>
         </div>
         <div>
-            <a href="<?= url('admin/tim-kerja-create') ?>" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+            <a href="<?= url('admin/tim-kerja-create') ?>" class="btn btn-gradient-primary">
                 <i class='bx bx-plus'></i> Tambah Tim Kerja
             </a>
         </div>
     </div>
 </div>
-
-<?php $flash = getFlash(); ?>
-<?php if ($flash): ?>
-    <?php if ($flash['type'] === 'success'): ?>
-        <div class="alert alert-success" style="background: #d1fae5; color: #065f46; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1.5rem; border: 1px solid #34d399;">
-            <?= $flash['message'] ?>
-        </div>
-    <?php elseif ($flash['type'] === 'error'): ?>
-        <div class="alert alert-danger" style="background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1.5rem; border: 1px solid #f87171;">
-            <?= $flash['message'] ?>
-        </div>
-    <?php endif; ?>
-<?php endif; ?>
 
 <div class="card">
     <div class="card-header">
@@ -72,9 +59,9 @@ ob_start();
                                             <i class='bx bx-edit-alt'></i>
                                         </a>
                                         
-                                        <form action="<?= url('admin/tim-kerja-delete/' . urlencode($t['id_tim_kerja'])) ?>" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus tim kerja ini? Aksi ini tidak dapat dibatalkan.');" style="display: inline-block;">
-                                            <input type="hidden" name="csrf_token" value="<?= Middleware::generateCsrfToken() ?>">
-                                            <button type="submit" class="btn" style="background: #fef2f2; color: #b91c1c; padding: 0.4rem 0.6rem; border-radius: 0.25rem; border: none; cursor: pointer;" title="Hapus">
+                                        <form action="<?= url('admin/tim-kerja-delete/' . urlencode($t['id_tim_kerja'])) ?>" method="POST" class="form-delete" style="display: inline-block;">
+                                            <?= csrfField() ?>
+                                            <button type="submit" class="btn btn-danger btn-sm" title="Hapus">
                                                 <i class='bx bx-trash'></i>
                                             </button>
                                         </form>
