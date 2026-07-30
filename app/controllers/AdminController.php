@@ -869,4 +869,110 @@ class AdminController extends Controller
             'active_menu' => 'kegiatan'
         ]);
     }
+    // ==========================================
+    // MANAJEMEN ABSENSI
+    // ==========================================
+
+    public function absensi(): void
+    {
+        Middleware::authAdmin();
+        $model = $this->model('AbsensiModel');
+        
+        $filters = [
+            'kegiatan' => query('kegiatan', ''),
+            'jenis' => query('jenis', ''),
+            'tanggal' => query('tanggal', '')
+        ];
+        
+        $page = (int) query('page', 1);
+        if ($page < 1) $page = 1;
+        $limit = 10;
+        $offset = ($page - 1) * $limit;
+        
+        $absensi = $model->getAllPaginated($filters, $limit, $offset);
+        $total_data = $model->countAll($filters);
+        $total_page = ceil($total_data / $limit);
+        
+        $statistik = $model->getStatistik($filters);
+        $kegiatan_list = $model->getKegiatanList();
+
+        $this->view('admin/absensi/index', [
+            'title' => 'Manajemen Absensi - AKSI KEBAL',
+            'absensi' => $absensi,
+            'filters' => $filters,
+            'page' => $page,
+            'total_page' => $total_page,
+            'statistik' => $statistik,
+            'kegiatan_list' => $kegiatan_list,
+            'active_menu' => 'absensi'
+        ]);
+    }
+
+    public function absensi_edit($id = null): void
+    {
+        Middleware::authAdmin();
+        if (!$id) {
+            $this->redirect('admin/absensi');
+            return;
+        }
+
+        $model = $this->model('AbsensiModel');
+        $absensi = $model->findById((int)$id);
+
+        if (!$absensi) {
+            setFlash('error', 'Data absensi tidak ditemukan.');
+            $this->redirect('admin/absensi');
+            return;
+        }
+
+        if (isPost()) {
+            $csrfToken = input('csrf_token');
+            if (!$csrfToken || !Middleware::validateCsrfToken($csrfToken)) {
+                setFlash('error', 'Sesi tidak valid.');
+                $this->redirect('admin/absensi-edit/' . $id);
+                return;
+            }
+
+            $status = input('status_kehadiran');
+            if (!in_array($status, ['Hadir', 'Tidak Hadir'])) {
+                setFlash('error', 'Status kehadiran tidak valid.');
+                $this->redirect('admin/absensi-edit/' . $id);
+                return;
+            }
+
+            if ($model->updateStatus((int)$id, $status)) {
+                setFlash('success', 'Status kehadiran berhasil diperbarui.');
+                $this->redirect('admin/absensi');
+                return;
+            } else {
+                setFlash('error', 'Gagal memperbarui status kehadiran.');
+            }
+        }
+
+        $this->view('admin/absensi/edit', [
+            'title' => 'Koreksi Absensi - AKSI KEBAL',
+            'absensi' => $absensi,
+            'active_menu' => 'absensi'
+        ]);
+    }
+
+    public function absensi_delete($id = null): void
+    {
+        Middleware::authAdmin();
+
+        if (isPost() && $id) {
+            $csrfToken = input('csrf_token');
+            if (!$csrfToken || !Middleware::validateCsrfToken($csrfToken)) {
+                setFlash('error', 'Sesi tidak valid.');
+            } else {
+                $model = $this->model('AbsensiModel');
+                if ($model->delete((int)$id)) {
+                    setFlash('success', 'Data absensi berhasil dihapus.');
+                } else {
+                    setFlash('error', 'Gagal menghapus data absensi.');
+                }
+            }
+        }
+        $this->redirect('admin/absensi');
+    }
 }
