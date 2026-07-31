@@ -176,6 +176,39 @@ class AbsensiModel
         return $this->db->fetchAll();
     }
 
+    /**
+     * Cek apakah pegawai sudah absen di kegiatan ini
+     */
+    public function hasAbsensi(string $nip, int $id_kegiatan): bool
+    {
+        $this->db->query("SELECT id_absensi FROM absensi WHERE nip = :nip AND id_kegiatan = :id_kegiatan");
+        $this->db->bind(':nip', $nip);
+        $this->db->bind(':id_kegiatan', $id_kegiatan, PDO::PARAM_INT);
+        $result = $this->db->fetch();
+        return $result !== false;
+    }
+
+    /**
+     * Tambah data absensi baru
+     * @return int|false
+     */
+    public function create(array $data)
+    {
+        $this->db->query("INSERT INTO absensi (nip, id_kegiatan, foto, status_kehadiran) 
+                          VALUES (:nip, :id_kegiatan, :foto, :status_kehadiran)");
+        
+        $this->db->bind(':nip', $data['nip']);
+        $this->db->bind(':id_kegiatan', $data['id_kegiatan'], PDO::PARAM_INT);
+        $this->db->bind(':foto', $data['foto']);
+        $this->db->bind(':status_kehadiran', $data['status_kehadiran'] ?? 'Hadir');
+
+        if ($this->db->execute()) {
+            return (int) $this->db->lastInsertId();
+        }
+        
+        return false;
+    }
+
     // =========================================================================
     // Private Helper Methods
     // =========================================================================

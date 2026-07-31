@@ -14,7 +14,7 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="<?= asset('assets/css/pegawai.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/pegawai.css') ?>">
 </head>
 <body>
     

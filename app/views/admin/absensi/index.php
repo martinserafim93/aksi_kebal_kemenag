@@ -119,7 +119,7 @@
                             </td>
                             <td style="padding: 1rem; vertical-align: middle; text-align: center;">
                                 <?php if (!empty($a['foto'])): ?>
-                                    <img src="<?= asset('uploads/' . $a['foto']) ?>" alt="Foto Absensi" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover; border-radius: 0.25rem; cursor: pointer; border: 1px solid var(--border-color);" onclick="showImageModal(this.src)">
+                                    <img src="<?= url('uploads/' . $a['foto']) ?>" alt="Foto Absensi" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover; border-radius: 0.25rem; cursor: pointer; border: 1px solid var(--border-color);" onclick="showImageModal(this.src)">
                                 <?php else: ?>
                                     <span style="color: var(--text-muted); font-size: 0.85rem;">-</span>
                                 <?php endif; ?>
