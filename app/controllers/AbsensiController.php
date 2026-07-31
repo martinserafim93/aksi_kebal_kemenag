@@ -125,15 +125,91 @@ class AbsensiController extends Controller
             }
 
             // Generate nama file unik
-            $foto = 'absen_' . $nip . '_' . time() . '.' . $file_ext;
-            $upload_dir = __DIR__ . '/../../public/uploads/';
+            $timestamp = time();
+            $foto = "{$nip}_{$id_kegiatan}_{$timestamp}.jpg";
+            $upload_dir = __DIR__ . '/../../public/uploads/foto_absensi/';
             
             if (!is_dir($upload_dir)) {
                 mkdir($upload_dir, 0777, true);
             }
 
-            if (!move_uploaded_file($tmp_name, $upload_dir . $foto)) {
-                setFlash('error', 'Gagal mengupload foto.');
+            $target_file = $upload_dir . $foto;
+
+            // Proses Kompresi GD
+            try {
+                if ($file_ext === 'png') {
+                    $source_image = @imagecreatefrompng($tmp_name);
+                } else {
+                    $source_image = @imagecreatefromjpeg($tmp_name);
+                }
+
+                if (!$source_image) {
+                    throw new Exception('Gagal membaca file gambar.');
+                }
+
+                // Fix Orientation
+                if (function_exists('exif_read_data')) {
+                    $exif = @exif_read_data($tmp_name);
+                    if ($exif && isset($exif['Orientation'])) {
+                        $orientation = $exif['Orientation'];
+                        switch ($orientation) {
+                            case 3:
+                                $source_image = imagerotate($source_image, 180, 0);
+                                break;
+                            case 6:
+                                $source_image = imagerotate($source_image, -90, 0);
+                                break;
+                            case 8:
+                                $source_image = imagerotate($source_image, 90, 0);
+                                break;
+                        }
+                    }
+                }
+
+                // Resize max 1920px
+                $width = imagesx($source_image);
+                $height = imagesy($source_image);
+                $max_dim = 1920;
+                
+                if ($width > $max_dim || $height > $max_dim) {
+                    if ($width > $height) {
+                        $new_width = $max_dim;
+                        $new_height = (int)($height * ($max_dim / $width));
+                    } else {
+                        $new_height = $max_dim;
+                        $new_width = (int)($width * ($max_dim / $height));
+                    }
+
+                    $resized_image = imagecreatetruecolor($new_width, $new_height);
+                    
+                    // Beri background putih untuk PNG transparan sebelum convert ke JPG
+                    $white = imagecolorallocate($resized_image, 255, 255, 255);
+                    imagefill($resized_image, 0, 0, $white);
+
+                    imagecopyresampled($resized_image, $source_image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+                    imagedestroy($source_image);
+                    $source_image = $resized_image;
+                } else {
+                    // Beri background putih jika PNG punya transparansi dan ukuran < 1920
+                    if ($file_ext === 'png') {
+                        $bg_image = imagecreatetruecolor($width, $height);
+                        $white = imagecolorallocate($bg_image, 255, 255, 255);
+                        imagefill($bg_image, 0, 0, $white);
+                        imagecopy($bg_image, $source_image, 0, 0, 0, 0, $width, $height);
+                        imagedestroy($source_image);
+                        $source_image = $bg_image;
+                    }
+                }
+
+                // Simpan sbg JPEG dengan quality 75 agar ukuran < 1MB
+                if (!imagejpeg($source_image, $target_file, 75)) {
+                    throw new Exception('Gagal menyimpan file gambar hasil kompresi.');
+                }
+                
+                imagedestroy($source_image);
+
+            } catch (Exception $e) {
+                setFlash('error', 'Kompresi foto gagal: ' . $e->getMessage());
                 $this->redirect('absensi?kegiatan=' . $id_kegiatan);
                 return;
             }
