@@ -58,7 +58,7 @@
                     <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem; color: var(--text-main);">Foto Bukti</label>
                     <?php if (!empty($absensi['foto'])): ?>
                         <div style="margin-top: 0.5rem; padding: 1rem; border: 1px dashed var(--border-color); border-radius: 0.5rem; text-align: center; background: #f8fafc;">
-                            <img src="<?= asset('uploads/' . $absensi['foto']) ?>" alt="Foto Absensi" style="max-width: 100%; max-height: 300px; border-radius: 0.25rem; border: 1px solid var(--border-color);">
+                            <img src="<?= url('uploads/' . $absensi['foto']) ?>" alt="Foto Absensi" style="max-width: 100%; max-height: 300px; border-radius: 0.25rem; border: 1px solid var(--border-color);">
                         </div>
                     <?php else: ?>
                         <div style="padding: 1rem; border: 1px dashed var(--border-color); border-radius: 0.5rem; text-align: center; background: #f8fafc; color: var(--text-muted);">

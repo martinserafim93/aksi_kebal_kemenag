@@ -75,6 +75,20 @@ class PegawaiModel
     }
 
     /**
+     * Mengambil data satu pegawai beserta nama jabatan dan tim kerja berdasarkan NIP
+     */
+    public function findDetailByNip(string $nip)
+    {
+        $this->db->query("SELECT p.*, j.nama_jabatan, t.nama_tim_kerja 
+                          FROM pegawai p
+                          LEFT JOIN jabatan j ON p.id_jabatan = j.id_jabatan
+                          LEFT JOIN tim_kerja t ON p.id_tim_kerja = t.id_tim_kerja
+                          WHERE p.nip = :nip");
+        $this->db->bind(':nip', $nip);
+        return $this->db->fetch();
+    }
+
+    /**
      * Cek apakah NIP sudah ada (kecuali untuk NIP tertentu saat edit)
      */
     public function isNipExists(string $nip, string $excludeNip = null): bool
