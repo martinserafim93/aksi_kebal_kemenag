@@ -26,7 +26,7 @@ ob_start();
             <table style="width: 100%; border-collapse: collapse;">
                 <thead>
                     <tr>
-                        <th style="text-align: center; padding: 1rem; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; width: 80px;">ID</th>
+                        <th style="text-align: center; padding: 1rem; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; width: 60px;">No</th>
                         <th style="text-align: left; padding: 1rem; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase;">Nama Jabatan</th>
                         <th style="text-align: center; padding: 1rem; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase;">Jumlah Pegawai</th>
                         <th style="text-align: center; padding: 1rem; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; width: 150px;">Aksi</th>
@@ -40,10 +40,11 @@ ob_start();
                             </td>
                         </tr>
                     <?php else: ?>
+                        <?php $no = 1; ?>
                         <?php foreach ($jabatan as $j): ?>
                             <tr style="border-bottom: 1px solid var(--border-color);">
-                                <td style="padding: 1rem; text-align: center; color: var(--text-muted); font-size: 0.95rem;">
-                                    <?= e($j['id_jabatan']) ?>
+                                <td style="padding: 1rem; text-align: center; color: var(--text-muted); font-size: 0.95rem; font-weight: 500;">
+                                    <?= $no++ ?>
                                 </td>
                                 <td style="padding: 1rem;">
                                     <div style="font-weight: 600; color: var(--text-main); font-size: 1rem;"><?= e($j['nama_jabatan']) ?></div>
