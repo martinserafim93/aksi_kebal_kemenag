@@ -20,13 +20,16 @@ ob_start();
     <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
         <h3 class="card-title">Daftar Pegawai</h3>
         
-        <form action="<?= url('admin/pegawai') ?>" method="GET" style="display: flex; gap: 0.5rem;">
-            <input type="text" name="search" value="<?= e($search) ?>" placeholder="Cari NIP atau Nama..." class="form-control" style="width: 250px;">
-            <button type="submit" class="btn btn-primary" style="padding: 0.5rem 1rem;">
-                <i class='bx bx-search'></i>
+        <form action="<?= url('admin/pegawai') ?>" method="GET" style="display: flex; gap: 0.5rem; align-items: center;">
+            <div style="position: relative; display: flex; align-items: center;">
+                <i class='bx bx-search' style="position: absolute; left: 1rem; color: #94a3b8; font-size: 1.1rem;"></i>
+                <input type="text" name="search" value="<?= e($search) ?>" placeholder="Cari NIP atau Nama..." class="form-control" style="width: 300px; padding: 0.6rem 1.2rem 0.6rem 2.5rem; border-radius: 9999px; border: 1px solid #e2e8f0; outline: none; transition: all 0.3s ease; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);" onfocus="this.style.borderColor='var(--primary)'; this.style.boxShadow='0 0 0 3px rgba(37, 99, 235, 0.2)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='0 1px 2px 0 rgba(0, 0, 0, 0.05)';">
+            </div>
+            <button type="submit" class="btn btn-primary" style="padding: 0.6rem 1.2rem; border-radius: 9999px; font-weight: 500;">
+                Cari
             </button>
             <?php if (!empty($search)): ?>
-                <a href="<?= url('admin/pegawai') ?>" class="btn" style="background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">Reset</a>
+                <a href="<?= url('admin/pegawai') ?>" class="btn" style="background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main); padding: 0.6rem 1.2rem; border-radius: 9999px;">Reset</a>
             <?php endif; ?>
         </form>
     </div>
@@ -36,6 +39,7 @@ ob_start();
             <table style="width: 100%; border-collapse: collapse;">
                 <thead>
                     <tr>
+                        <th style="text-align: center; padding: 1rem; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; width: 60px;">No</th>
                         <th style="text-align: left; padding: 1rem; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase;">NIP / Nama</th>
                         <th style="text-align: left; padding: 1rem; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase;">Jabatan & Tim Kerja</th>
                         <th style="text-align: left; padding: 1rem; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase;">Kontak</th>
@@ -45,13 +49,17 @@ ob_start();
                 <tbody>
                     <?php if (empty($pegawai)): ?>
                         <tr>
-                            <td colspan="4" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                            <td colspan="5" style="text-align: center; padding: 2rem; color: var(--text-muted);">
                                 Tidak ada data pegawai ditemukan.
                             </td>
                         </tr>
                     <?php else: ?>
+                        <?php $no = ($page - 1) * 10 + 1; ?>
                         <?php foreach ($pegawai as $p): ?>
                             <tr style="border-bottom: 1px solid var(--border-color);">
+                                <td style="padding: 1rem; text-align: center; color: var(--text-muted); font-weight: 500;">
+                                    <?= $no++ ?>
+                                </td>
                                 <td style="padding: 1rem;">
                                     <div style="font-weight: 600; color: var(--text-main);"><?= e($p['nama_lengkap']) ?></div>
                                     <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">NIP: <?= e($p['nip']) ?></div>
