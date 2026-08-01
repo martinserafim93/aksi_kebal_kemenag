@@ -23,11 +23,11 @@
             <div class="data-item" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                 <div>
                     <span class="data-label">Jabatan</span>
-                    <span class="data-value"><?= e($absensi['id_jabatan'] ?? '-') ?></span>
+                    <span class="data-value"><?= e($absensi['nama_jabatan'] ?? '-') ?></span>
                 </div>
                 <div>
                     <span class="data-label">Tim Kerja</span>
-                    <span class="data-value"><?= e($absensi['id_tim_kerja'] ?? '-') ?></span>
+                    <span class="data-value"><?= e($absensi['nama_tim_kerja'] ?? '-') ?></span>
                 </div>
             </div>
             
@@ -46,6 +46,17 @@
                 </span>
             </div>
             
+            <div class="data-item" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem;">
+                <div>
+                    <span class="data-label">Tanggal Submit</span>
+                    <span class="data-value"><?= date('d M Y', strtotime($absensi['created_at'])) ?></span>
+                </div>
+                <div>
+                    <span class="data-label">Waktu Submit</span>
+                    <span class="data-value"><?= date('H:i:s', strtotime($absensi['created_at'])) ?></span>
+                </div>
+            </div>
+            
             <div class="data-item" style="margin-top: 0.5rem;">
                 <span class="data-label">Status Kehadiran</span>
                 <div>
@@ -57,7 +68,7 @@
         </div>
         
         <p class="timer-text">
-            Halaman akan dialihkan dalam <span class="timer-count" id="countdown">5</span> detik...
+            Halaman akan dialihkan dalam <span class="timer-count" id="countdown">15</span> detik...
         </p>
         
         <!-- Redirect to formulir absensi (placeholder for Issue #12 URL) -->
@@ -70,7 +81,7 @@
 <?php ob_start(); ?>
 <script>
     // Countdown Timer Logic
-    let seconds = 5;
+    let seconds = 15;
     const countdownEl = document.getElementById('countdown');
     const redirectUrl = document.getElementById('btnBack').href;
     
