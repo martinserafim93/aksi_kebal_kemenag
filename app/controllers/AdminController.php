@@ -908,6 +908,46 @@ class AdminController extends Controller
         ]);
     }
 
+    public function absensi_export(): void
+    {
+        Middleware::authAdmin();
+        $model = $this->model('AbsensiModel');
+        
+        $filters = [
+            'kegiatan' => query('kegiatan', ''),
+            'jenis' => query('jenis', ''),
+            'tanggal' => query('tanggal', '')
+        ];
+        
+        $absensi = $model->getAllFilteredForExport($filters);
+
+        $filename = "Laporan_Kehadiran_Pegawai_" . date('Ymd_His') . ".csv";
+        
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        
+        $output = fopen('php://output', 'w');
+        fputcsv($output, ['No', 'NIP', 'Nama Pegawai', 'Kegiatan', 'Jenis Kegiatan', 'Tanggal', 'Waktu', 'Lokasi', 'Status Kehadiran', 'Waktu Submit']);
+        
+        $no = 1;
+        foreach ($absensi as $row) {
+            fputcsv($output, [
+                $no++,
+                $row['nip'],
+                $row['nama_lengkap'],
+                $row['nama_kegiatan'],
+                $row['jenis_kegiatan'],
+                date('d M Y', strtotime($row['tanggal_kegiatan'])),
+                date('H:i', strtotime($row['waktu_mulai'])) . ' - ' . date('H:i', strtotime($row['waktu_selesai'])),
+                $row['lokasi_kegiatan'],
+                $row['status_kehadiran'],
+                date('d M Y, H:i', strtotime($row['created_at']))
+            ]);
+        }
+        fclose($output);
+        exit;
+    }
+
     public function absensi_edit($id = null): void
     {
         Middleware::authAdmin();

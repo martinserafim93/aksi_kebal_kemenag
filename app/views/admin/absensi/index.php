@@ -7,12 +7,15 @@
     </div>
 </div>
 
-<div class="card" style="margin-bottom: 2rem;">
-    <div class="card-body">
-        <form action="<?= url('admin/absensi') ?>" method="GET" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
-            <div class="form-group" style="flex: 1; min-width: 200px;">
-                <label for="kegiatan" style="display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem;">Kegiatan</label>
-                <select name="kegiatan" id="kegiatan" class="form-control" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 0.375rem;">
+<div class="card" style="margin-bottom: 2rem; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+    <div class="card-header" style="background: #f8fafc; border-bottom: 1px solid var(--border-color); border-radius: 0.75rem 0.75rem 0 0; padding: 1.25rem 1.5rem;">
+        <h4 style="margin: 0; font-size: 1.1rem; color: var(--text-main); display: flex; align-items: center; gap: 0.5rem;"><i class='bx bx-filter-alt'></i> Filter Pencarian</h4>
+    </div>
+    <div class="card-body" style="padding: 1.5rem;">
+        <form action="<?= url('admin/absensi') ?>" method="GET" style="display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: flex-end;">
+            <div class="form-group" style="flex: 1; min-width: 250px;">
+                <label for="kegiatan" style="display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.95rem; color: #475569;">Kegiatan</label>
+                <select name="kegiatan" id="kegiatan" class="form-control" style="width: 100%; padding: 0.75rem 1rem; border: 1.5px solid #e2e8f0; border-radius: 0.5rem; font-size: 0.95rem; transition: all 0.2s; cursor: pointer;">
                     <option value="">Semua Kegiatan</option>
                     <?php foreach ($kegiatan_list as $k): ?>
                         <option value="<?= $k['id_kegiatan'] ?>" <?= (int)$filters['kegiatan'] === (int)$k['id_kegiatan'] ? 'selected' : '' ?>>
@@ -21,9 +24,9 @@
                     <?php endforeach; ?>
                 </select>
             </div>
-            <div class="form-group" style="flex: 1; min-width: 150px;">
-                <label for="jenis" style="display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem;">Jenis Kegiatan</label>
-                <select name="jenis" id="jenis" class="form-control" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 0.375rem;">
+            <div class="form-group" style="flex: 1; min-width: 180px;">
+                <label for="jenis" style="display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.95rem; color: #475569;">Jenis Kegiatan</label>
+                <select name="jenis" id="jenis" class="form-control" style="width: 100%; padding: 0.75rem 1rem; border: 1.5px solid #e2e8f0; border-radius: 0.5rem; font-size: 0.95rem; transition: all 0.2s; cursor: pointer;">
                     <option value="">Semua Jenis</option>
                     <option value="Kerja Bakti" <?= $filters['jenis'] === 'Kerja Bakti' ? 'selected' : '' ?>>Kerja Bakti</option>
                     <option value="Doa Bersama" <?= $filters['jenis'] === 'Doa Bersama' ? 'selected' : '' ?>>Doa Bersama</option>
@@ -32,16 +35,18 @@
                     <option value="Sosialisasi" <?= $filters['jenis'] === 'Sosialisasi' ? 'selected' : '' ?>>Sosialisasi</option>
                 </select>
             </div>
-            <div class="form-group" style="flex: 1; min-width: 150px;">
-                <label for="tanggal" style="display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem;">Tanggal</label>
-                <input type="date" name="tanggal" id="tanggal" value="<?= e($filters['tanggal']) ?>" class="form-control" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 0.375rem;">
+            <div class="form-group" style="flex: 1; min-width: 180px;">
+                <label for="tanggal" style="display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.95rem; color: #475569;">Tanggal</label>
+                <input type="date" name="tanggal" id="tanggal" value="<?= e($filters['tanggal']) ?>" class="form-control" style="width: 100%; padding: 0.75rem 1rem; border: 1.5px solid #e2e8f0; border-radius: 0.5rem; font-size: 0.95rem; transition: all 0.2s;">
             </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary" style="padding: 0.5rem 1rem;">
-                    <i class='bx bx-filter'></i> Filter
+            <div class="form-group" style="display: flex; gap: 0.75rem;">
+                <button type="submit" class="btn btn-gradient-primary" style="padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class='bx bx-filter'></i> Terapkan
                 </button>
                 <?php if (!empty($filters['kegiatan']) || !empty($filters['jenis']) || !empty($filters['tanggal'])): ?>
-                    <a href="<?= url('admin/absensi') ?>" class="btn" style="background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">Reset</a>
+                    <a href="<?= url('admin/absensi') ?>" class="btn" style="background: white; border: 1.5px solid #e2e8f0; color: #64748b; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s; text-decoration: none;" onmouseover="this.style.background='#f1f5f9'; this.style.color='#0f172a'; this.style.borderColor='#cbd5e1';" onmouseout="this.style.background='white'; this.style.color='#64748b'; this.style.borderColor='#e2e8f0';">
+                        <i class='bx bx-reset'></i> Reset
+                    </a>
                 <?php endif; ?>
             </div>
         </form>
@@ -73,7 +78,15 @@
     <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
         <h3 class="card-title">Daftar Absensi</h3>
         <div style="display: flex; gap: 0.5rem;">
-            <!-- Export buttons will be added here in Issue #11 -->
+            <?php 
+                $exportQuery = '';
+                if (!empty($filters['kegiatan'])) $exportQuery .= '&kegiatan=' . urlencode($filters['kegiatan']);
+                if (!empty($filters['jenis'])) $exportQuery .= '&jenis=' . urlencode($filters['jenis']);
+                if (!empty($filters['tanggal'])) $exportQuery .= '&tanggal=' . urlencode($filters['tanggal']);
+            ?>
+            <a href="<?= url('admin/absensi-export?' . ltrim($exportQuery, '&')) ?>" class="btn btn-success" style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; padding: 0.5rem 1rem;">
+                <i class='bx bx-export'></i> Export Laporan (CSV)
+            </a>
         </div>
     </div>
     
@@ -107,8 +120,13 @@
                                 <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">NIP: <?= e($a['nip']) ?></div>
                             </td>
                             <td style="padding: 1rem; vertical-align: middle;">
-                                <div style="font-weight: 500; color: var(--text-main);"><?= e($a['nama_kegiatan']) ?></div>
-                                <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;"><?= date('d M Y', strtotime($a['tanggal_kegiatan'])) ?></div>
+                                <div style="font-weight: 500; color: var(--text-main); margin-bottom: 0.25rem;"><?= e($a['nama_kegiatan']) ?></div>
+                                <div style="font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.25rem; margin-bottom: 0.25rem;">
+                                    <i class='bx bx-calendar-event'></i> <?= date('d M Y', strtotime($a['tanggal_kegiatan'])) ?> &bull; <?= date('H:i', strtotime($a['waktu_mulai'])) ?> - <?= date('H:i', strtotime($a['waktu_selesai'])) ?>
+                                </div>
+                                <div style="font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: flex-start; gap: 0.25rem;">
+                                    <i class='bx bx-map' style="margin-top: 0.15rem;"></i> <?= e($a['lokasi_kegiatan']) ?>
+                                </div>
                             </td>
                             <td style="padding: 1rem; vertical-align: middle; text-align: center;">
                                 <?php if ($a['status_kehadiran'] === 'Hadir'): ?>
