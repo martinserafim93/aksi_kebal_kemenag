@@ -876,13 +876,43 @@ class AdminController extends Controller
     public function absensi(): void
     {
         Middleware::authAdmin();
+        $model = $this->model('KegiatanModel');
+        
+        $search = query('search', '');
+        $jenis = query('jenis', '');
+        
+        // Ambil data kegiatan (hanya yang Published)
+        $kegiatan = $model->getAll($search, 'Published', $jenis);
+
+        $this->view('admin/absensi/kegiatan_list', [
+            'title' => 'Manajemen Absensi - AKSI KEBAL',
+            'kegiatan' => $kegiatan,
+            'search' => $search,
+            'jenis' => $jenis,
+            'active_menu' => 'absensi'
+        ]);
+    }
+
+    public function absensi_detail($id_kegiatan = null): void
+    {
+        if (!$id_kegiatan) {
+            $this->redirect('admin/absensi');
+            return;
+        }
+
+        Middleware::authAdmin();
+        
+        $kegiatanModel = $this->model('KegiatanModel');
+        $kegiatan = $kegiatanModel->findById((int)$id_kegiatan);
+        
+        if (!$kegiatan) {
+            $this->redirect('admin/absensi');
+            return;
+        }
+
         $model = $this->model('AbsensiModel');
         
-        $filters = [
-            'kegiatan' => query('kegiatan', ''),
-            'jenis' => query('jenis', ''),
-            'tanggal' => query('tanggal', '')
-        ];
+        $filters = ['kegiatan' => $id_kegiatan];
         
         $page = (int) query('page', 1);
         if ($page < 1) $page = 1;
@@ -894,17 +924,91 @@ class AdminController extends Controller
         $total_page = ceil($total_data / $limit);
         
         $statistik = $model->getStatistik($filters);
-        $kegiatan_list = $model->getKegiatanList();
 
-        $this->view('admin/absensi/index', [
-            'title' => 'Manajemen Absensi - AKSI KEBAL',
+        $this->view('admin/absensi/detail', [
+            'title' => 'Detail Absensi - ' . $kegiatan['nama_kegiatan'],
             'absensi' => $absensi,
-            'filters' => $filters,
+            'kegiatan' => $kegiatan,
             'page' => $page,
             'total_page' => $total_page,
             'statistik' => $statistik,
-            'kegiatan_list' => $kegiatan_list,
             'active_menu' => 'absensi'
+        ]);
+    }
+
+    public function absensi_export($id_kegiatan = null): void
+    {
+        if (!$id_kegiatan) {
+            $this->redirect('admin/absensi');
+            return;
+        }
+
+        Middleware::authAdmin();
+        
+        $kegiatanModel = $this->model('KegiatanModel');
+        $kegiatan = $kegiatanModel->findById((int)$id_kegiatan);
+        
+        if (!$kegiatan) {
+            $this->redirect('admin/absensi');
+            return;
+        }
+
+        $model = $this->model('AbsensiModel');
+        $absensi = $model->getAllFilteredForExport(['kegiatan' => $id_kegiatan]);
+
+        $filename = "Laporan_Kehadiran_Pegawai_" . date('Ymd_His') . ".csv";
+        
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        
+        $output = fopen('php://output', 'w');
+        fputcsv($output, ['No', 'NIP', 'Nama Pegawai', 'Kegiatan', 'Jenis Kegiatan', 'Tanggal', 'Waktu', 'Lokasi', 'Status Kehadiran', 'Waktu Submit']);
+        
+        $no = 1;
+        foreach ($absensi as $row) {
+            fputcsv($output, [
+                $no++,
+                $row['nip'],
+                $row['nama_lengkap'],
+                $row['nama_kegiatan'],
+                $row['jenis_kegiatan'],
+                date('d M Y', strtotime($row['tanggal_kegiatan'])),
+                date('H:i', strtotime($row['waktu_mulai'])) . ' - ' . date('H:i', strtotime($row['waktu_selesai'])),
+                $row['lokasi_kegiatan'],
+                $row['status_kehadiran'],
+                date('d M Y, H:i', strtotime($row['created_at']))
+            ]);
+        }
+        fclose($output);
+        exit;
+    }
+
+    public function absensi_export_pdf($id_kegiatan = null): void
+    {
+        if (!$id_kegiatan) {
+            $this->redirect('admin/absensi');
+            return;
+        }
+
+        Middleware::authAdmin();
+        
+        $kegiatanModel = $this->model('KegiatanModel');
+        $kegiatan = $kegiatanModel->findById((int)$id_kegiatan);
+        
+        if (!$kegiatan) {
+            $this->redirect('admin/absensi');
+            return;
+        }
+
+        $model = $this->model('AbsensiModel');
+        $absensi = $model->getAllFilteredForExport(['kegiatan' => $id_kegiatan]);
+        $statistik = $model->getStatistik(['kegiatan' => $id_kegiatan]);
+
+        $this->view('admin/absensi/pdf_export', [
+            'title' => 'Laporan Absensi - ' . $kegiatan['nama_kegiatan'],
+            'kegiatan' => $kegiatan,
+            'absensi' => $absensi,
+            'statistik' => $statistik
         ]);
     }
 
@@ -921,9 +1025,11 @@ class AdminController extends Controller
 
         if (!$absensi) {
             setFlash('error', 'Data absensi tidak ditemukan.');
+            // Jika tidak ada absensi, redirect default
             $this->redirect('admin/absensi');
             return;
         }
+        $id_kegiatan = $absensi['id_kegiatan'];
 
         if (isPost()) {
             $csrfToken = input('csrf_token');
@@ -942,7 +1048,7 @@ class AdminController extends Controller
 
             if ($model->updateStatus((int)$id, $status)) {
                 setFlash('success', 'Status kehadiran berhasil diperbarui.');
-                $this->redirect('admin/absensi');
+                $this->redirect('admin/absensi-detail/' . $id_kegiatan);
                 return;
             } else {
                 setFlash('error', 'Gagal memperbarui status kehadiran.');
@@ -959,6 +1065,8 @@ class AdminController extends Controller
     public function absensi_delete($id = null): void
     {
         Middleware::authAdmin();
+        
+        $redirectUrl = 'admin/absensi';
 
         if (isPost() && $id) {
             $csrfToken = input('csrf_token');
@@ -966,6 +1074,11 @@ class AdminController extends Controller
                 setFlash('error', 'Sesi tidak valid.');
             } else {
                 $model = $this->model('AbsensiModel');
+                $absensi = $model->findById((int)$id);
+                if ($absensi) {
+                    $redirectUrl = 'admin/absensi-detail/' . $absensi['id_kegiatan'];
+                }
+                
                 if ($model->delete((int)$id)) {
                     setFlash('success', 'Data absensi berhasil dihapus.');
                 } else {
@@ -973,6 +1086,6 @@ class AdminController extends Controller
                 }
             }
         }
-        $this->redirect('admin/absensi');
+        $this->redirect($redirectUrl);
     }
 }

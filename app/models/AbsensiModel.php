@@ -28,7 +28,7 @@ class AbsensiModel
     {
         $query = "SELECT a.*, 
                          p.nama_lengkap, 
-                         k.nama_kegiatan, k.jenis_kegiatan, k.tanggal_kegiatan
+                         k.nama_kegiatan, k.jenis_kegiatan, k.tanggal_kegiatan, k.waktu_mulai, k.waktu_selesai, k.lokasi_kegiatan
                   FROM absensi a
                   JOIN pegawai p ON a.nip = p.nip
                   JOIN kegiatan k ON a.id_kegiatan = k.id_kegiatan
@@ -41,6 +41,31 @@ class AbsensiModel
         $this->bindFilters($filters);
         $this->db->bind(':limit', $limit, PDO::PARAM_INT);
         $this->db->bind(':offset', $offset, PDO::PARAM_INT);
+
+        return $this->db->fetchAll();
+    }
+
+    /**
+     * Ambil semua data absensi dengan filter untuk keperluan export CSV/PDF
+     * 
+     * @param array $filters Filter: kegiatan, jenis, tanggal
+     * @return array
+     */
+    public function getAllFilteredForExport(array $filters = []): array
+    {
+        $query = "SELECT a.*, 
+                         p.nama_lengkap, p.nip,
+                         k.nama_kegiatan, k.jenis_kegiatan, k.tanggal_kegiatan, k.waktu_mulai, k.waktu_selesai, k.lokasi_kegiatan
+                  FROM absensi a
+                  JOIN pegawai p ON a.nip = p.nip
+                  JOIN kegiatan k ON a.id_kegiatan = k.id_kegiatan
+                  WHERE 1=1";
+
+        $query .= $this->buildFilterClause($filters);
+        $query .= " ORDER BY k.tanggal_kegiatan DESC, p.nama_lengkap ASC";
+
+        $this->db->query($query);
+        $this->bindFilters($filters);
 
         return $this->db->fetchAll();
     }

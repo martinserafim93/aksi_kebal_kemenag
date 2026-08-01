@@ -1,50 +1,31 @@
 <?php ob_start(); ?>
 
-<div class="card" style="margin-bottom: 2rem;">
-    <div class="card-body">
-        <h2 style="margin: 0; font-size: 1.5rem; color: var(--text-main);">Manajemen Absensi</h2>
-        <p style="margin: 0.25rem 0 0 0; color: var(--text-muted); font-size: 0.95rem;">Melihat, memverifikasi, dan mengoreksi data absensi pegawai.</p>
-    </div>
-</div>
-
-<div class="card" style="margin-bottom: 2rem;">
-    <div class="card-body">
-        <form action="<?= url('admin/absensi') ?>" method="GET" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
-            <div class="form-group" style="flex: 1; min-width: 200px;">
-                <label for="kegiatan" style="display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem;">Kegiatan</label>
-                <select name="kegiatan" id="kegiatan" class="form-control" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 0.375rem;">
-                    <option value="">Semua Kegiatan</option>
-                    <?php foreach ($kegiatan_list as $k): ?>
-                        <option value="<?= $k['id_kegiatan'] ?>" <?= (int)$filters['kegiatan'] === (int)$k['id_kegiatan'] ? 'selected' : '' ?>>
-                            <?= e($k['nama_kegiatan']) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
+<div class="card" style="margin-bottom: 2rem; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+    <div class="card-body" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <a href="<?= url('admin/absensi') ?>" class="btn" style="background: #f1f5f9; color: #475569; padding: 0.35rem 0.6rem; border-radius: 0.375rem; display: flex; align-items: center; gap: 0.25rem; font-size: 0.85rem; text-decoration: none; font-weight: 500;">
+                    <i class='bx bx-arrow-back'></i> Kembali
+                </a>
             </div>
-            <div class="form-group" style="flex: 1; min-width: 150px;">
-                <label for="jenis" style="display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem;">Jenis Kegiatan</label>
-                <select name="jenis" id="jenis" class="form-control" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 0.375rem;">
-                    <option value="">Semua Jenis</option>
-                    <option value="Kerja Bakti" <?= $filters['jenis'] === 'Kerja Bakti' ? 'selected' : '' ?>>Kerja Bakti</option>
-                    <option value="Doa Bersama" <?= $filters['jenis'] === 'Doa Bersama' ? 'selected' : '' ?>>Doa Bersama</option>
-                    <option value="Apel" <?= $filters['jenis'] === 'Apel' ? 'selected' : '' ?>>Apel</option>
-                    <option value="Rapat" <?= $filters['jenis'] === 'Rapat' ? 'selected' : '' ?>>Rapat</option>
-                    <option value="Sosialisasi" <?= $filters['jenis'] === 'Sosialisasi' ? 'selected' : '' ?>>Sosialisasi</option>
-                </select>
+            <h2 style="margin: 0; font-size: 1.5rem; color: var(--text-main);"><?= e($kegiatan['nama_kegiatan']) ?></h2>
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.75rem;">
+                <div style="font-size: 0.9rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.35rem;">
+                    <i class='bx bx-calendar-event'></i> <?= date('d M Y', strtotime($kegiatan['tanggal_kegiatan'])) ?>
+                </div>
+                <div style="font-size: 0.9rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.35rem;">
+                    <i class='bx bx-time-five'></i> <?= date('H:i', strtotime($kegiatan['waktu_mulai'])) ?> - <?= date('H:i', strtotime($kegiatan['waktu_selesai'])) ?>
+                </div>
+                <div style="font-size: 0.9rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.35rem;">
+                    <i class='bx bx-map'></i> <?= e($kegiatan['lokasi_kegiatan']) ?>
+                </div>
             </div>
-            <div class="form-group" style="flex: 1; min-width: 150px;">
-                <label for="tanggal" style="display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem;">Tanggal</label>
-                <input type="date" name="tanggal" id="tanggal" value="<?= e($filters['tanggal']) ?>" class="form-control" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 0.375rem;">
-            </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary" style="padding: 0.5rem 1rem;">
-                    <i class='bx bx-filter'></i> Filter
-                </button>
-                <?php if (!empty($filters['kegiatan']) || !empty($filters['jenis']) || !empty($filters['tanggal'])): ?>
-                    <a href="<?= url('admin/absensi') ?>" class="btn" style="background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">Reset</a>
-                <?php endif; ?>
-            </div>
-        </form>
+        </div>
+        <div>
+            <span class="badge" style="background: #f1f5f9; color: #475569; padding: 0.5rem 1rem; border-radius: 9999px; font-weight: 600; font-size: 0.85rem;">
+                <?= e($kegiatan['jenis_kegiatan']) ?>
+            </span>
+        </div>
     </div>
 </div>
 
@@ -70,10 +51,15 @@
 </div>
 
 <div class="card">
-    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-        <h3 class="card-title">Daftar Absensi</h3>
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <h3 class="card-title" style="margin: 0;">Daftar Hadir Pegawai</h3>
         <div style="display: flex; gap: 0.5rem;">
-            <!-- Export buttons will be added here in Issue #11 -->
+            <a href="<?= url('admin/absensi-export-pdf/' . $kegiatan['id_kegiatan']) ?>" target="_blank" class="btn btn-danger" style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; padding: 0.5rem 1rem;">
+                <i class='bx bxs-file-pdf'></i> Export PDF
+            </a>
+            <a href="<?= url('admin/absensi-export/' . $kegiatan['id_kegiatan']) ?>" class="btn btn-success" style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; padding: 0.5rem 1rem;">
+                <i class='bx bx-export'></i> Export CSV
+            </a>
         </div>
     </div>
     
@@ -83,7 +69,6 @@
                 <tr>
                     <th style="padding: 1rem; text-align: left; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">No</th>
                     <th style="padding: 1rem; text-align: left; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">Pegawai</th>
-                    <th style="padding: 1rem; text-align: left; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">Kegiatan</th>
                     <th style="padding: 1rem; text-align: center; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">Kehadiran</th>
                     <th style="padding: 1rem; text-align: center; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">Foto</th>
                     <th style="padding: 1rem; text-align: left; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">Waktu Submit</th>
@@ -93,7 +78,7 @@
             <tbody>
                 <?php if (empty($absensi)): ?>
                     <tr>
-                        <td colspan="7" style="text-align: center; padding: 2rem; color: var(--text-muted);">Tidak ada data absensi ditemukan.</td>
+                        <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-muted);">Belum ada data absensi untuk kegiatan ini.</td>
                     </tr>
                 <?php else: ?>
                     <?php 
@@ -105,10 +90,6 @@
                             <td style="padding: 1rem; vertical-align: middle;">
                                 <div style="font-weight: 600; color: var(--text-main);"><?= e($a['nama_lengkap']) ?></div>
                                 <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">NIP: <?= e($a['nip']) ?></div>
-                            </td>
-                            <td style="padding: 1rem; vertical-align: middle;">
-                                <div style="font-weight: 500; color: var(--text-main);"><?= e($a['nama_kegiatan']) ?></div>
-                                <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;"><?= date('d M Y', strtotime($a['tanggal_kegiatan'])) ?></div>
                             </td>
                             <td style="padding: 1rem; vertical-align: middle; text-align: center;">
                                 <?php if ($a['status_kehadiran'] === 'Hadir'): ?>
@@ -135,6 +116,7 @@
                                     
                                     <form action="<?= url('admin/absensi-delete/' . $a['id_absensi']) ?>" method="POST" class="form-delete" style="display: inline-block;">
                                         <input type="hidden" name="csrf_token" value="<?= e(Middleware::generateCsrfToken()) ?>">
+                                        <!-- Add redirect logic in delete if necessary, otherwise it goes back to referer -->
                                         <button type="submit" class="btn btn-danger" title="Hapus Data" style="padding: 0.35rem 0.6rem; font-size: 0.875rem; border-radius: 0.375rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
                                             <i class='bx bx-trash'></i>
                                         </button>
@@ -152,14 +134,8 @@
     <?php if ($total_page > 1): ?>
     <div class="card-body" style="border-top: 1px solid var(--border-color); display: flex; justify-content: center;">
         <div style="display: flex; gap: 0.25rem;">
-            <?php 
-                $queryString = '';
-                if (!empty($filters['kegiatan'])) $queryString .= '&kegiatan=' . urlencode($filters['kegiatan']);
-                if (!empty($filters['jenis'])) $queryString .= '&jenis=' . urlencode($filters['jenis']);
-                if (!empty($filters['tanggal'])) $queryString .= '&tanggal=' . urlencode($filters['tanggal']);
-            ?>
             <?php for ($i = 1; $i <= $total_page; $i++): ?>
-                <a href="<?= url('admin/absensi?page=' . $i . $queryString) ?>" 
+                <a href="<?= url('admin/absensi-detail/' . $kegiatan['id_kegiatan'] . '?page=' . $i) ?>" 
                    style="padding: 0.5rem 0.75rem; border-radius: 0.25rem; text-decoration: none; font-size: 0.9rem; font-weight: 500; 
                           <?= $i === $page ? 'background: var(--primary); color: white;' : 'background: #f1f5f9; color: #475569;' ?>">
                     <?= $i ?>
@@ -190,7 +166,6 @@
         modal.style.display = "none";
     }
 
-    // Close modal when clicking outside the image
     window.onclick = function(event) {
         var modal = document.getElementById("imageModal");
         if (event.target == modal) {
