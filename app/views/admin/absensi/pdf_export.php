@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Absensi - <?= e($kegiatan['nama_kegiatan']) ?></title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            color: #000;
+            background: #fff;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px double #000;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 20px;
+            text-transform: uppercase;
+        }
+        .header h2 {
+            margin: 5px 0 0;
+            font-size: 16px;
+            font-weight: normal;
+        }
+        .info-table {
+            width: 100%;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .info-table td {
+            padding: 3px 0;
+            vertical-align: top;
+        }
+        .info-table td:first-child {
+            width: 120px;
+            font-weight: bold;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            margin-bottom: 20px;
+        }
+        .data-table th, .data-table td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+        .data-table th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+            text-align: center;
+        }
+        .text-center {
+            text-align: center !important;
+        }
+        .summary {
+            float: right;
+            border: 1px solid #000;
+            padding: 10px;
+            font-size: 12px;
+            width: 250px;
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        .summary-row.total {
+            font-weight: bold;
+            border-top: 1px solid #000;
+            padding-top: 5px;
+            margin-top: 5px;
+        }
+        @media print {
+            body {
+                padding: 0;
+            }
+            @page {
+                size: A4 portrait;
+                margin: 1.5cm;
+            }
+            button {
+                display: none;
+            }
+        }
+        .print-btn {
+            display: block;
+            margin: 0 auto 20px;
+            padding: 10px 20px;
+            background: #10b981;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .print-btn:hover {
+            background: #059669;
+        }
+    </style>
+</head>
+<body onload="window.print()">
+
+    <button class="print-btn" onclick="window.print()">Cetak Laporan / Simpan PDF</button>
+
+    <div class="header">
+        <h1>Laporan Kehadiran Pegawai</h1>
+        <h2>AKSI KEBAL (Absensi Kegiatan Serentak Kementerian Beramal dan Andal)</h2>
+    </div>
+
+    <table class="info-table">
+        <tr>
+            <td>Nama Kegiatan</td>
+            <td>: <?= e($kegiatan['nama_kegiatan']) ?></td>
+        </tr>
+        <tr>
+            <td>Jenis Kegiatan</td>
+            <td>: <?= e($kegiatan['jenis_kegiatan']) ?></td>
+        </tr>
+        <tr>
+            <td>Tanggal</td>
+            <td>: <?= date('d F Y', strtotime($kegiatan['tanggal_kegiatan'])) ?></td>
+        </tr>
+        <tr>
+            <td>Waktu</td>
+            <td>: <?= date('H:i', strtotime($kegiatan['waktu_mulai'])) ?> - <?= date('H:i', strtotime($kegiatan['waktu_selesai'])) ?></td>
+        </tr>
+        <tr>
+            <td>Lokasi</td>
+            <td>: <?= e($kegiatan['lokasi_kegiatan']) ?></td>
+        </tr>
+    </table>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th width="5%">No</th>
+                <th width="20%">NIP</th>
+                <th width="35%">Nama Pegawai</th>
+                <th width="20%">Waktu Submit</th>
+                <th width="20%">Status Kehadiran</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if (empty($absensi)): ?>
+                <tr>
+                    <td colspan="5" class="text-center">Tidak ada data kehadiran</td>
+                </tr>
+            <?php else: ?>
+                <?php $no = 1; foreach ($absensi as $row): ?>
+                    <tr>
+                        <td class="text-center"><?= $no++ ?></td>
+                        <td><?= e($row['nip']) ?></td>
+                        <td><?= e($row['nama_lengkap']) ?></td>
+                        <td class="text-center"><?= date('d/m/Y H:i', strtotime($row['created_at'])) ?></td>
+                        <td class="text-center"><?= e($row['status_kehadiran']) ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </tbody>
+    </table>
+
+    <div class="summary">
+        <div style="font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #000; padding-bottom: 5px;">Rekapitulasi Kehadiran</div>
+        <div class="summary-row">
+            <span>Hadir</span>
+            <span><?= $statistik['hadir'] ?> Orang</span>
+        </div>
+        <div class="summary-row">
+            <span>Tidak Hadir</span>
+            <span><?= $statistik['tidak_hadir'] ?> Orang</span>
+        </div>
+        <div class="summary-row total">
+            <span>Total Data</span>
+            <span><?= $statistik['total'] ?> Orang</span>
+        </div>
+    </div>
+
+</body>
+</html>
