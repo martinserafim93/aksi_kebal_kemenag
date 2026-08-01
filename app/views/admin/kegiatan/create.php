@@ -29,14 +29,14 @@
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
                 <div class="form-group">
                     <label for="jenis_kegiatan" style="display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.95rem;">Jenis Kegiatan <span style="color: red;">*</span></label>
-                    <select id="jenis_kegiatan" name="jenis_kegiatan" class="form-control" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;" required>
-                        <option value="">Pilih Jenis</option>
-                        <option value="Kerja Bakti">Kerja Bakti</option>
-                        <option value="Doa Bersama">Doa Bersama</option>
-                        <option value="Apel">Apel</option>
-                        <option value="Rapat">Rapat</option>
-                        <option value="Sosialisasi">Sosialisasi</option>
-                    </select>
+                    <input list="jenis_kegiatan_options" id="jenis_kegiatan" name="jenis_kegiatan" class="form-control" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;" required placeholder="Pilih atau ketik jenis kegiatan...">
+                    <datalist id="jenis_kegiatan_options">
+                        <option value="Kerja Bakti">
+                        <option value="Doa Bersama">
+                        <option value="Apel">
+                        <option value="Rapat">
+                        <option value="Sosialisasi">
+                    </datalist>
                 </div>
 
                 <div class="form-group">
