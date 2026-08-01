@@ -109,9 +109,12 @@ class AbsensiModel
         $this->db->query(
             "SELECT a.*, 
                     p.nama_lengkap, p.id_jabatan, p.id_tim_kerja,
+                    j.nama_jabatan, t.nama_tim_kerja,
                     k.nama_kegiatan, k.jenis_kegiatan, k.tanggal_kegiatan, k.waktu_mulai, k.waktu_selesai
              FROM absensi a
              JOIN pegawai p ON a.nip = p.nip
+             JOIN jabatan j ON p.id_jabatan = j.id_jabatan
+             JOIN tim_kerja t ON p.id_tim_kerja = t.id_tim_kerja
              JOIN kegiatan k ON a.id_kegiatan = k.id_kegiatan
              WHERE a.id_absensi = :id"
         );
@@ -151,7 +154,7 @@ class AbsensiModel
 
         // Hapus file foto fisik jika ada
         if ($result && $absensi && !empty($absensi['foto'])) {
-            $fotoPath = __DIR__ . '/../../public/uploads/' . $absensi['foto'];
+            $fotoPath = __DIR__ . '/../../public/uploads/foto_absensi/' . $absensi['foto'];
             if (file_exists($fotoPath)) {
                 unlink($fotoPath);
             }
