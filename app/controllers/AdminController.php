@@ -881,8 +881,8 @@ class AdminController extends Controller
         $search = query('search', '');
         $jenis = query('jenis', '');
         
-        // Ambil data kegiatan
-        $kegiatan = $model->getAll($search, '', $jenis);
+        // Ambil data kegiatan (hanya yang Published)
+        $kegiatan = $model->getAll($search, 'Published', $jenis);
 
         $this->view('admin/absensi/kegiatan_list', [
             'title' => 'Manajemen Absensi - AKSI KEBAL',
@@ -1025,9 +1025,11 @@ class AdminController extends Controller
 
         if (!$absensi) {
             setFlash('error', 'Data absensi tidak ditemukan.');
+            // Jika tidak ada absensi, redirect default
             $this->redirect('admin/absensi');
             return;
         }
+        $id_kegiatan = $absensi['id_kegiatan'];
 
         if (isPost()) {
             $csrfToken = input('csrf_token');
@@ -1046,7 +1048,7 @@ class AdminController extends Controller
 
             if ($model->updateStatus((int)$id, $status)) {
                 setFlash('success', 'Status kehadiran berhasil diperbarui.');
-                $this->redirect('admin/absensi');
+                $this->redirect('admin/absensi-detail/' . $id_kegiatan);
                 return;
             } else {
                 setFlash('error', 'Gagal memperbarui status kehadiran.');
@@ -1063,6 +1065,8 @@ class AdminController extends Controller
     public function absensi_delete($id = null): void
     {
         Middleware::authAdmin();
+        
+        $redirectUrl = 'admin/absensi';
 
         if (isPost() && $id) {
             $csrfToken = input('csrf_token');
@@ -1070,6 +1074,11 @@ class AdminController extends Controller
                 setFlash('error', 'Sesi tidak valid.');
             } else {
                 $model = $this->model('AbsensiModel');
+                $absensi = $model->findById((int)$id);
+                if ($absensi) {
+                    $redirectUrl = 'admin/absensi-detail/' . $absensi['id_kegiatan'];
+                }
+                
                 if ($model->delete((int)$id)) {
                     setFlash('success', 'Data absensi berhasil dihapus.');
                 } else {
@@ -1077,6 +1086,6 @@ class AdminController extends Controller
                 }
             }
         }
-        $this->redirect('admin/absensi');
+        $this->redirect($redirectUrl);
     }
 }

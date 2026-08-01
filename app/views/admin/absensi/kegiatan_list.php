@@ -91,8 +91,8 @@
                                 <?php endif; ?>
                             </td>
                             <td style="padding: 1.25rem 1rem; vertical-align: middle; text-align: center;">
-                                <a href="<?= url('admin/absensi-detail/' . $k['id_kegiatan']) ?>" class="btn btn-primary" style="padding: 0.35rem 0.75rem; font-size: 0.875rem; border-radius: 0.375rem; display: inline-flex; align-items: center; gap: 0.25rem;">
-                                    <i class='bx bx-list-ul'></i> Lihat Absensi
+                                <a href="<?= url('admin/absensi-detail/' . $k['id_kegiatan']) ?>" class="btn btn-gradient-primary" style="padding: 0.6rem 1rem; font-size: 0.9rem; font-weight: 600; border-radius: 9999px; display: inline-flex; align-items: center; gap: 0.4rem; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 8px -1px rgba(37, 99, 235, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px -1px rgba(37, 99, 235, 0.2)';">
+                                    <i class='bx bx-list-ul' style="font-size: 1.1rem;"></i> Lihat Absensi
                                 </a>
                             </td>
                         </tr>
