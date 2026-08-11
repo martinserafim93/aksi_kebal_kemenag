@@ -39,6 +39,7 @@
 
         <form action="<?= url('absensi/submit') ?>" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="id_kegiatan" value="<?= e($kegiatan['id_kegiatan']) ?>">
+            <?= csrfField() ?>
             
             <div class="form-group">
                 <label for="nama_search" class="form-label">Nama Lengkap <span style="color: var(--danger-color)">*</span></label>
