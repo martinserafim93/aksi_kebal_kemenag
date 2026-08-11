@@ -41,13 +41,30 @@
             <input type="hidden" name="id_kegiatan" value="<?= e($kegiatan['id_kegiatan']) ?>">
             
             <div class="form-group">
-                <label for="nip" class="form-label">Nama Lengkap <span style="color: var(--danger-color)">*</span></label>
-                <select name="nip" id="nip" class="form-control" required onchange="fetchPegawaiData()">
-                    <option value="">-- Pilih Nama Pegawai --</option>
-                    <?php foreach ($pegawaiList as $pegawai): ?>
-                        <option value="<?= e($pegawai['nip']) ?>"><?= e($pegawai['nama_lengkap']) ?></option>
-                    <?php endforeach; ?>
-                </select>
+                <label for="nama_search" class="form-label">Nama Lengkap <span style="color: var(--danger-color)">*</span></label>
+                
+                <!-- Hidden input yang mengirim NIP ke server (value sebenarnya) -->
+                <input type="hidden" name="nip" id="nip" required>
+                
+                <!-- Input pencarian yang terlihat oleh user -->
+                <div class="autocomplete-wrapper" id="autocompleteWrapper">
+                    <div class="autocomplete-input-container">
+                        <span class="autocomplete-icon">🔍</span>
+                        <input 
+                            type="text" 
+                            id="nama_search" 
+                            class="form-control autocomplete-input" 
+                            placeholder="Ketik nama pegawai..." 
+                            autocomplete="off"
+                            required
+                        >
+                        <!-- Tombol clear (X) muncul saat ada teks -->
+                        <button type="button" class="autocomplete-clear" id="clearBtn" title="Hapus" style="display: none;">✕</button>
+                    </div>
+                    
+                    <!-- Dropdown suggestions -->
+                    <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
+                </div>
             </div>
 
             <div class="form-group">
@@ -86,6 +103,170 @@
 
 <?php ob_start(); ?>
 <script>
+    // Data pegawai dari PHP dikonversi ke JSON untuk autocomplete
+    const pegawaiData = <?= json_encode(array_map(function($p) {
+        return [
+            'nip' => $p['nip'],
+            'nama' => $p['nama_lengkap']
+        ];
+    }, $pegawaiList)) ?>;
+
+    // ============================================================
+    // Autocomplete Logic
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('nama_search');
+        const hiddenNip = document.getElementById('nip');
+        const dropdown = document.getElementById('autocompleteDropdown');
+        const clearBtn = document.getElementById('clearBtn');
+        const wrapper = document.getElementById('autocompleteWrapper');
+
+        let activeIndex = -1; // Index item yang di-highlight via keyboard
+        let filteredResults = []; // Hasil filter saat ini
+
+        // Event: User mengetik di input
+        searchInput.addEventListener('input', function() {
+            const query = this.value.trim().toLowerCase();
+            activeIndex = -1;
+            
+            // Tampilkan/sembunyikan tombol clear
+            clearBtn.style.display = query.length > 0 ? 'flex' : 'none';
+            
+            // Reset hidden NIP ketika user mengetik ulang
+            hiddenNip.value = '';
+            
+            if (query.length < 1) {
+                closeDropdown();
+                return;
+            }
+            
+            // Filter data pegawai
+            filteredResults = pegawaiData.filter(function(p) {
+                return p.nama.toLowerCase().includes(query);
+            });
+            
+            renderDropdown(filteredResults, query);
+        });
+
+        // Render dropdown items
+        function renderDropdown(results, query) {
+            if (results.length === 0) {
+                dropdown.innerHTML = '<div class="autocomplete-empty">Tidak ditemukan pegawai dengan nama tersebut</div>';
+                dropdown.classList.add('show');
+                return;
+            }
+            
+            let html = '';
+            results.forEach(function(item, index) {
+                // Highlight teks yang cocok
+                const regex = new RegExp('(' + escapeRegex(query) + ')', 'gi');
+                const highlightedName = item.nama.replace(regex, '<mark>$1</mark>');
+                
+                html += '<div class="autocomplete-item' + (index === activeIndex ? ' active' : '') + '" ' +
+                        'data-nip="' + item.nip + '" ' +
+                        'data-nama="' + escapeHtml(item.nama) + '" ' +
+                        'data-index="' + index + '">' +
+                        '<span class="autocomplete-item-name">' + highlightedName + '</span>' +
+                        '<span class="autocomplete-item-nip">NIP: ' + item.nip + '</span>' +
+                        '</div>';
+            });
+            
+            dropdown.innerHTML = html;
+            dropdown.classList.add('show');
+            
+            // Tambah event click ke setiap item
+            dropdown.querySelectorAll('.autocomplete-item').forEach(function(el) {
+                el.addEventListener('click', function() {
+                    selectItem(this.dataset.nip, this.dataset.nama);
+                });
+            });
+        }
+
+        // Pilih item
+        window.selectItem = function(nip, nama) {
+            searchInput.value = nama;
+            hiddenNip.value = nip;
+            clearBtn.style.display = 'flex';
+            closeDropdown();
+            
+            // Trigger fetch data pegawai (NIP, Jabatan, Tim Kerja)
+            fetchPegawaiData();
+        }
+
+        // Tutup dropdown
+        function closeDropdown() {
+            dropdown.classList.remove('show');
+            dropdown.innerHTML = '';
+            activeIndex = -1;
+            filteredResults = [];
+        }
+
+        // Tombol clear
+        clearBtn.addEventListener('click', function() {
+            searchInput.value = '';
+            hiddenNip.value = '';
+            clearBtn.style.display = 'none';
+            closeDropdown();
+            searchInput.focus();
+            
+            // Reset display fields
+            document.getElementById('display_nip').value = '';
+            document.getElementById('display_jabatan').value = '';
+            document.getElementById('display_tim_kerja').value = '';
+        });
+
+        // Keyboard navigation (↑ ↓ Enter Escape)
+        searchInput.addEventListener('keydown', function(e) {
+            const items = dropdown.querySelectorAll('.autocomplete-item');
+            
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                activeIndex = Math.min(activeIndex + 1, items.length - 1);
+                updateActiveItem(items);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                activeIndex = Math.max(activeIndex - 1, 0);
+                updateActiveItem(items);
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (activeIndex >= 0 && items[activeIndex]) {
+                    const item = items[activeIndex];
+                    selectItem(item.dataset.nip, item.dataset.nama);
+                }
+            } else if (e.key === 'Escape') {
+                closeDropdown();
+            }
+        });
+
+        function updateActiveItem(items) {
+            items.forEach(function(el, i) {
+                el.classList.toggle('active', i === activeIndex);
+            });
+            // Scroll into view
+            if (items[activeIndex]) {
+                items[activeIndex].scrollIntoView({ block: 'nearest' });
+            }
+        }
+
+        // Tutup dropdown saat klik di luar
+        document.addEventListener('click', function(e) {
+            if (!wrapper.contains(e.target)) {
+                closeDropdown();
+            }
+        });
+
+        // Utility: Escape regex special characters
+        function escapeRegex(str) {
+            return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        // Utility: Escape HTML
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+    });
     function fetchPegawaiData() {
         const nip = document.getElementById('nip').value;
         const displayNip = document.getElementById('display_nip');
