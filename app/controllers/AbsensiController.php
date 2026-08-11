@@ -85,6 +85,14 @@ class AbsensiController extends Controller
             return;
         }
 
+        // Validasi CSRF token
+        $csrfToken = $_POST['csrf_token'] ?? '';
+        if (!$csrfToken || !Middleware::validateCsrfToken($csrfToken)) {
+            setFlash('error', 'Sesi tidak valid. Silakan coba lagi.');
+            $this->redirect('absensi?kegiatan=' . ($_POST['id_kegiatan'] ?? ''));
+            return;
+        }
+
         $id_kegiatan = $_POST['id_kegiatan'] ?? '';
         $nip = $_POST['nip'] ?? '';
         
@@ -114,6 +122,16 @@ class AbsensiController extends Controller
             $allowed_exts = ['jpg', 'jpeg', 'png'];
             if (!in_array($file_ext, $allowed_exts)) {
                 setFlash('error', 'Format foto tidak valid. Gunakan JPG/PNG.');
+                $this->redirect('absensi?kegiatan=' . $id_kegiatan);
+                return;
+            }
+
+            // Validasi MIME type sebenarnya (mencegah ekstensi palsu)
+            $finfo = new finfo(FILEINFO_MIME_TYPE);
+            $mime_type = $finfo->file($tmp_name);
+            $allowed_mimes = ['image/jpeg', 'image/png'];
+            if (!in_array($mime_type, $allowed_mimes)) {
+                setFlash('error', 'File bukan gambar yang valid.');
                 $this->redirect('absensi?kegiatan=' . $id_kegiatan);
                 return;
             }
