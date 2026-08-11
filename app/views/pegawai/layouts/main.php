@@ -14,7 +14,7 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="<?= asset('css/pegawai.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/pegawai.css') ?>?v=<?= time() ?>">
 </head>
 <body>
     
@@ -22,7 +22,7 @@
         <header class="pegawai-header">
             <div class="container header-container">
                 <div class="brand">
-                    <i class='bx bxs-shield-check'></i>
+                    <img src="<?= asset('img/kemenag-new-2025.png') ?>" alt="Logo Kemenag" class="brand-logo">
                     <span>AKSI KEBAL</span>
                 </div>
             </div>

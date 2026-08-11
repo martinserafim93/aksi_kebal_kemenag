@@ -80,8 +80,11 @@ a {
     letter-spacing: -0.025em;
 }
 
-.brand i {
-    font-size: 1.75rem;
+.brand-logo {
+    height: 36px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
 }
 
 .pegawai-main {

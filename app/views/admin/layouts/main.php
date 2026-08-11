@@ -34,7 +34,7 @@ $admin_role = adminData('nama_jabatan') ?? 'Administrator';
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <!-- Custom Layout CSS -->
-    <link rel="stylesheet" href="<?= asset('css/admin-layout.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/admin-layout.css') ?>?v=<?= time() ?>">
     
     <!-- Custom Page CSS (optional) -->
     <?php if (isset($extra_css)) echo $extra_css; ?>
@@ -50,7 +50,7 @@ $admin_role = adminData('nama_jabatan') ?? 'Administrator';
         <aside class="admin-sidebar" id="sidebar">
             <div class="sidebar-header">
                 <a href="<?= url('admin/dashboard') ?>" class="sidebar-brand">
-                    <i class='bx bx-check-shield'></i>
+                    <img src="<?= asset('img/kemenag-new-2025.png') ?>" alt="Logo Kemenag" class="sidebar-logo">
                     <span>AKSI KEBAL</span>
                 </a>
             </div>

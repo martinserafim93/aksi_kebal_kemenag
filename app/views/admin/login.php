@@ -6,21 +6,17 @@
     <meta name="description" content="Login Admin AKSI KEBAL - Sistem Informasi Absensi Kegiatan Pegawai Kementerian Agama">
     <meta name="robots" content="noindex, nofollow">
     <title><?= e($title ?? 'Login Admin') ?></title>
-    <link rel="stylesheet" href="<?= asset('css/admin-auth.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/admin-auth.css') ?>?v=<?= time() ?>">
 </head>
 <body class="auth-page">
-    <!-- Animated Background -->
-    <div class="auth-bg"></div>
-    <div class="auth-grid"></div>
+
 
     <!-- Login Container -->
     <div class="auth-container">
         <div class="auth-card">
             <!-- Branding -->
             <div class="auth-brand">
-                <div class="auth-brand-icon" title="AKSI KEBAL">
-                    📋
-                </div>
+                <img src="<?= asset('img/kemenag-new-2025.png') ?>" alt="Logo Kemenag" class="auth-brand-logo">
                 <h1><?= e(APP_NAME) ?></h1>
                 <p><?= e(APP_FULL_NAME) ?></p>
             </div>
