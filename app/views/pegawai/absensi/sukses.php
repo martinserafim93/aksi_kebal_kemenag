@@ -68,7 +68,7 @@
         </div>
         
         <p class="timer-text">
-            Halaman akan dialihkan dalam <span class="timer-count" id="countdown">15</span> detik...
+            Halaman akan dialihkan dalam <span class="timer-count" id="countdown">5</span> detik...
         </p>
         
         <!-- Redirect to formulir absensi (placeholder for Issue #12 URL) -->
@@ -81,7 +81,7 @@
 <?php ob_start(); ?>
 <script>
     // Countdown Timer Logic
-    let seconds = 15;
+    let seconds = 5;
     const countdownEl = document.getElementById('countdown');
     const redirectUrl = document.getElementById('btnBack').href;
     
