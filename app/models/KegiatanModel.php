@@ -53,12 +53,44 @@ class KegiatanModel
         return $this->db->fetch();
     }
 
+    public function findByKode(string $kode)
+    {
+        $this->db->query("SELECT * FROM kegiatan WHERE kode_kegiatan = :kode");
+        $this->db->bind(':kode', $kode);
+        return $this->db->fetch();
+    }
+
+    public function generateKode(): string
+    {
+        $maxAttempts = 10;
+        
+        for ($i = 0; $i < $maxAttempts; $i++) {
+            $chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            $kode = '';
+            for ($j = 0; $j < 6; $j++) {
+                $kode .= $chars[random_int(0, strlen($chars) - 1)];
+            }
+            
+            $this->db->query("SELECT COUNT(*) as total FROM kegiatan WHERE kode_kegiatan = :kode");
+            $this->db->bind(':kode', $kode);
+            $result = $this->db->fetch();
+            
+            if ($result['total'] == 0) {
+                return $kode;
+            }
+        }
+        
+        return strtoupper(substr(md5(microtime()), 0, 6));
+    }
+
     public function create(array $data): bool
     {
-        $query = "INSERT INTO kegiatan (nama_kegiatan, jenis_kegiatan, tanggal_kegiatan, waktu_mulai, waktu_selesai, lokasi_kegiatan, deskripsi_kegiatan, latitude_kegiatan, longitude_kegiatan, radius_meter, status_kegiatan) 
-                  VALUES (:nama, :jenis, :tanggal, :waktu_mulai, :waktu_selesai, :lokasi, :deskripsi, :latitude, :longitude, :radius, 'Draft')";
+        $kode = $this->generateKode();
+        $query = "INSERT INTO kegiatan (kode_kegiatan, nama_kegiatan, jenis_kegiatan, tanggal_kegiatan, waktu_mulai, waktu_selesai, lokasi_kegiatan, deskripsi_kegiatan, latitude_kegiatan, longitude_kegiatan, radius_meter, status_kegiatan) 
+                  VALUES (:kode, :nama, :jenis, :tanggal, :waktu_mulai, :waktu_selesai, :lokasi, :deskripsi, :latitude, :longitude, :radius, 'Draft')";
         
         $this->db->query($query);
+        $this->db->bind(':kode', $kode);
         $this->db->bind(':nama', $data['nama_kegiatan']);
         $this->db->bind(':jenis', $data['jenis_kegiatan']);
         $this->db->bind(':tanggal', $data['tanggal_kegiatan']);

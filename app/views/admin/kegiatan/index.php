@@ -117,7 +117,7 @@
                                             </button>
                                         </form>
                                     <?php else: ?>
-                                        <a href="<?= url('admin/kegiatan-qrcode/' . $k['id_kegiatan']) ?>" class="btn btn-primary" title="Lihat QR Code" style="padding: 0.35rem 0.6rem; font-size: 0.875rem; border-radius: 0.375rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                                        <a href="<?= url('admin/kegiatan-qrcode/' . $k['kode_kegiatan']) ?>" class="btn btn-primary" title="Lihat QR Code" style="padding: 0.35rem 0.6rem; font-size: 0.875rem; border-radius: 0.375rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
                                             <i class='bx bx-qr-scan'></i> QR
                                         </a>
                                     <?php endif; ?>

@@ -135,7 +135,7 @@ class AbsensiModel
             "SELECT a.*, 
                     p.nama_lengkap, p.id_jabatan, p.id_tim_kerja,
                     j.nama_jabatan, t.nama_tim_kerja,
-                    k.nama_kegiatan, k.jenis_kegiatan, k.tanggal_kegiatan, k.waktu_mulai, k.waktu_selesai
+                    k.kode_kegiatan, k.nama_kegiatan, k.jenis_kegiatan, k.tanggal_kegiatan, k.waktu_mulai, k.waktu_selesai
              FROM absensi a
              JOIN pegawai p ON a.nip = p.nip
              JOIN jabatan j ON p.id_jabatan = j.id_jabatan
@@ -145,6 +145,47 @@ class AbsensiModel
         );
         $this->db->bind(':id', $id, PDO::PARAM_INT);
         return $this->db->fetch();
+    }
+
+    public function findByKodeAbsensi(string $kode)
+    {
+        $this->db->query(
+            "SELECT a.*, 
+                    p.nama_lengkap, p.id_jabatan, p.id_tim_kerja,
+                    j.nama_jabatan, t.nama_tim_kerja,
+                    k.kode_kegiatan, k.nama_kegiatan, k.jenis_kegiatan, k.tanggal_kegiatan, k.waktu_mulai, k.waktu_selesai
+             FROM absensi a
+             JOIN pegawai p ON a.nip = p.nip
+             JOIN jabatan j ON p.id_jabatan = j.id_jabatan
+             LEFT JOIN tim_kerja t ON p.id_tim_kerja = t.id_tim_kerja
+             JOIN kegiatan k ON a.id_kegiatan = k.id_kegiatan
+             WHERE a.kode_absensi = :kode"
+        );
+        $this->db->bind(':kode', $kode);
+        return $this->db->fetch();
+    }
+
+    public function generateKodeAbsensi(): string
+    {
+        $maxAttempts = 10;
+        
+        for ($i = 0; $i < $maxAttempts; $i++) {
+            $chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            $kode = '';
+            for ($j = 0; $j < 6; $j++) {
+                $kode .= $chars[random_int(0, strlen($chars) - 1)];
+            }
+            
+            $this->db->query("SELECT COUNT(*) as total FROM absensi WHERE kode_absensi = :kode");
+            $this->db->bind(':kode', $kode);
+            $result = $this->db->fetch();
+            
+            if ($result['total'] == 0) {
+                return $kode;
+            }
+        }
+        
+        return strtoupper(substr(md5(microtime()), 0, 6));
     }
 
     /**
@@ -218,13 +259,16 @@ class AbsensiModel
 
     /**
      * Tambah data absensi baru
-     * @return int|false
+     * @return string|false
      */
     public function create(array $data)
     {
-        $this->db->query("INSERT INTO absensi (nip, id_kegiatan, foto, status_kehadiran, latitude_absensi, longitude_absensi, jarak_meter, lokasi_valid) 
-                          VALUES (:nip, :id_kegiatan, :foto, :status_kehadiran, :latitude_absensi, :longitude_absensi, :jarak_meter, :lokasi_valid)");
+        $kode_absensi = $this->generateKodeAbsensi();
+
+        $this->db->query("INSERT INTO absensi (kode_absensi, nip, id_kegiatan, foto, status_kehadiran, latitude_absensi, longitude_absensi, jarak_meter, lokasi_valid) 
+                          VALUES (:kode_absensi, :nip, :id_kegiatan, :foto, :status_kehadiran, :latitude_absensi, :longitude_absensi, :jarak_meter, :lokasi_valid)");
         
+        $this->db->bind(':kode_absensi', $kode_absensi);
         $this->db->bind(':nip', $data['nip']);
         $this->db->bind(':id_kegiatan', $data['id_kegiatan'], PDO::PARAM_INT);
         $this->db->bind(':foto', $data['foto']);
@@ -235,7 +279,7 @@ class AbsensiModel
         $this->db->bind(':lokasi_valid', isset($data['lokasi_valid']) && $data['lokasi_valid'] !== '' ? (int)$data['lokasi_valid'] : null);
 
         if ($this->db->execute()) {
-            return (int) $this->db->lastInsertId();
+            return $kode_absensi;
         }
         
         return false;

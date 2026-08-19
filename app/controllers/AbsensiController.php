@@ -12,16 +12,22 @@ class AbsensiController extends Controller
      */
     public function index(): void
     {
-        // Mendapatkan ID Kegiatan dari query string: ?kegiatan=1
-        $id_kegiatan = query('kegiatan');
+        // Mendapatkan identifier Kegiatan dari query string
+        $kegiatan_identifier = query('kegiatan');
         
-        if (!$id_kegiatan) {
+        if (!$kegiatan_identifier) {
             $this->notFound();
             return;
         }
 
         $kegiatanModel = $this->model('KegiatanModel');
-        $kegiatan = $kegiatanModel->findById((int)$id_kegiatan);
+        
+        // Backward compatibility: Cek apakah input berupa ID angka atau slug
+        if (ctype_digit($kegiatan_identifier)) {
+            $kegiatan = $kegiatanModel->findById((int)$kegiatan_identifier);
+        } else {
+            $kegiatan = $kegiatanModel->findByKode($kegiatan_identifier);
+        }
 
         if (!$kegiatan || $kegiatan['status_kegiatan'] !== 'Published') {
             // Tampilkan error jika kegiatan tidak valid atau belum dipublish
@@ -89,16 +95,27 @@ class AbsensiController extends Controller
         $csrfToken = $_POST['csrf_token'] ?? '';
         if (!$csrfToken || !Middleware::validateCsrfToken($csrfToken)) {
             setFlash('error', 'Sesi tidak valid. Silakan coba lagi.');
-            $this->redirect('absensi?kegiatan=' . ($_POST['id_kegiatan'] ?? ''));
+            $redirect_kegiatan = $_POST['kode_kegiatan'] ?? ($_POST['id_kegiatan'] ?? '');
+            $this->redirect('absensi?kegiatan=' . $redirect_kegiatan);
             return;
         }
 
         $id_kegiatan = $_POST['id_kegiatan'] ?? '';
         $nip = $_POST['nip'] ?? '';
-        
+        $redirect_kegiatan = $_POST['kode_kegiatan'] ?? $id_kegiatan;
+
         if (empty($id_kegiatan) || empty($nip)) {
             setFlash('error', 'Data tidak lengkap.');
-            $this->redirect('absensi?kegiatan=' . $id_kegiatan);
+            $this->redirect('absensi?kegiatan=' . $redirect_kegiatan);
+            return;
+        }
+
+        $kegiatanModel = $this->model('KegiatanModel');
+        $kegiatan = $kegiatanModel->findById((int)$id_kegiatan);
+
+        if (!$kegiatan || $kegiatan['status_kegiatan'] !== 'Published') {
+            setFlash('error', 'Kegiatan tidak ditemukan atau belum aktif.');
+            $this->redirect('absensi?kegiatan=' . $redirect_kegiatan);
             return;
         }
 
@@ -107,7 +124,7 @@ class AbsensiController extends Controller
         // Cek duplikasi
         if ($absensiModel->hasAbsensi($nip, (int)$id_kegiatan)) {
             setFlash('warning', 'Anda sudah melakukan absensi untuk kegiatan ini.');
-            $this->redirect('absensi?kegiatan=' . $id_kegiatan);
+            $this->redirect('absensi?kegiatan=' . $redirect_kegiatan);
             return;
         }
 
@@ -117,17 +134,13 @@ class AbsensiController extends Controller
         $lokasi_valid      = null;
         $jarak_meter       = null;
 
-        // Ambil data kegiatan untuk cek koordinat
-        $kegiatanModel = $this->model('KegiatanModel');
-        $kegiatan = $kegiatanModel->findById((int)$id_kegiatan);
-
         // Jika kegiatan punya koordinat lokasi, validasi jarak
         if ($kegiatan && !empty($kegiatan['latitude_kegiatan']) && !empty($kegiatan['longitude_kegiatan'])) {
             
             // Pastikan pegawai mengirim koordinat
             if (empty($latitude_absensi) || empty($longitude_absensi)) {
                 setFlash('error', 'Lokasi GPS Anda tidak terdeteksi. Aktifkan GPS dan coba lagi.');
-                $this->redirect('absensi?kegiatan=' . $id_kegiatan);
+                $this->redirect('absensi?kegiatan=' . $redirect_kegiatan);
                 return;
             }
 
@@ -145,7 +158,7 @@ class AbsensiController extends Controller
             // Tolak jika di luar radius
             if (!$lokasi_valid) {
                 setFlash('error', 'Lokasi Anda berada ' . round($jarak_meter, 1) . ' meter dari lokasi kegiatan. Maksimal radius: ' . $radius . ' meter. Silakan pindah ke lokasi kegiatan dan coba absensi ulang.');
-                $this->redirect('absensi?kegiatan=' . $id_kegiatan);
+                $this->redirect('absensi?kegiatan=' . $redirect_kegiatan);
                 return;
             }
         }
@@ -159,25 +172,21 @@ class AbsensiController extends Controller
             $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
 
             $allowed_exts = ['jpg', 'jpeg', 'png'];
-            if (!in_array($file_ext, $allowed_exts)) {
-                setFlash('error', 'Format foto tidak valid. Gunakan JPG/PNG.');
-                $this->redirect('absensi?kegiatan=' . $id_kegiatan);
-                return;
-            }
-
+            
             // Validasi MIME type sebenarnya (mencegah ekstensi palsu)
             $finfo = new finfo(FILEINFO_MIME_TYPE);
             $mime_type = $finfo->file($tmp_name);
             $allowed_mimes = ['image/jpeg', 'image/png'];
-            if (!in_array($mime_type, $allowed_mimes)) {
-                setFlash('error', 'File bukan gambar yang valid.');
-                $this->redirect('absensi?kegiatan=' . $id_kegiatan);
+
+            if (!in_array($file_ext, $allowed_exts) || !in_array($mime_type, $allowed_mimes)) {
+                setFlash('error', 'Format file tidak diizinkan. Hanya JPG/PNG.');
+                $this->redirect('absensi?kegiatan=' . $redirect_kegiatan);
                 return;
             }
 
             if ($file_size > 5 * 1024 * 1024) {
                 setFlash('error', 'Ukuran foto maksimal 5MB.');
-                $this->redirect('absensi?kegiatan=' . $id_kegiatan);
+                $this->redirect('absensi?kegiatan=' . $redirect_kegiatan);
                 return;
             }
 
@@ -267,12 +276,12 @@ class AbsensiController extends Controller
 
             } catch (Exception $e) {
                 setFlash('error', 'Kompresi foto gagal: ' . $e->getMessage());
-                $this->redirect('absensi?kegiatan=' . $id_kegiatan);
+                $this->redirect('absensi?kegiatan=' . $redirect_kegiatan);
                 return;
             }
         } else {
-            setFlash('error', 'Foto wajib diupload.');
-            $this->redirect('absensi?kegiatan=' . $id_kegiatan);
+            setFlash('error', 'Foto wajib diunggah.');
+            $this->redirect('absensi?kegiatan=' . $redirect_kegiatan);
             return;
         }
 
@@ -288,14 +297,14 @@ class AbsensiController extends Controller
             'lokasi_valid'      => $lokasi_valid
         ];
 
-        $id_absensi = $absensiModel->create($data);
+        $insertId = $absensiModel->create($data);
 
-        if ($id_absensi) {
+        if ($insertId) {
             // Redirect ke halaman sukses
-            $this->redirect('absensi/sukses/' . $id_absensi);
+            $this->redirect('absensi/sukses/' . $insertId);
         } else {
-            setFlash('error', 'Terjadi kesalahan sistem saat menyimpan absensi.');
-            $this->redirect('absensi?kegiatan=' . $id_kegiatan);
+            setFlash('error', 'Gagal menyimpan absensi.');
+            $this->redirect('absensi?kegiatan=' . $redirect_kegiatan);
         }
     }
 
@@ -305,16 +314,21 @@ class AbsensiController extends Controller
      * 
      * @param int|null $id ID Absensi
      */
-    public function sukses($id = null): void
+    public function sukses($identifier = null): void
     {
-        if (!$id) {
+        if (!$identifier) {
             $this->redirect('');
             return;
         }
 
         // Gunakan AbsensiModel yang sudah dibuat (karena memiliki metode findById yang di-join dengan pegawai & kegiatan)
         $model = $this->model('AbsensiModel');
-        $absensi = $model->findById((int)$id);
+        
+        if (ctype_digit($identifier)) {
+            $absensi = $model->findById((int)$identifier);
+        } else {
+            $absensi = $model->findByKodeAbsensi($identifier);
+        }
 
         if (!$absensi) {
             $this->notFound();

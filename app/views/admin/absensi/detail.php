@@ -54,10 +54,10 @@
     <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
         <h3 class="card-title" style="margin: 0;">Daftar Hadir Pegawai</h3>
         <div style="display: flex; gap: 0.5rem;">
-            <a href="<?= url('admin/absensi-export-pdf/' . $kegiatan['id_kegiatan']) ?>" target="_blank" class="btn btn-danger" style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; padding: 0.5rem 1rem;">
+            <a href="<?= url('admin/absensi-export-pdf/' . $kegiatan['kode_kegiatan']) ?>" target="_blank" class="btn btn-danger" style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; padding: 0.5rem 1rem;">
                 <i class='bx bxs-file-pdf'></i> Export PDF
             </a>
-            <a href="<?= url('admin/absensi-export/' . $kegiatan['id_kegiatan']) ?>" class="btn btn-success" style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; padding: 0.5rem 1rem;">
+            <a href="<?= url('admin/absensi-export/' . $kegiatan['kode_kegiatan']) ?>" class="btn btn-success" style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; padding: 0.5rem 1rem;">
                 <i class='bx bx-export'></i> Export CSV
             </a>
         </div>
@@ -110,11 +110,11 @@
                             </td>
                             <td style="padding: 1rem; vertical-align: middle; text-align: center;">
                                 <div style="display: flex; gap: 0.35rem; justify-content: center; flex-wrap: wrap;">
-                                    <a href="<?= url('admin/absensi-edit/' . $a['id_absensi']) ?>" class="btn btn-warning" title="Edit/Koreksi" style="padding: 0.35rem 0.6rem; font-size: 0.875rem; border-radius: 0.375rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
-                                        <i class='bx bx-edit'></i>
+                                    <a href="<?= url('admin/absensi-edit/' . $a['kode_absensi']) ?>" class="btn btn-warning" title="Edit/Koreksi" style="padding: 0.35rem 0.6rem; font-size: 0.875rem; border-radius: 0.375rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                                        <i class='bx bx-edit-alt'></i>
                                     </a>
                                     
-                                    <form action="<?= url('admin/absensi-delete/' . $a['id_absensi']) ?>" method="POST" class="form-delete" style="display: inline-block;">
+                                    <form action="<?= url('admin/absensi-delete/' . $a['kode_absensi']) ?>" method="POST" class="form-delete" style="display: inline-block;">
                                         <input type="hidden" name="csrf_token" value="<?= e(Middleware::generateCsrfToken()) ?>">
                                         <!-- Add redirect logic in delete if necessary, otherwise it goes back to referer -->
                                         <button type="submit" class="btn btn-danger" title="Hapus Data" style="padding: 0.35rem 0.6rem; font-size: 0.875rem; border-radius: 0.375rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
@@ -135,7 +135,7 @@
     <div class="card-body" style="border-top: 1px solid var(--border-color); display: flex; justify-content: center;">
         <div style="display: flex; gap: 0.25rem;">
             <?php for ($i = 1; $i <= $total_page; $i++): ?>
-                <a href="<?= url('admin/absensi-detail/' . $kegiatan['id_kegiatan'] . '?page=' . $i) ?>" 
+                <a href="<?= url('admin/absensi-detail/' . $kegiatan['kode_kegiatan'] . '?page=' . $i) ?>" 
                    style="padding: 0.5rem 0.75rem; border-radius: 0.25rem; text-decoration: none; font-size: 0.9rem; font-weight: 500; 
                           <?= $i === $page ? 'background: var(--primary); color: white;' : 'background: #f1f5f9; color: #475569;' ?>">
                     <?= $i ?>

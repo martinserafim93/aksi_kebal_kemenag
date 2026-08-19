@@ -1,0 +1,35 @@
+# Issue: Perbaikan Link Absensi Pegawai & Kegiatan — Hindari ID Auto-Increment yang Membengkak
+
+## Deskripsi Masalah
+
+Saat ini, link absensi kegiatan dan link riwayat/detail absensi menggunakan **AUTO_INCREMENT `id_kegiatan` dan `id_absensi`** dari database sebagai identifier di URL:
+
+```
+https://domain.com/absensi?kegiatan=11
+https://domain.com/absensi/sukses/1
+```
+
+### Masalah yang terjadi:
+1. **ID terus naik** — Setiap kali kegiatan atau absensi baru dibuat, MySQL memberikan nomor urut berikutnya (`12, 13, 14, ...`), meskipun data sebelumnya sudah dihapus.
+2. **ID tidak pernah "dipakai ulang"** — Kegiatan berikutnya akan mendapat `id=12`, bukan `id=2` walau ID awal sudah dihapus.
+3. **Link menjadi membengkak** — Dalam jangka panjang, ID bisa menembus angka puluhan/ratusan (misal `?kegiatan=157`), padahal hanya ada beberapa kegiatan aktif.
+
+---
+
+## Solusi yang Diterapkan
+
+**Menggunakan kode unik pendek (`slug`) sebagai identifier link.**
+
+Alasan memilih slug daripada me-reset AUTO_INCREMENT:
+- Me-reset/reuse AUTO_INCREMENT di MySQL **berbahaya** (bisa menyebabkan conflict dengan data relasi lama di tabel `absensi`).
+- Slug/kode pendek lebih **aman, rapi, dan profesional** di URL.
+- Contoh hasil: `?kegiatan=RBH202A` dan `/absensi/sukses/B5K9X2`.
+
+---
+
+## Yang Telah Diperbaiki
+
+- [x] **Tabel `kegiatan`**: Ditambahkan kolom `kode_kegiatan` unik. Link absen publik menggunakan kode ini.
+- [x] **Tabel `absensi`**: Ditambahkan kolom `kode_absensi` unik. Link sukses absen menggunakan kode ini.
+- [x] **Admin Controller**: Semua link detail absensi, hapus, export PDF, dan edit absensi sudah menggunakan format slug.
+- [x] **Backward Compatibility**: Routing dan Controller telah disesuaikan agar bila ada user yang membuka link dengan ID format lama (angka), sistem akan secara cerdas tetap menampilkan data yang valid.

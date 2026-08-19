@@ -1,5 +1,5 @@
 <?php ob_start(); 
-$qrCodeUrl = !empty($kegiatan['qr_code']) ? $kegiatan['qr_code'] : url("absensi?kegiatan=" . $kegiatan['id_kegiatan']);
+$qrCodeUrl = !empty($kegiatan['qr_code']) ? $kegiatan['qr_code'] : url("absensi?kegiatan=" . $kegiatan['kode_kegiatan']);
 ?>
 
 <div class="card" style="margin-bottom: 2rem;">
