@@ -38,6 +38,9 @@ $admin_role = adminData('nama_jabatan') ?? 'Administrator';
     
     <!-- Custom Page CSS (optional) -->
     <?php if (isset($extra_css)) echo $extra_css; ?>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
 
@@ -237,6 +240,9 @@ $admin_role = adminData('nama_jabatan') ?? 'Administrator';
         <?php endif; ?>
     });
     </script>
+    
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
     <!-- Custom Page JS (optional) -->
     <?php if (isset($extra_js)) echo $extra_js; ?>

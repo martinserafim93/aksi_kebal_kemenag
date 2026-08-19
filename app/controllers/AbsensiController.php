@@ -111,6 +111,45 @@ class AbsensiController extends Controller
             return;
         }
 
+        // ===== VALIDASI LOKASI GPS =====
+        $latitude_absensi  = $_POST['latitude_absensi'] ?? null;
+        $longitude_absensi = $_POST['longitude_absensi'] ?? null;
+        $lokasi_valid      = null;
+        $jarak_meter       = null;
+
+        // Ambil data kegiatan untuk cek koordinat
+        $kegiatanModel = $this->model('KegiatanModel');
+        $kegiatan = $kegiatanModel->findById((int)$id_kegiatan);
+
+        // Jika kegiatan punya koordinat lokasi, validasi jarak
+        if ($kegiatan && !empty($kegiatan['latitude_kegiatan']) && !empty($kegiatan['longitude_kegiatan'])) {
+            
+            // Pastikan pegawai mengirim koordinat
+            if (empty($latitude_absensi) || empty($longitude_absensi)) {
+                setFlash('error', 'Lokasi GPS Anda tidak terdeteksi. Aktifkan GPS dan coba lagi.');
+                $this->redirect('absensi?kegiatan=' . $id_kegiatan);
+                return;
+            }
+
+            // Hitung jarak di server (Haversine Formula)
+            $jarak_meter = $this->hitungJarak(
+                (float)$latitude_absensi,
+                (float)$longitude_absensi,
+                (float)$kegiatan['latitude_kegiatan'],
+                (float)$kegiatan['longitude_kegiatan']
+            );
+
+            $radius = (int)($kegiatan['radius_meter'] ?? 50);
+            $lokasi_valid = ($jarak_meter <= $radius) ? 1 : 0;
+
+            // Tolak jika di luar radius
+            if (!$lokasi_valid) {
+                setFlash('error', 'Lokasi Anda berada ' . round($jarak_meter, 1) . ' meter dari lokasi kegiatan. Maksimal radius: ' . $radius . ' meter. Silakan pindah ke lokasi kegiatan dan coba absensi ulang.');
+                $this->redirect('absensi?kegiatan=' . $id_kegiatan);
+                return;
+            }
+        }
+
         // Handle upload foto
         $foto = '';
         if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
@@ -239,10 +278,14 @@ class AbsensiController extends Controller
 
         // Simpan ke database
         $data = [
-            'nip' => $nip,
-            'id_kegiatan' => (int)$id_kegiatan,
-            'foto' => $foto,
-            'status_kehadiran' => 'Hadir'
+            'nip'               => $nip,
+            'id_kegiatan'       => (int)$id_kegiatan,
+            'foto'              => $foto,
+            'status_kehadiran'  => 'Hadir',
+            'latitude_absensi'  => $latitude_absensi,
+            'longitude_absensi' => $longitude_absensi,
+            'jarak_meter'       => $jarak_meter,
+            'lokasi_valid'      => $lokasi_valid
         ];
 
         $id_absensi = $absensiModel->create($data);
@@ -283,5 +326,30 @@ class AbsensiController extends Controller
             'title' => 'Absensi Berhasil',
             'absensi' => $absensi
         ]);
+    }
+
+    /**
+     * Hitung jarak antara 2 titik koordinat menggunakan Haversine Formula
+     * 
+     * @param float $lat1 Latitude titik 1
+     * @param float $lng1 Longitude titik 1
+     * @param float $lat2 Latitude titik 2
+     * @param float $lng2 Longitude titik 2
+     * @return float Jarak dalam meter
+     */
+    private function hitungJarak(float $lat1, float $lng1, float $lat2, float $lng2): float
+    {
+        $earthRadius = 6371000; // Radius bumi dalam meter
+
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLng = deg2rad($lng2 - $lng1);
+
+        $a = sin($dLat / 2) * sin($dLat / 2) +
+             cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
+             sin($dLng / 2) * sin($dLng / 2);
+
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+        return $earthRadius * $c;
     }
 }

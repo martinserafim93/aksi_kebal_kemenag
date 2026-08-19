@@ -724,7 +724,10 @@ class AdminController extends Controller
                 'waktu_mulai' => input('waktu_mulai'),
                 'waktu_selesai' => input('waktu_selesai'),
                 'lokasi_kegiatan' => input('lokasi_kegiatan'),
-                'deskripsi_kegiatan' => input('deskripsi_kegiatan')
+                'deskripsi_kegiatan' => input('deskripsi_kegiatan'),
+                'latitude_kegiatan' => input('latitude_kegiatan'),
+                'longitude_kegiatan' => input('longitude_kegiatan'),
+                'radius_meter' => input('radius_meter') ?: 50
             ];
 
             if (empty($data['nama_kegiatan']) || empty($data['jenis_kegiatan']) || empty($data['tanggal_kegiatan']) || empty($data['waktu_mulai']) || empty($data['waktu_selesai'])) {
@@ -778,7 +781,10 @@ class AdminController extends Controller
                 'waktu_mulai' => input('waktu_mulai'),
                 'waktu_selesai' => input('waktu_selesai'),
                 'lokasi_kegiatan' => input('lokasi_kegiatan'),
-                'deskripsi_kegiatan' => input('deskripsi_kegiatan')
+                'deskripsi_kegiatan' => input('deskripsi_kegiatan'),
+                'latitude_kegiatan' => input('latitude_kegiatan'),
+                'longitude_kegiatan' => input('longitude_kegiatan'),
+                'radius_meter' => input('radius_meter') ?: 50
             ];
 
             if (empty($data['nama_kegiatan']) || empty($data['jenis_kegiatan']) || empty($data['tanggal_kegiatan']) || empty($data['waktu_mulai']) || empty($data['waktu_selesai'])) {

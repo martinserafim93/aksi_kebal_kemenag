@@ -222,13 +222,17 @@ class AbsensiModel
      */
     public function create(array $data)
     {
-        $this->db->query("INSERT INTO absensi (nip, id_kegiatan, foto, status_kehadiran) 
-                          VALUES (:nip, :id_kegiatan, :foto, :status_kehadiran)");
+        $this->db->query("INSERT INTO absensi (nip, id_kegiatan, foto, status_kehadiran, latitude_absensi, longitude_absensi, jarak_meter, lokasi_valid) 
+                          VALUES (:nip, :id_kegiatan, :foto, :status_kehadiran, :latitude_absensi, :longitude_absensi, :jarak_meter, :lokasi_valid)");
         
         $this->db->bind(':nip', $data['nip']);
         $this->db->bind(':id_kegiatan', $data['id_kegiatan'], PDO::PARAM_INT);
         $this->db->bind(':foto', $data['foto']);
         $this->db->bind(':status_kehadiran', $data['status_kehadiran'] ?? 'Hadir');
+        $this->db->bind(':latitude_absensi', !empty($data['latitude_absensi']) ? $data['latitude_absensi'] : null);
+        $this->db->bind(':longitude_absensi', !empty($data['longitude_absensi']) ? $data['longitude_absensi'] : null);
+        $this->db->bind(':jarak_meter', isset($data['jarak_meter']) && $data['jarak_meter'] !== '' ? (float)$data['jarak_meter'] : null);
+        $this->db->bind(':lokasi_valid', isset($data['lokasi_valid']) && $data['lokasi_valid'] !== '' ? (int)$data['lokasi_valid'] : null);
 
         if ($this->db->execute()) {
             return (int) $this->db->lastInsertId();
