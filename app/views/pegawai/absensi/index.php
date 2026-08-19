@@ -41,6 +41,12 @@
             <input type="hidden" name="id_kegiatan" value="<?= e($kegiatan['id_kegiatan']) ?>">
             <?= csrfField() ?>
             
+            <!-- Hidden inputs untuk lokasi GPS pegawai -->
+            <input type="hidden" id="latitude_absensi" name="latitude_absensi" value="">
+            <input type="hidden" id="longitude_absensi" name="longitude_absensi" value="">
+            <input type="hidden" id="jarak_meter" name="jarak_meter" value="">
+            <input type="hidden" id="lokasi_valid" name="lokasi_valid" value="">
+            
             <div class="form-group">
                 <label for="nama_search" class="form-label">Nama Lengkap <span style="color: var(--danger-color)">*</span></label>
                 
@@ -95,7 +101,62 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-primary" style="margin-top: 1.5rem;">
+            <!-- === SECTION: Status Lokasi GPS === -->
+            <div id="lokasi-status" class="form-group" style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.95rem;">
+                    📍 Verifikasi Lokasi
+                </label>
+                
+                <!-- Loading state -->
+                <div id="lokasi-loading" style="padding: 1rem; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 0.5rem; display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="width: 20px; height: 20px; border: 3px solid #3b82f6; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                    <span style="color: #1e40af;">Mendeteksi lokasi Anda...</span>
+                </div>
+                
+                <!-- Sukses: dalam radius -->
+                <div id="lokasi-ok" style="padding: 1rem; background: #f0fdf4; border: 1px solid #86efac; border-radius: 0.5rem; display: none;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; color: #166534;">
+                        <i class='bx bxs-check-circle' style="font-size: 1.25rem;"></i>
+                        <strong>Lokasi Valid</strong>
+                    </div>
+                    <p id="lokasi-ok-detail" style="margin: 0.25rem 0 0 1.75rem; font-size: 0.85rem; color: #15803d;"></p>
+                </div>
+
+                <!-- Gagal: di luar radius -->
+                <div id="lokasi-fail" style="padding: 1rem; background: #fef2f2; border: 1px solid #fca5a5; border-radius: 0.5rem; display: none;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; color: #991b1b;">
+                        <i class='bx bxs-x-circle' style="font-size: 1.25rem;"></i>
+                        <strong>Lokasi Tidak Sesuai!</strong>
+                    </div>
+                    <p id="lokasi-fail-detail" style="margin: 0.25rem 0 0 1.75rem; font-size: 0.85rem; color: #b91c1c;"></p>
+                    <button type="button" id="btn-retry-lokasi" onclick="detectLocation()" 
+                            style="margin-top: 0.75rem; margin-left: 1.75rem; padding: 0.5rem 1rem; background: #ef4444; color: white; border: none; border-radius: 0.375rem; cursor: pointer; font-size: 0.85rem;">
+                        <i class='bx bx-refresh'></i> Coba Deteksi Ulang
+                    </button>
+                </div>
+
+                <!-- Error: GPS mati / tidak support -->
+                <div id="lokasi-error" style="padding: 1rem; background: #fffbeb; border: 1px solid #fcd34d; border-radius: 0.5rem; display: none;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; color: #92400e;">
+                        <i class='bx bxs-error' style="font-size: 1.25rem;"></i>
+                        <strong>Akses Lokasi Diperlukan</strong>
+                    </div>
+                    <p id="lokasi-error-detail" style="margin: 0.25rem 0 0 1.75rem; font-size: 0.85rem; color: #a16207;"></p>
+                    <button type="button" onclick="detectLocation()"
+                            style="margin-top: 0.75rem; margin-left: 1.75rem; padding: 0.5rem 1rem; background: #f59e0b; color: white; border: none; border-radius: 0.375rem; cursor: pointer; font-size: 0.85rem;">
+                        <i class='bx bx-refresh'></i> Coba Lagi
+                    </button>
+                </div>
+            </div>
+
+            <style>
+            @keyframes spin {
+                to { transform: rotate(360deg); }
+            }
+            </style>
+            <!-- === END: Status Lokasi GPS === -->
+
+            <button type="submit" id="btn-submit-absensi" class="btn btn-primary" style="margin-top: 1.5rem;">
                 <i class='bx bx-send'></i> Submit Absensi
             </button>
         </form>
@@ -317,6 +378,164 @@
             container.style.display = 'none';
         }
     }
+
+// =========================================================
+// SCRIPT: Deteksi Lokasi GPS dan Validasi Jarak
+// =========================================================
+
+// Data lokasi kegiatan dari server (embed via PHP)
+const KEGIATAN_LAT = <?= json_encode($kegiatan['latitude_kegiatan'] ?? null) ?>;
+const KEGIATAN_LNG = <?= json_encode($kegiatan['longitude_kegiatan'] ?? null) ?>;
+const KEGIATAN_RADIUS = <?= json_encode($kegiatan['radius_meter'] ?? 50) ?>;
+
+// Apakah kegiatan ini punya validasi lokasi?
+const HAS_LOCATION = (KEGIATAN_LAT !== null && KEGIATAN_LNG !== null);
+
+// Elemen UI
+const elLoading = document.getElementById('lokasi-loading');
+const elOk      = document.getElementById('lokasi-ok');
+const elFail    = document.getElementById('lokasi-fail');
+const elError   = document.getElementById('lokasi-error');
+const btnSubmit = document.getElementById('btn-submit-absensi');
+
+/**
+ * Hitung jarak antara 2 titik koordinat (Haversine Formula)
+ * @return {number} Jarak dalam meter
+ */
+function hitungJarak(lat1, lng1, lat2, lng2) {
+    const R = 6371000; // Radius bumi dalam meter
+    const toRad = (deg) => deg * (Math.PI / 180);
+    
+    const dLat = toRad(lat2 - lat1);
+    const dLng = toRad(lng2 - lng1);
+    
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+              Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    
+    return R * c; // Hasil dalam meter
+}
+
+/**
+ * Sembunyikan semua status box
+ */
+function hideAllStatus() {
+    elLoading.style.display = 'none';
+    elOk.style.display      = 'none';
+    elFail.style.display     = 'none';
+    elError.style.display    = 'none';
+}
+
+/**
+ * Deteksi lokasi GPS pegawai
+ */
+function detectLocation() {
+    // Jika kegiatan tidak punya koordinat, skip validasi lokasi
+    if (!HAS_LOCATION) {
+        document.getElementById('lokasi-status').style.display = 'none';
+        return;
+    }
+
+    // Tampilkan loading
+    hideAllStatus();
+    elLoading.style.display = 'flex';
+    btnSubmit.disabled = true;
+
+    // Cek apakah browser support Geolocation
+    if (!navigator.geolocation) {
+        hideAllStatus();
+        elError.style.display = 'block';
+        document.getElementById('lokasi-error-detail').textContent = 
+            'Browser Anda tidak mendukung GPS. Gunakan browser modern (Chrome/Safari).';
+        return;
+    }
+
+    // Minta lokasi GPS
+    navigator.geolocation.getCurrentPosition(
+        // SUCCESS: Lokasi berhasil didapat
+        function (position) {
+            const userLat = position.coords.latitude;
+            const userLng = position.coords.longitude;
+
+            // Hitung jarak
+            const jarak = hitungJarak(userLat, userLng, KEGIATAN_LAT, KEGIATAN_LNG);
+            const jarakBulat = Math.round(jarak * 100) / 100; // 2 desimal
+
+            // Simpan ke hidden inputs
+            document.getElementById('latitude_absensi').value  = userLat.toFixed(8);
+            document.getElementById('longitude_absensi').value = userLng.toFixed(8);
+            document.getElementById('jarak_meter').value       = jarakBulat;
+
+            hideAllStatus();
+
+            if (jarak <= KEGIATAN_RADIUS) {
+                // ✅ DALAM RADIUS — boleh submit
+                document.getElementById('lokasi_valid').value = '1';
+                elOk.style.display = 'block';
+                document.getElementById('lokasi-ok-detail').textContent = 
+                    'Anda berada ' + jarakBulat + ' meter dari lokasi kegiatan (radius: ' + KEGIATAN_RADIUS + ' m).';
+                btnSubmit.disabled = false;
+            } else {
+                // ❌ DI LUAR RADIUS — tidak boleh submit
+                document.getElementById('lokasi_valid').value = '0';
+                elFail.style.display = 'block';
+                document.getElementById('lokasi-fail-detail').textContent = 
+                    'Anda berada ' + jarakBulat + ' meter dari lokasi kegiatan. ' +
+                    'Maksimal radius: ' + KEGIATAN_RADIUS + ' meter. ' +
+                    'Silakan pindah ke lokasi kegiatan dan coba lagi.';
+                btnSubmit.disabled = true;
+            }
+        },
+        // ERROR: Gagal mendapatkan lokasi
+        function (error) {
+            hideAllStatus();
+            elError.style.display = 'block';
+            
+            let pesan = '';
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    pesan = 'Anda menolak akses lokasi. Silakan aktifkan GPS dan izinkan akses lokasi di pengaturan browser Anda, lalu coba lagi.';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    pesan = 'Informasi lokasi tidak tersedia. Pastikan GPS perangkat Anda aktif.';
+                    break;
+                case error.TIMEOUT:
+                    pesan = 'Waktu deteksi lokasi habis. Pastikan Anda berada di area dengan sinyal GPS yang baik.';
+                    break;
+                default:
+                    pesan = 'Terjadi kesalahan saat mendeteksi lokasi. Silakan coba lagi.';
+            }
+            
+            document.getElementById('lokasi-error-detail').textContent = pesan;
+            btnSubmit.disabled = true;
+        },
+        // OPTIONS
+        {
+            enableHighAccuracy: true,  // Gunakan GPS presisi tinggi
+            timeout: 15000,            // Timeout 15 detik
+            maximumAge: 0              // Jangan pakai cache, selalu minta lokasi baru
+        }
+    );
+}
+
+// Jalankan deteksi lokasi otomatis saat halaman dimuat
+document.addEventListener('DOMContentLoaded', function() {
+    detectLocation();
+});
+
+// Cegah submit jika lokasi belum valid
+document.querySelector('form').addEventListener('submit', function(e) {
+    if (HAS_LOCATION) {
+        const lokasiValid = document.getElementById('lokasi_valid').value;
+        if (lokasiValid !== '1') {
+            e.preventDefault();
+            alert('⚠️ Lokasi Anda belum terverifikasi atau di luar radius kegiatan.\n\nSilakan pastikan Anda berada di lokasi kegiatan dan klik "Coba Deteksi Ulang".');
+            return false;
+        }
+    }
+});
 </script>
 <?php 
 $extra_js = ob_get_clean();
