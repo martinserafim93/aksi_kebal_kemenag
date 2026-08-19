@@ -72,7 +72,7 @@
         </p>
         
         <!-- Redirect to formulir absensi (placeholder for Issue #12 URL) -->
-        <a href="<?= url('absensi?kegiatan=' . $absensi['id_kegiatan']) ?>" class="btn btn-primary" id="btnBack">
+        <a href="<?= url('absensi?kegiatan=' . $absensi['kode_kegiatan']) ?>" class="btn btn-primary" id="btnBack">
             Kembali ke Formulir
         </a>
     </div>

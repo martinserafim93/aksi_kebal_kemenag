@@ -39,6 +39,7 @@
 
         <form action="<?= url('absensi/submit') ?>" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="id_kegiatan" value="<?= e($kegiatan['id_kegiatan']) ?>">
+            <input type="hidden" name="kode_kegiatan" value="<?= e($kegiatan['kode_kegiatan']) ?>">
             <?= csrfField() ?>
             
             <!-- Hidden inputs untuk lokasi GPS pegawai -->

@@ -19,7 +19,7 @@
         <h3 class="card-title">Data Absensi</h3>
     </div>
     <div class="card-body">
-        <form action="<?= url('admin/absensi-edit/' . $absensi['id_absensi']) ?>" method="POST">
+        <form action="<?= url('admin/absensi-edit/' . $absensi['kode_absensi']) ?>" method="POST">
             <?= csrfField() ?>
             
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
