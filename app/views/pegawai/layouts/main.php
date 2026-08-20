@@ -33,7 +33,8 @@
         </main>
 
         <footer class="pegawai-footer">
-            <p>&copy; <?= date('Y') ?> Kementerian Agama. All rights reserved.</p>
+            <p>&copy; <?= date('Y') ?> &mdash; <?= e(APP_NAME) ?> &mdash;<br>
+            Kantor Wilayah Kementerian Agama Provinsi Kalimantan Utara</p>
         </footer>
     </div>
 

@@ -150,7 +150,8 @@ $admin_role = adminData('nama_jabatan') ?? 'Administrator';
 
             <!-- Footer -->
             <footer class="admin-footer">
-                &copy; <?= date('Y') ?> <strong><?= e(APP_NAME) ?></strong>. Kementerian Agama.
+                &copy; <?= date('Y') ?> &mdash; <strong><?= e(APP_NAME) ?></strong> &mdash;<br>
+                Kantor Wilayah Kementerian Agama Provinsi Kalimantan Utara
             </footer>
 
         </main>

@@ -2,7 +2,7 @@
 -- MIGRASI: Tambah kolom kode unik absensi
 -- ============================================================
 
-USE `aksi_kebal`;
+-- USE `aksi_kebal`;
 
 -- 1. Tambah kolom kode_absensi (unique, pendek)
 ALTER TABLE `absensi`

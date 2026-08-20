@@ -115,6 +115,7 @@
             margin-top: 3rem;
             color: rgba(255, 255, 255, 0.6);
             font-size: 0.8rem;
+            text-align: center;
         }
 
         @media (max-width: 480px) {
@@ -150,7 +151,8 @@
         </div>
 
         <div class="footer">
-            <p>&copy; <?= date('Y') ?> <?= e(APP_NAME) ?> v<?= APP_VERSION ?></p>
+            <p>&copy; <?= date('Y') ?> &mdash; <?= e(APP_NAME) ?> &mdash;<br>
+            Kantor Wilayah Kementerian Agama Provinsi Kalimantan Utara</p>
         </div>
     </div>
 </body>

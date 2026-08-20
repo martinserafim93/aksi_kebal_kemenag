@@ -8,12 +8,12 @@
 -- Charset: utf8mb4 (mendukung karakter Unicode lengkap)
 -- ============================================================
 
--- Buat database jika belum ada
-CREATE DATABASE IF NOT EXISTS `aksi_kebal`
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_unicode_ci;
+-- Buat database jika belum ada (Di-comment untuk hosting InfinityFree)
+-- CREATE DATABASE IF NOT EXISTS `aksi_kebal`
+--   CHARACTER SET utf8mb4
+--   COLLATE utf8mb4_unicode_ci;
 
-USE `aksi_kebal`;
+-- USE `aksi_kebal`;
 
 -- ============================================================
 -- Hapus tabel jika sudah ada (urutan sesuai dependensi FK)
