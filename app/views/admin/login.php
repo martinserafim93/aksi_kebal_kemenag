@@ -94,7 +94,8 @@
 
         <!-- Footer -->
         <div class="auth-footer">
-            <span>&copy; <?= date('Y') ?> <?= e(APP_NAME) ?> — Kementerian Agama</span>
+            <span>&copy; <?= date('Y') ?> &mdash; <?= e(APP_NAME) ?> &mdash;<br>
+            Kantor Wilayah Kementerian Agama Provinsi Kalimantan Utara</span>
             <span class="auth-version">v<?= e(APP_VERSION) ?></span>
         </div>
     </div>

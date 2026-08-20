@@ -2,7 +2,7 @@
 -- MIGRASI: Tambah kolom koordinat GPS untuk fitur validasi lokasi
 -- ============================================================
 
-USE `aksi_kebal`;
+-- USE `aksi_kebal`;
 
 -- 1. Tambah kolom koordinat di tabel KEGIATAN
 --    Ini adalah titik lokasi kegiatan yang ditentukan admin

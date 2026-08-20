@@ -2,7 +2,7 @@
 -- MIGRASI: Tambah kolom kode unik kegiatan (Issue #58)
 -- ============================================================
 
-USE `aksi_kebal`;
+-- USE `aksi_kebal`;
 
 -- 1. Tambah kolom kode_kegiatan (unique, pendek)
 ALTER TABLE `kegiatan`
