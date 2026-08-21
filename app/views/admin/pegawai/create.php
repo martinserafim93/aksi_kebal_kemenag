@@ -70,15 +70,15 @@ ob_start();
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
                 <div class="form-group">
                     <label for="role" style="display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.95rem;">Hak Akses (Role)</label>
-                    <select id="role" name="role" class="form-control" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;">
+                    <select id="role" name="role" class="form-control" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;" onchange="togglePassword(this.value)">
                         <option value="pegawai">Pegawai Biasa</option>
                         <option value="admin">Administrator</option>
                     </select>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" id="password_group" style="display: none;">
                     <label for="password" style="display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.95rem;">Password Akun <span style="color: red;">*</span></label>
-                    <input type="password" id="password" name="password" class="form-control" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;" required minlength="6">
+                    <input type="password" id="password" name="password" class="form-control" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;" minlength="6">
                     <small style="color: var(--text-muted); font-size: 0.8rem; display: block; margin-top: 0.25rem;">Minimal 6 karakter.</small>
                 </div>
             </div>
@@ -94,4 +94,25 @@ ob_start();
 
 <?php
 $content = ob_get_clean();
+
+ob_start();
+?>
+<script>
+    function togglePassword(role) {
+        const passGroup = document.getElementById('password_group');
+        const passInput = document.getElementById('password');
+        if (role === 'admin') {
+            passGroup.style.display = 'block';
+            passInput.required = true;
+        } else {
+            passGroup.style.display = 'none';
+            passInput.required = false;
+        }
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        togglePassword(document.getElementById('role').value);
+    });
+</script>
+<?php
+$extra_js = ob_get_clean();
 require_once __DIR__ . '/../layouts/main.php';

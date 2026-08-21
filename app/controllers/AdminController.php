@@ -219,7 +219,7 @@ class AdminController extends Controller
             $errors = [];
             if (empty($nip)) $errors[] = 'NIP wajib diisi.';
             if (empty($nama)) $errors[] = 'Nama lengkap wajib diisi.';
-            if (empty($password)) $errors[] = 'Password wajib diisi.';
+            if ($role === 'admin' && empty($password)) $errors[] = 'Password wajib diisi untuk Administrator.';
             
             if ($pegawaiModel->isNipExists($nip)) {
                 $errors[] = 'NIP sudah terdaftar.';
@@ -238,7 +238,7 @@ class AdminController extends Controller
                 'id_jabatan' => $id_jabatan,
                 'id_tim_kerja' => $id_tim_kerja,
                 'email' => $email,
-                'password' => password_hash($password, PASSWORD_DEFAULT),
+                'password' => empty($password) ? password_hash($nip, PASSWORD_DEFAULT) : password_hash($password, PASSWORD_DEFAULT),
                 'role' => $role
             ];
 

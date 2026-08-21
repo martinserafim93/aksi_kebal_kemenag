@@ -62,21 +62,32 @@ class KegiatanModel
 
     public function generateKode(): string
     {
-        $maxAttempts = 10;
+        $chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
         
-        for ($i = 0; $i < $maxAttempts; $i++) {
-            $chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-            $kode = '';
-            for ($j = 0; $j < 6; $j++) {
-                $kode .= $chars[random_int(0, strlen($chars) - 1)];
+        for ($i = 0; $i < 3; $i++) {
+            $candidates = [];
+            for ($c = 0; $c < 5; $c++) {
+                $kode = '';
+                for ($j = 0; $j < 6; $j++) {
+                    $kode .= $chars[random_int(0, strlen($chars) - 1)];
+                }
+                $candidates[] = $kode;
             }
             
-            $this->db->query("SELECT COUNT(*) as total FROM kegiatan WHERE kode_kegiatan = :kode");
-            $this->db->bind(':kode', $kode);
-            $result = $this->db->fetch();
+            $placeholders = implode(',', array_fill(0, count($candidates), '?'));
+            $this->db->query("SELECT kode_kegiatan FROM kegiatan WHERE kode_kegiatan IN ($placeholders)");
             
-            if ($result['total'] == 0) {
-                return $kode;
+            $stmt = $this->db->getStatement();
+            foreach ($candidates as $index => $candidate) {
+                $stmt->bindValue($index + 1, $candidate);
+            }
+            $existing = $this->db->fetchAll();
+            $existingCodes = array_column($existing, 'kode_kegiatan');
+            
+            foreach ($candidates as $candidate) {
+                if (!in_array($candidate, $existingCodes)) {
+                    return $candidate;
+                }
             }
         }
         

@@ -143,6 +143,14 @@ class Database
         return $this->pdo->rollBack();
     }
 
+    /**
+     * Mendapatkan PDOStatement yang aktif
+     */
+    public function getStatement(): PDOStatement
+    {
+        return $this->stmt;
+    }
+
     // Prevent cloning and unserialization
     private function __clone() {}
     public function __wakeup()

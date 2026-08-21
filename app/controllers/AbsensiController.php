@@ -36,7 +36,7 @@ class AbsensiController extends Controller
         }
 
         $pegawaiModel = $this->model('PegawaiModel');
-        $pegawaiList = $pegawaiModel->getAllPaginated('', 1000, 0); // Ambil semua pegawai (asumsi < 1000)
+        $pegawaiList = $pegawaiModel->getListForDropdown(); // Optimasi: ambil field minimal
 
         // Tampilkan halaman formulir absensi
         $this->view('pegawai/absensi/index', [
