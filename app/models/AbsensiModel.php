@@ -26,7 +26,7 @@ class AbsensiModel
      */
     public function getAllPaginated(array $filters = [], int $limit = 10, int $offset = 0): array
     {
-        $query = "SELECT a.*, 
+        $query = "SELECT a.id_absensi, a.kode_absensi, a.nip, a.id_kegiatan, a.status_kehadiran, a.created_at, 
                          p.nama_lengkap, 
                          k.nama_kegiatan, k.jenis_kegiatan, k.tanggal_kegiatan, k.waktu_mulai, k.waktu_selesai, k.lokasi_kegiatan
                   FROM absensi a
@@ -105,9 +105,13 @@ class AbsensiModel
                     COUNT(*) as total,
                     SUM(CASE WHEN a.status_kehadiran = 'Hadir' THEN 1 ELSE 0 END) as hadir,
                     SUM(CASE WHEN a.status_kehadiran = 'Tidak Hadir' THEN 1 ELSE 0 END) as tidak_hadir
-                  FROM absensi a
-                  JOIN kegiatan k ON a.id_kegiatan = k.id_kegiatan
-                  WHERE 1=1";
+                  FROM absensi a";
+
+        if (!empty($filters['jenis']) || !empty($filters['tanggal'])) {
+            $query .= " JOIN kegiatan k ON a.id_kegiatan = k.id_kegiatan";
+        }
+        
+        $query .= " WHERE 1=1";
 
         $query .= $this->buildFilterClause($filters);
 
@@ -167,21 +171,32 @@ class AbsensiModel
 
     public function generateKodeAbsensi(): string
     {
-        $maxAttempts = 10;
+        $chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
         
-        for ($i = 0; $i < $maxAttempts; $i++) {
-            $chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-            $kode = '';
-            for ($j = 0; $j < 6; $j++) {
-                $kode .= $chars[random_int(0, strlen($chars) - 1)];
+        for ($i = 0; $i < 3; $i++) {
+            $candidates = [];
+            for ($c = 0; $c < 5; $c++) {
+                $kode = '';
+                for ($j = 0; $j < 6; $j++) {
+                    $kode .= $chars[random_int(0, strlen($chars) - 1)];
+                }
+                $candidates[] = $kode;
             }
             
-            $this->db->query("SELECT COUNT(*) as total FROM absensi WHERE kode_absensi = :kode");
-            $this->db->bind(':kode', $kode);
-            $result = $this->db->fetch();
+            $placeholders = implode(',', array_fill(0, count($candidates), '?'));
+            $this->db->query("SELECT kode_absensi FROM absensi WHERE kode_absensi IN ($placeholders)");
             
-            if ($result['total'] == 0) {
-                return $kode;
+            $stmt = $this->db->getStatement();
+            foreach ($candidates as $index => $candidate) {
+                $stmt->bindValue($index + 1, $candidate);
+            }
+            $existing = $this->db->fetchAll();
+            $existingCodes = array_column($existing, 'kode_absensi');
+            
+            foreach ($candidates as $candidate) {
+                if (!in_array($candidate, $existingCodes)) {
+                    return $candidate;
+                }
             }
         }
         
@@ -237,9 +252,11 @@ class AbsensiModel
     public function getKegiatanList(): array
     {
         $this->db->query(
-            "SELECT DISTINCT k.id_kegiatan, k.nama_kegiatan, k.jenis_kegiatan, k.tanggal_kegiatan
+            "SELECT k.id_kegiatan, k.nama_kegiatan, k.jenis_kegiatan, k.tanggal_kegiatan
              FROM kegiatan k
-             INNER JOIN absensi a ON k.id_kegiatan = a.id_kegiatan
+             WHERE EXISTS (
+                 SELECT 1 FROM absensi a WHERE a.id_kegiatan = k.id_kegiatan
+             )
              ORDER BY k.tanggal_kegiatan DESC"
         );
         return $this->db->fetchAll();

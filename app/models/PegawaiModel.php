@@ -190,4 +190,13 @@ class PegawaiModel
         $this->db->query("SELECT * FROM tim_kerja ORDER BY nama_tim_kerja ASC");
         return $this->db->fetchAll();
     }
+
+    /**
+     * Mengambil daftar pegawai untuk dropdown (hanya field tertentu)
+     */
+    public function getListForDropdown(): array
+    {
+        $this->db->query("SELECT nip, nama_lengkap FROM pegawai ORDER BY nama_lengkap ASC");
+        return $this->db->fetchAll();
+    }
 }

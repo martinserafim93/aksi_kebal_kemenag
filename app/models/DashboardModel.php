@@ -50,9 +50,11 @@ class DashboardModel
      */
     public function getTotalAbsensiHariIni(): int
     {
-        $today = date('Y-m-d');
-        $this->db->query("SELECT COUNT(*) as total FROM absensi WHERE DATE(created_at) = :tanggal");
-        $this->db->bind(':tanggal', $today);
+        $start = date('Y-m-d 00:00:00');
+        $end = date('Y-m-d 23:59:59');
+        $this->db->query("SELECT COUNT(*) as total FROM absensi WHERE created_at BETWEEN :start AND :end");
+        $this->db->bind(':start', $start);
+        $this->db->bind(':end', $end);
         $result = $this->db->fetch();
         return $result ? (int) $result['total'] : 0;
     }

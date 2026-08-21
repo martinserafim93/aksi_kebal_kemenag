@@ -70,13 +70,13 @@ ob_start();
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
                 <div class="form-group">
                     <label for="role" style="display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.95rem;">Hak Akses (Role)</label>
-                    <select id="role" name="role" class="form-control" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;">
+                    <select id="role" name="role" class="form-control" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;" onchange="togglePassword(this.value)">
                         <option value="pegawai" <?= ($pegawai['role'] === 'pegawai') ? 'selected' : '' ?>>Pegawai Biasa</option>
                         <option value="admin" <?= ($pegawai['role'] === 'admin') ? 'selected' : '' ?>>Administrator</option>
                     </select>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" id="password_group" style="<?= ($pegawai['role'] === 'admin') ? 'display: block;' : 'display: none;' ?>">
                     <label for="password" style="display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.95rem;">Ubah Password</label>
                     <input type="password" id="password" name="password" class="form-control" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;" minlength="6">
                     <small style="color: var(--text-muted); font-size: 0.8rem; display: block; margin-top: 0.25rem;">Biarkan kosong jika tidak ingin mengubah password.</small>
@@ -94,4 +94,20 @@ ob_start();
 
 <?php
 $content = ob_get_clean();
+
+ob_start();
+?>
+<script>
+    function togglePassword(role) {
+        const passGroup = document.getElementById('password_group');
+        if (role === 'admin') {
+            passGroup.style.display = 'block';
+        } else {
+            passGroup.style.display = 'none';
+            document.getElementById('password').value = '';
+        }
+    }
+</script>
+<?php
+$extra_js = ob_get_clean();
 require_once __DIR__ . '/../layouts/main.php';
