@@ -26,7 +26,7 @@ Sistem ini menghadirkan antarmuka admin yang elegan serta alur absensi pegawai b
 ## ✨ Fitur Unggulan
 
 ### 🚀 **Antarmuka Modern & Responsif (UI/UX Premium)**
-Desain memukau dengan implementasi gaya *glassmorphism*, gradasi warna yang dinamis, serta *micro-animations* yang interaktif. Antarmuka sepenuhnya responsif, memastikan kenyamanan akses yang setara dari PC, tablet, maupun *smartphone*.
+Desain memukau dengan implementasi gaya *glassmorphism*, gradasi warna yang dinamis, serta *micro-animations* yang interaktif. Form input dilengkapi logika cerdas dan adaptif terhadap hak akses (*Role-based UI*). Antarmuka sepenuhnya responsif, memastikan kenyamanan akses yang setara dari PC, tablet, maupun *smartphone*.
 
 ### 📸 **Absensi Cepat via QR Code**
 Ucapkan selamat tinggal pada proses antre! Pegawai tidak perlu *login*. Cukup *scan* QR Code unik yang ditampilkan oleh Admin pada lokasi kegiatan, dan pegawai akan langsung diarahkan ke laman pengisian absensi secara instan.
@@ -35,13 +35,16 @@ Ucapkan selamat tinggal pada proses antre! Pegawai tidak perlu *login*. Cukup *s
 Sistem dapat menerima unggahan bukti foto kehadiran dan secara *real-time* melakukan kompresi ukuran gambar (sehingga < 1 MB) tanpa mengacaukan orientasi (EXIF data) dan mempertahankan kualitas visual. Hal ini sangat menghemat kapasitas penyimpanan server!
 
 ### 📊 **Pelaporan Dinamis (Ekspor PDF & CSV)**
-Data kehadiran direkapitulasi secara terstruktur dan dapat difilter dengan spesifik. Admin dapat mencetak laporan akhir ke dalam format **PDF** yang rapi atau mengekspor ke format **CSV** untuk diolah lebih lanjut melalui aplikasi *spreadsheet* hanya dalam satu klik.
+Data kehadiran direkapitulasi secara terstruktur dan dapat difilter dengan spesifik. Admin dapat mencetak laporan akhir ke dalam format **PDF** berskala instansi lengkap dengan **Kop Surat Resmi Kemenag**, atau mengekspor ke format **CSV** untuk diolah lebih lanjut melalui aplikasi *spreadsheet* hanya dalam satu klik.
 
 ### 👥 **Manajemen Data Induk Terpusat (Master Data)**
 Modul **CRUD (Create, Read, Update, Delete)** yang komprehensif memudahkan pengelolaan:
-- 🧑‍💼 **Data Pegawai**: Manajemen NIP, jabatan, dan hak akses absensi.
-- 🏢 **Tim Kerja & Jabatan**: Pengelompokan struktur organisasi unit kerja yang rapi.
+- 🧑‍💼 **Data Pegawai**: Manajemen NIP, jabatan, dan hak akses absensi yang cerdas.
+- 🏢 **Tim Kerja & Jabatan**: Pengelompokan struktur organisasi unit kerja yang rapi (dilengkapi dengan *URL Slug* yang *SEO-friendly* dan aman).
 - 📅 **Manajemen Kegiatan**: Mulai dari penjadwalan, pengaturan status (*Draft/Publish*), hingga pembuatan dan regenerasi QR Code kegiatan.
+
+### ⚡ **Performa & Kecepatan Maksimal (Database Optimized)**
+Meskipun menampung data besar, performa aplikasi dijamin tetap secepat kilat berkat penerapan indeks database (`Indexing`), algoritma pencarian lanjutan (`EXISTS` & `BETWEEN`), serta optimalisasi pemrosesan kueri massal (`Batch Querying`).
 
 ### 🔒 **Sistem Keamanan Berlapis**
 Aplikasi ini dibekali dengan pengamanan ekstra untuk melindungi data vital:
