@@ -13,20 +13,42 @@
             padding: 20px;
         }
         .header {
-            text-align: center;
             border-bottom: 3px double #000;
-            padding-bottom: 10px;
+            padding-bottom: 15px;
             margin-bottom: 20px;
         }
-        .header h1 {
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        .header-logo {
+            width: 70px;
+            height: auto;
+            flex-shrink: 0;
+        }
+        .header-text {
+            text-align: center;
+        }
+        .header-text h1 {
             margin: 0;
-            font-size: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .header-text h2 {
+            margin: 4px 0 0;
+            font-size: 14px;
+            font-weight: bold;
             text-transform: uppercase;
         }
-        .header h2 {
-            margin: 5px 0 0;
-            font-size: 16px;
-            font-weight: normal;
+        .header-address {
+            margin: 4px 0 0;
+            font-size: 11px;
+            font-style: italic;
+            color: #333;
         }
         .info-table {
             width: 100%;
@@ -86,8 +108,8 @@
                 size: A4 portrait;
                 margin: 1.5cm;
             }
-            button {
-                display: none;
+            .no-print {
+                display: none !important;
             }
         }
         .print-btn {
@@ -108,11 +130,17 @@
 </head>
 <body onload="window.print()">
 
-    <button class="print-btn" onclick="window.print()">Cetak Laporan / Simpan PDF</button>
+    <button class="print-btn no-print" onclick="window.print()">Cetak Laporan / Simpan PDF</button>
 
     <div class="header">
-        <h1>Laporan Kehadiran Pegawai</h1>
-        <h2>AKSI KEBAL (Absensi Kegiatan Serentak Kementerian Beramal dan Andal)</h2>
+        <div class="header-content">
+            <img src="<?= url('assets/img/kemenag-new-2025.png') ?>" alt="Logo Kemenag" class="header-logo">
+            <div class="header-text">
+                <h1>LAPORAN KEHADIRAN PEGAWAI PADA AKSI KEBAL</h1>
+                <h2>KANTOR WILAYAH KEMENTERIAN AGAMA PROVINSI KALIMANTAN UTARA</h2>
+                <p class="header-address">Jalan Ahmad Yani Poros Bulungan – Berau KM. 2, Tanjung Selor 77212</p>
+            </div>
+        </div>
     </div>
 
     <table class="info-table">
