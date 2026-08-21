@@ -22,11 +22,11 @@ class TimKerjaModel
     public function getAll(): array
     {
         // Join dengan tabel pegawai untuk menghitung jumlah anggota per tim kerja
-        $query = "SELECT t.id_tim_kerja, t.nama_tim_kerja, t.created_at, 
+        $query = "SELECT t.id_tim_kerja, t.nama_tim_kerja, t.slug_tim_kerja, t.created_at, 
                          COUNT(p.nip) as jumlah_anggota 
                   FROM tim_kerja t
                   LEFT JOIN pegawai p ON t.id_tim_kerja = p.id_tim_kerja
-                  GROUP BY t.id_tim_kerja, t.nama_tim_kerja, t.created_at
+                  GROUP BY t.id_tim_kerja, t.nama_tim_kerja, t.slug_tim_kerja, t.created_at
                   ORDER BY t.nama_tim_kerja ASC";
                   
         $this->db->query($query);
@@ -47,21 +47,34 @@ class TimKerjaModel
     }
 
     /**
-     * Cek apakah nama tim kerja sudah ada
+     * Ambil tim kerja berdasarkan slug
+     *
+     * @param string $slug
+     * @return array|false
+     */
+    public function findBySlug(string $slug)
+    {
+        $this->db->query("SELECT * FROM tim_kerja WHERE slug_tim_kerja = :slug");
+        $this->db->bind(':slug', $slug);
+        return $this->db->fetch();
+    }
+
+    /**
+     * Cek apakah slug tim kerja sudah ada
      * 
-     * @param string $nama_tim_kerja
+     * @param string $slug
      * @param int|null $excludeId ID untuk dikecualikan saat update
      * @return bool
      */
-    public function isNameExists(string $nama_tim_kerja, ?int $excludeId = null): bool
+    public function isSlugExists(string $slug, ?int $excludeId = null): bool
     {
-        $query = "SELECT COUNT(*) as total FROM tim_kerja WHERE nama_tim_kerja = :nama";
+        $query = "SELECT COUNT(*) as total FROM tim_kerja WHERE slug_tim_kerja = :slug";
         if ($excludeId !== null) {
             $query .= " AND id_tim_kerja != :excludeId";
         }
 
         $this->db->query($query);
-        $this->db->bind(':nama', $nama_tim_kerja);
+        $this->db->bind(':slug', $slug);
         
         if ($excludeId !== null) {
             $this->db->bind(':excludeId', $excludeId, PDO::PARAM_INT);
@@ -79,10 +92,12 @@ class TimKerjaModel
      */
     public function create(array $data): bool
     {
-        $query = "INSERT INTO tim_kerja (nama_tim_kerja) VALUES (:nama_tim_kerja)";
+        $slug = generateSlug($data['nama_tim_kerja']);
+
+        $query = "INSERT INTO tim_kerja (nama_tim_kerja, slug_tim_kerja) VALUES (:nama_tim_kerja, :slug)";
         $this->db->query($query);
         $this->db->bind(':nama_tim_kerja', $data['nama_tim_kerja']);
-
+        $this->db->bind(':slug', $slug);
         return $this->db->execute();
     }
 
@@ -95,9 +110,12 @@ class TimKerjaModel
      */
     public function update(int $id, array $data): bool
     {
-        $query = "UPDATE tim_kerja SET nama_tim_kerja = :nama_tim_kerja WHERE id_tim_kerja = :id";
+        $slug = generateSlug($data['nama_tim_kerja']);
+
+        $query = "UPDATE tim_kerja SET nama_tim_kerja = :nama_tim_kerja, slug_tim_kerja = :slug WHERE id_tim_kerja = :id";
         $this->db->query($query);
         $this->db->bind(':nama_tim_kerja', $data['nama_tim_kerja']);
+        $this->db->bind(':slug', $slug);
         $this->db->bind(':id', $id, PDO::PARAM_INT);
 
         return $this->db->execute();

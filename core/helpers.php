@@ -204,3 +204,22 @@ function truncate(string $string, int $length = 100): string
     }
     return mb_substr($string, 0, $length) . '...';
 }
+
+/**
+ * Generate slug dari string (kebab-case, URL-safe)
+ *
+ * @param string $text Teks sumber
+ * @return string Slug yang sudah di-sanitasi
+ */
+function generateSlug(string $text): string
+{
+    // Lowercase
+    $slug = strtolower($text);
+    // Ganti karakter non-alfanumerik menjadi dash
+    $slug = preg_replace('/[^a-z0-9\-]/', '-', $slug);
+    // Hapus dash berulang
+    $slug = preg_replace('/-+/', '-', $slug);
+    // Trim dash di awal/akhir
+    $slug = trim($slug, '-');
+    return $slug;
+}

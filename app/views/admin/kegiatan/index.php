@@ -107,10 +107,10 @@
                             <td style="padding: 1.25rem 1rem; vertical-align: middle; text-align: center;">
                                 <div style="display: flex; gap: 0.35rem; flex-wrap: wrap; justify-content: center;">
                                     <?php if ($k['status_kegiatan'] === 'Draft'): ?>
-                                        <a href="<?= url('admin/kegiatan-edit/' . $k['id_kegiatan']) ?>" class="btn btn-warning" title="Edit Kegiatan" style="padding: 0.35rem 0.6rem; font-size: 0.875rem; border-radius: 0.375rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                                        <a href="<?= url('admin/kegiatan-edit/' . $k['kode_kegiatan']) ?>" class="btn btn-warning" title="Edit Kegiatan" style="padding: 0.35rem 0.6rem; font-size: 0.875rem; border-radius: 0.375rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
                                             <i class='bx bx-edit'></i>
                                         </a>
-                                        <form action="<?= url('admin/kegiatan-publish/' . $k['id_kegiatan']) ?>" method="POST" class="form-publish" style="display: inline-block;">
+                                        <form action="<?= url('admin/kegiatan-publish/' . $k['kode_kegiatan']) ?>" method="POST" class="form-publish" style="display: inline-block;">
                                             <input type="hidden" name="csrf_token" value="<?= e(Middleware::generateCsrfToken()) ?>">
                                             <button type="submit" class="btn btn-success" title="Publish Kegiatan" style="padding: 0.35rem 0.6rem; font-size: 0.875rem; border-radius: 0.375rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
                                                 <i class='bx bx-broadcast'></i>
@@ -122,7 +122,7 @@
                                         </a>
                                     <?php endif; ?>
                                     
-                                    <form action="<?= url('admin/kegiatan-delete/' . $k['id_kegiatan']) ?>" method="POST" class="form-delete" style="display: inline-block;">
+                                    <form action="<?= url('admin/kegiatan-delete/' . $k['kode_kegiatan']) ?>" method="POST" class="form-delete" style="display: inline-block;">
                                         <input type="hidden" name="csrf_token" value="<?= e(Middleware::generateCsrfToken()) ?>">
                                         <button type="submit" class="btn btn-danger" title="Hapus Kegiatan" style="padding: 0.35rem 0.6rem; font-size: 0.875rem; border-radius: 0.375rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
                                             <i class='bx bx-trash'></i>

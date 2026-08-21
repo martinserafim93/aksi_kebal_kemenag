@@ -56,11 +56,11 @@ ob_start();
                                 </td>
                                 <td style="padding: 1rem; text-align: center;">
                                     <div style="display: flex; gap: 0.5rem; justify-content: center;">
-                                        <a href="<?= url('admin/tim-kerja-edit/' . urlencode($t['id_tim_kerja'])) ?>" class="btn" style="background: #eff6ff; color: #1d4ed8; padding: 0.4rem 0.6rem; border-radius: 0.25rem;" title="Edit">
+                                        <a href="<?= url('admin/tim-kerja-edit/' . urlencode($t['slug_tim_kerja'])) ?>" class="btn" style="background: #eff6ff; color: #1d4ed8; padding: 0.4rem 0.6rem; border-radius: 0.25rem;" title="Edit">
                                             <i class='bx bx-edit-alt'></i>
                                         </a>
                                         
-                                        <form action="<?= url('admin/tim-kerja-delete/' . urlencode($t['id_tim_kerja'])) ?>" method="POST" class="form-delete" style="display: inline-block;">
+                                        <form action="<?= url('admin/tim-kerja-delete/' . urlencode($t['slug_tim_kerja'])) ?>" method="POST" class="form-delete" style="display: inline-block;">
                                             <?= csrfField() ?>
                                             <button type="submit" class="btn btn-danger btn-sm" title="Hapus">
                                                 <i class='bx bx-trash'></i>

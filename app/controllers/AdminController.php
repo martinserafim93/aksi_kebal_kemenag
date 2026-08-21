@@ -427,7 +427,7 @@ class AdminController extends Controller
                 return;
             }
 
-            if ($model->isNameExists($nama_tim_kerja)) {
+            if ($model->isSlugExists(generateSlug($nama_tim_kerja))) {
                 setFlash('error', 'Nama tim kerja sudah terdaftar.');
                 $this->redirect('admin/tim-kerja-create');
                 return;
@@ -451,16 +451,16 @@ class AdminController extends Controller
     /**
      * Proses Edit Tim Kerja
      */
-    public function tim_kerja_edit($id = null): void
+    public function tim_kerja_edit($slug = null): void
     {
         Middleware::authAdmin();
-        if (!$id) {
+        if (!$slug) {
             $this->redirect('admin/tim-kerja');
             return;
         }
 
         $model = $this->model('TimKerjaModel');
-        $tim_kerja = $model->findById((int)$id);
+        $tim_kerja = $model->findBySlug($slug);
 
         if (!$tim_kerja) {
             setFlash('error', 'Tim kerja tidak ditemukan.');
@@ -472,7 +472,7 @@ class AdminController extends Controller
             $csrfToken = input('csrf_token');
             if (!$csrfToken || !Middleware::validateCsrfToken($csrfToken)) {
                 setFlash('error', 'Sesi tidak valid.');
-                $this->redirect('admin/tim-kerja-edit/' . $id);
+                $this->redirect('admin/tim-kerja-edit/' . $slug);
                 return;
             }
 
@@ -480,17 +480,17 @@ class AdminController extends Controller
 
             if (empty($nama_tim_kerja)) {
                 setFlash('error', 'Nama tim kerja tidak boleh kosong.');
-                $this->redirect('admin/tim-kerja-edit/' . $id);
+                $this->redirect('admin/tim-kerja-edit/' . $slug);
                 return;
             }
 
-            if ($model->isNameExists($nama_tim_kerja, (int)$id)) {
+            if ($model->isSlugExists(generateSlug($nama_tim_kerja), (int)$tim_kerja['id_tim_kerja'])) {
                 setFlash('error', 'Nama tim kerja sudah terdaftar.');
-                $this->redirect('admin/tim-kerja-edit/' . $id);
+                $this->redirect('admin/tim-kerja-edit/' . $slug);
                 return;
             }
 
-            if ($model->update((int)$id, ['nama_tim_kerja' => $nama_tim_kerja])) {
+            if ($model->update((int)$tim_kerja['id_tim_kerja'], ['nama_tim_kerja' => $nama_tim_kerja])) {
                 setFlash('success', 'Tim Kerja berhasil diperbarui.');
                 $this->redirect('admin/tim-kerja');
                 return;
@@ -509,21 +509,22 @@ class AdminController extends Controller
     /**
      * Proses Hapus Tim Kerja
      */
-    public function tim_kerja_delete($id = null): void
+    public function tim_kerja_delete($slug = null): void
     {
         Middleware::authAdmin();
 
-        if (isPost() && $id) {
+        if (isPost() && $slug) {
             $csrfToken = input('csrf_token');
             if (!$csrfToken || !Middleware::validateCsrfToken($csrfToken)) {
                 setFlash('error', 'Sesi tidak valid.');
             } else {
                 $model = $this->model('TimKerjaModel');
+                $tim_kerja = $model->findBySlug($slug);
                 
-                if ($model->delete((int)$id)) {
+                if ($tim_kerja && $model->delete((int)$tim_kerja['id_tim_kerja'])) {
                     setFlash('success', 'Tim Kerja berhasil dihapus.');
                 } else {
-                    setFlash('error', 'Gagal menghapus! Tim Kerja ini masih memiliki anggota pegawai.');
+                    setFlash('error', 'Gagal menghapus! Tim Kerja ini masih memiliki anggota pegawai atau tidak ditemukan.');
                 }
             }
         }
@@ -575,7 +576,7 @@ class AdminController extends Controller
                 return;
             }
 
-            if ($model->isNameExists($nama_jabatan)) {
+            if ($model->isSlugExists(generateSlug($nama_jabatan))) {
                 setFlash('error', 'Nama jabatan sudah terdaftar.');
                 $this->redirect('admin/jabatan-create');
                 return;
@@ -599,16 +600,16 @@ class AdminController extends Controller
     /**
      * Proses Edit Jabatan
      */
-    public function jabatan_edit($id = null): void
+    public function jabatan_edit($slug = null): void
     {
         Middleware::authAdmin();
-        if (!$id) {
+        if (!$slug) {
             $this->redirect('admin/jabatan');
             return;
         }
 
         $model = $this->model('JabatanModel');
-        $jabatan = $model->findById((int)$id);
+        $jabatan = $model->findBySlug($slug);
 
         if (!$jabatan) {
             setFlash('error', 'Jabatan tidak ditemukan.');
@@ -620,7 +621,7 @@ class AdminController extends Controller
             $csrfToken = input('csrf_token');
             if (!$csrfToken || !Middleware::validateCsrfToken($csrfToken)) {
                 setFlash('error', 'Sesi tidak valid.');
-                $this->redirect('admin/jabatan-edit/' . $id);
+                $this->redirect('admin/jabatan-edit/' . $slug);
                 return;
             }
 
@@ -628,17 +629,17 @@ class AdminController extends Controller
 
             if (empty($nama_jabatan)) {
                 setFlash('error', 'Nama jabatan tidak boleh kosong.');
-                $this->redirect('admin/jabatan-edit/' . $id);
+                $this->redirect('admin/jabatan-edit/' . $slug);
                 return;
             }
 
-            if ($model->isNameExists($nama_jabatan, (int)$id)) {
+            if ($model->isSlugExists(generateSlug($nama_jabatan), (int)$jabatan['id_jabatan'])) {
                 setFlash('error', 'Nama jabatan sudah terdaftar.');
-                $this->redirect('admin/jabatan-edit/' . $id);
+                $this->redirect('admin/jabatan-edit/' . $slug);
                 return;
             }
 
-            if ($model->update((int)$id, ['nama_jabatan' => $nama_jabatan])) {
+            if ($model->update((int)$jabatan['id_jabatan'], ['nama_jabatan' => $nama_jabatan])) {
                 setFlash('success', 'Jabatan berhasil diperbarui.');
                 $this->redirect('admin/jabatan');
                 return;
@@ -657,21 +658,22 @@ class AdminController extends Controller
     /**
      * Proses Hapus Jabatan
      */
-    public function jabatan_delete($id = null): void
+    public function jabatan_delete($slug = null): void
     {
         Middleware::authAdmin();
 
-        if (isPost() && $id) {
+        if (isPost() && $slug) {
             $csrfToken = input('csrf_token');
             if (!$csrfToken || !Middleware::validateCsrfToken($csrfToken)) {
                 setFlash('error', 'Sesi tidak valid.');
             } else {
                 $model = $this->model('JabatanModel');
+                $jabatan = $model->findBySlug($slug);
                 
-                if ($model->delete((int)$id)) {
+                if ($jabatan && $model->delete((int)$jabatan['id_jabatan'])) {
                     setFlash('success', 'Jabatan berhasil dihapus.');
                 } else {
-                    setFlash('error', 'Gagal menghapus! Jabatan ini masih memiliki anggota pegawai.');
+                    setFlash('error', 'Gagal menghapus! Jabatan ini masih memiliki anggota pegawai atau tidak ditemukan.');
                 }
             }
         }
@@ -749,16 +751,20 @@ class AdminController extends Controller
         ]);
     }
 
-    public function kegiatan_edit($id = null): void
+    public function kegiatan_edit($kode = null): void
     {
         Middleware::authAdmin();
-        if (!$id) {
+        if (!$kode) {
             $this->redirect('admin/kegiatan');
             return;
         }
 
         $model = $this->model('KegiatanModel');
-        $kegiatan = $model->findById((int)$id);
+        if (ctype_digit($kode)) {
+            $kegiatan = $model->findById((int)$kode);
+        } else {
+            $kegiatan = $model->findByKode($kode);
+        }
 
         if (!$kegiatan) {
             setFlash('error', 'Kegiatan tidak ditemukan.');
@@ -770,7 +776,7 @@ class AdminController extends Controller
             $csrfToken = input('csrf_token');
             if (!$csrfToken || !Middleware::validateCsrfToken($csrfToken)) {
                 setFlash('error', 'Sesi tidak valid.');
-                $this->redirect("admin/kegiatan-edit/$id");
+                $this->redirect("admin/kegiatan-edit/" . $kegiatan['kode_kegiatan']);
                 return;
             }
 
@@ -790,7 +796,7 @@ class AdminController extends Controller
             if (empty($data['nama_kegiatan']) || empty($data['jenis_kegiatan']) || empty($data['tanggal_kegiatan']) || empty($data['waktu_mulai']) || empty($data['waktu_selesai'])) {
                 setFlash('error', 'Semua kolom wajib (*) harus diisi.');
             } else {
-                if ($model->update((int)$id, $data)) {
+                if ($model->update((int)$kegiatan['id_kegiatan'], $data)) {
                     setFlash('success', 'Kegiatan berhasil diperbarui.');
                     $this->redirect('admin/kegiatan');
                     return;
@@ -807,41 +813,51 @@ class AdminController extends Controller
         ]);
     }
 
-    public function kegiatan_delete($id = null): void
+    public function kegiatan_delete($kode = null): void
     {
         Middleware::authAdmin();
 
-        if (isPost() && $id) {
+        if (isPost() && $kode) {
             $csrfToken = input('csrf_token');
             if (!$csrfToken || !Middleware::validateCsrfToken($csrfToken)) {
                 setFlash('error', 'Sesi tidak valid.');
             } else {
                 $model = $this->model('KegiatanModel');
-                if ($model->delete((int)$id)) {
+                if (ctype_digit($kode)) {
+                    $kegiatan = $model->findById((int)$kode);
+                } else {
+                    $kegiatan = $model->findByKode($kode);
+                }
+                
+                if ($kegiatan && $model->delete((int)$kegiatan['id_kegiatan'])) {
                     setFlash('success', 'Kegiatan berhasil dihapus.');
                 } else {
-                    setFlash('error', 'Gagal menghapus! Kegiatan ini memiliki data absensi terikat.');
+                    setFlash('error', 'Gagal menghapus! Kegiatan ini memiliki data absensi terikat atau tidak ditemukan.');
                 }
             }
         }
         $this->redirect('admin/kegiatan');
     }
 
-    public function kegiatan_publish($id = null): void
+    public function kegiatan_publish($kode = null): void
     {
         Middleware::authAdmin();
 
-        if (isPost() && $id) {
+        if (isPost() && $kode) {
             $csrfToken = input('csrf_token');
             if (!$csrfToken || !Middleware::validateCsrfToken($csrfToken)) {
                 setFlash('error', 'Sesi tidak valid.');
             } else {
                 $model = $this->model('KegiatanModel');
-                $kegiatan = $model->findById((int)$id);
+                if (ctype_digit($kode)) {
+                    $kegiatan = $model->findById((int)$kode);
+                } else {
+                    $kegiatan = $model->findByKode($kode);
+                }
+                
                 if ($kegiatan) {
-                    // Pastikan config app URL digunakan dengan baik, url() function ada dari helpers.php
                     $url = url("absensi?kegiatan=" . $kegiatan['kode_kegiatan']);
-                    if ($model->publish((int)$id, $url)) {
+                    if ($model->publish((int)$kegiatan['id_kegiatan'], $url)) {
                         setFlash('success', 'Kegiatan berhasil di-publish!');
                     } else {
                         setFlash('error', 'Gagal mem-publish kegiatan.');

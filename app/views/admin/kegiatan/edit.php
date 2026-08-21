@@ -16,7 +16,7 @@
 
 <div class="card" style="max-width: 800px; margin: 0 auto;">
     <div class="card-body">
-        <form action="<?= url('admin/kegiatan-edit/' . $kegiatan['id_kegiatan']) ?>" method="POST">
+        <form action="<?= url('admin/kegiatan-edit/' . $kegiatan['kode_kegiatan']) ?>" method="POST">
             <input type="hidden" name="csrf_token" value="<?= e(Middleware::generateCsrfToken()) ?>">
 
             <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">

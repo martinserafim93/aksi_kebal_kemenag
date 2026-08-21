@@ -22,11 +22,11 @@ class JabatanModel
     public function getAll(): array
     {
         // Join dengan tabel pegawai untuk menghitung jumlah pegawai per jabatan
-        $query = "SELECT j.id_jabatan, j.nama_jabatan, j.created_at, 
+        $query = "SELECT j.id_jabatan, j.nama_jabatan, j.slug_jabatan, j.created_at, 
                          COUNT(p.nip) as jumlah_pegawai 
                   FROM jabatan j
                   LEFT JOIN pegawai p ON j.id_jabatan = p.id_jabatan
-                  GROUP BY j.id_jabatan, j.nama_jabatan, j.created_at
+                  GROUP BY j.id_jabatan, j.nama_jabatan, j.slug_jabatan, j.created_at
                   ORDER BY j.nama_jabatan ASC";
                   
         $this->db->query($query);
@@ -47,21 +47,34 @@ class JabatanModel
     }
 
     /**
-     * Cek apakah nama jabatan sudah ada
+     * Ambil jabatan berdasarkan slug
+     *
+     * @param string $slug
+     * @return array|false
+     */
+    public function findBySlug(string $slug)
+    {
+        $this->db->query("SELECT * FROM jabatan WHERE slug_jabatan = :slug");
+        $this->db->bind(':slug', $slug);
+        return $this->db->fetch();
+    }
+
+    /**
+     * Cek apakah slug jabatan sudah ada
      * 
-     * @param string $nama_jabatan
+     * @param string $slug
      * @param int|null $excludeId ID untuk dikecualikan saat update
      * @return bool
      */
-    public function isNameExists(string $nama_jabatan, ?int $excludeId = null): bool
+    public function isSlugExists(string $slug, ?int $excludeId = null): bool
     {
-        $query = "SELECT COUNT(*) as total FROM jabatan WHERE nama_jabatan = :nama";
+        $query = "SELECT COUNT(*) as total FROM jabatan WHERE slug_jabatan = :slug";
         if ($excludeId !== null) {
             $query .= " AND id_jabatan != :excludeId";
         }
 
         $this->db->query($query);
-        $this->db->bind(':nama', $nama_jabatan);
+        $this->db->bind(':slug', $slug);
         
         if ($excludeId !== null) {
             $this->db->bind(':excludeId', $excludeId, PDO::PARAM_INT);
@@ -79,9 +92,12 @@ class JabatanModel
      */
     public function create(array $data): bool
     {
-        $query = "INSERT INTO jabatan (nama_jabatan) VALUES (:nama_jabatan)";
+        $slug = generateSlug($data['nama_jabatan']);
+
+        $query = "INSERT INTO jabatan (nama_jabatan, slug_jabatan) VALUES (:nama_jabatan, :slug)";
         $this->db->query($query);
         $this->db->bind(':nama_jabatan', $data['nama_jabatan']);
+        $this->db->bind(':slug', $slug);
 
         return $this->db->execute();
     }
@@ -95,9 +111,12 @@ class JabatanModel
      */
     public function update(int $id, array $data): bool
     {
-        $query = "UPDATE jabatan SET nama_jabatan = :nama_jabatan WHERE id_jabatan = :id";
+        $slug = generateSlug($data['nama_jabatan']);
+
+        $query = "UPDATE jabatan SET nama_jabatan = :nama_jabatan, slug_jabatan = :slug WHERE id_jabatan = :id";
         $this->db->query($query);
         $this->db->bind(':nama_jabatan', $data['nama_jabatan']);
+        $this->db->bind(':slug', $slug);
         $this->db->bind(':id', $id, PDO::PARAM_INT);
 
         return $this->db->execute();

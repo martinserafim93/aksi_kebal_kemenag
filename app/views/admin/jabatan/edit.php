@@ -21,7 +21,7 @@ ob_start();
         <h3 class="card-title">Form Edit Jabatan</h3>
     </div>
     <div class="card-body">
-        <form action="<?= url('admin/jabatan-edit/' . urlencode($jabatan['id_jabatan'])) ?>" method="POST">
+        <form action="<?= url('admin/jabatan-edit/' . urlencode($jabatan['slug_jabatan'])) ?>" method="POST">
             <input type="hidden" name="csrf_token" value="<?= Middleware::generateCsrfToken() ?>">
             
             <div class="form-group" style="margin-bottom: 1.5rem;">
