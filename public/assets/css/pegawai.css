@@ -77,23 +77,24 @@ a {
     background-repeat: no-repeat;
     background-attachment: fixed;
     
-    /* Efek blur */
-    filter: blur(6px);
+    /* Efek blur dan pencahayaan */
+    filter: blur(3px) brightness(0.65);
     
     /* Sedikit zoom agar blur tidak menampilkan tepi putih */
     transform: scale(1.05);
     
     /* Transparansi / opacity */
-    opacity: 0.25;
+    opacity: 0.8;
 }
 
 .pegawai-header {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.6);
     color: var(--primary-dark);
     padding: 1.25rem 0;
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
     position: sticky;
     top: 0;
     z-index: 50;
