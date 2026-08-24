@@ -20,15 +20,14 @@
                 <span class="data-value"><?= e($absensi['nip']) ?></span>
             </div>
             
-            <div class="data-item" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                <div>
-                    <span class="data-label">Jabatan</span>
-                    <span class="data-value"><?= e($absensi['nama_jabatan'] ?? '-') ?></span>
-                </div>
-                <div>
-                    <span class="data-label">Tim Kerja</span>
-                    <span class="data-value"><?= e($absensi['nama_tim_kerja'] ?? '-') ?></span>
-                </div>
+            <div class="data-item">
+                <span class="data-label">Jabatan</span>
+                <span class="data-value" style="font-weight: 600; color: var(--primary-dark);"><?= e($absensi['nama_jabatan'] ?? '-') ?></span>
+            </div>
+            
+            <div class="data-item">
+                <span class="data-label">Tim Kerja</span>
+                <span class="data-value" style="font-size: 0.95rem; color: var(--text-muted);"><?= e($absensi['nama_tim_kerja'] ?? '-') ?></span>
             </div>
             
             <hr style="border: 0; border-top: 1px dashed var(--border-color); margin: 0.5rem 0;">
