@@ -91,16 +91,32 @@
                 </div>
             </div>
 
+            <!-- === SECTION: Status Kehadiran === -->
             <div class="form-group">
-                <label for="foto" class="form-label">Upload Foto <span style="color: var(--danger-color)">*</span></label>
-                <input type="file" name="foto" id="foto" class="form-control" accept="image/jpeg, image/png" required onchange="previewImage(event)">
-                <small class="text-muted" style="display: block; margin-top: 0.5rem; font-size: 0.85rem;">Format: JPG/PNG, Maksimal: 5MB.</small>
-                
-                <div id="imagePreviewContainer" style="display: none; margin-top: 1rem;">
-                    <p style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem;">Preview:</p>
-                    <img id="imagePreview" src="" alt="Preview" style="max-width: 100%; max-height: 250px; border-radius: 0.75rem; border: 2px dashed var(--border-color); padding: 0.25rem;">
-                </div>
+                <label for="status_kehadiran" class="form-label">
+                    Status Kehadiran <span style="color: var(--danger-color)">*</span>
+                </label>
+                <select name="status_kehadiran" id="status_kehadiran" class="form-control" required>
+                    <option value="" disabled selected>-- Pilih Status Kehadiran --</option>
+                    <option value="Hadir">✅ Hadir</option>
+                    <option value="Tidak Hadir">❌ Tidak Hadir</option>
+                </select>
             </div>
+            <!-- === END: Status Kehadiran === -->
+
+            <!-- === SECTION: Form Hadir (Foto + Lokasi GPS) === -->
+            <div id="section-hadir" style="display: none;">
+
+                <div class="form-group">
+                    <label for="foto" class="form-label">Upload Foto Kehadiran <span style="color: var(--danger-color)">*</span></label>
+                    <input type="file" name="foto" id="foto" class="form-control" accept="image/jpeg, image/png" onchange="previewImage(event)">
+                    <small class="text-muted" style="display: block; margin-top: 0.5rem; font-size: 0.85rem;">Format: JPG/PNG, Maksimal: 5MB.</small>
+                    
+                    <div id="imagePreviewContainer" style="display: none; margin-top: 1rem;">
+                        <p style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem;">Preview:</p>
+                        <img id="imagePreview" src="" alt="Preview" style="max-width: 100%; max-height: 250px; border-radius: 0.75rem; border: 2px dashed var(--border-color); padding: 0.25rem;">
+                    </div>
+                </div>
 
             <!-- === SECTION: Status Lokasi GPS === -->
             <div id="lokasi-status" class="form-group" style="margin-bottom: 1.5rem;">
@@ -156,6 +172,54 @@
             }
             </style>
             <!-- === END: Status Lokasi GPS === -->
+            
+            </div>
+            <!-- === END: Form Hadir === -->
+
+            <!-- === SECTION: Form Tidak Hadir (File Bukti) === -->
+            <div id="section-tidak-hadir" style="display: none;">
+
+                <div class="form-group">
+                    <label for="file_bukti" class="form-label">
+                        Upload Bukti Ketidakhadiran <span style="color: var(--danger-color)">*</span>
+                    </label>
+                    <input type="file" name="file_bukti" id="file_bukti" class="form-control" 
+                           accept="image/jpeg, image/png, application/pdf" 
+                           onchange="previewFileBukti(event)">
+                    <small class="text-muted" style="display: block; margin-top: 0.5rem; font-size: 0.85rem;">
+                        Format: JPG/PNG/PDF, Maksimal: 5MB.<br>
+                        Contoh: Surat izin, surat sakit, atau bukti lainnya.
+                    </small>
+                    
+                    <!-- Preview untuk gambar -->
+                    <div id="buktiPreviewContainer" style="display: none; margin-top: 1rem;">
+                        <p style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem;">Preview:</p>
+                        <img id="buktiImagePreview" src="" alt="Preview Bukti" 
+                             style="max-width: 100%; max-height: 250px; border-radius: 0.75rem; border: 2px dashed var(--border-color); padding: 0.25rem;">
+                    </div>
+                    
+                    <!-- Info untuk PDF (tidak bisa di-preview, cukup tampilkan nama file) -->
+                    <div id="buktiPdfInfo" style="display: none; margin-top: 1rem; padding: 1rem; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 0.5rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <i class='bx bxs-file-pdf' style="font-size: 1.5rem; color: #ef4444;"></i>
+                            <div>
+                                <p style="margin: 0; font-weight: 600; font-size: 0.9rem;" id="buktiPdfName">-</p>
+                                <small class="text-muted" id="buktiPdfSize">-</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Informasi: Lokasi GPS TIDAK diwajibkan -->
+                <div style="padding: 1rem; background: #fffbeb; border: 1px solid #fcd34d; border-radius: 0.5rem; margin-bottom: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; color: #92400e;">
+                        <i class='bx bxs-info-circle' style="font-size: 1.25rem;"></i>
+                        <span style="font-size: 0.9rem;">Lokasi GPS <strong>tidak diwajibkan</strong> karena Anda tidak hadir di lokasi kegiatan.</span>
+                    </div>
+                </div>
+                
+            </div>
+            <!-- === END: Form Tidak Hadir === -->
 
             <button type="submit" id="btn-submit-absensi" class="btn btn-primary" style="margin-top: 1.5rem;">
                 <i class='bx bx-send'></i> Submit Absensi
@@ -380,6 +444,82 @@
         }
     }
 
+    // ============================================================
+    // Toggle Section: Hadir / Tidak Hadir
+    // ============================================================
+    document.getElementById('status_kehadiran').addEventListener('change', function() {
+        const status = this.value;
+        const sectionHadir = document.getElementById('section-hadir');
+        const sectionTidakHadir = document.getElementById('section-tidak-hadir');
+        const btnSubmit = document.getElementById('btn-submit-absensi');
+        
+        // Reset: Sembunyikan semua dulu
+        sectionHadir.style.display = 'none';
+        sectionTidakHadir.style.display = 'none';
+        
+        if (status === 'Hadir') {
+            sectionHadir.style.display = 'block';
+            document.getElementById('lokasi-status').style.display = 'block';
+            
+            // Set required pada foto, hapus required pada file_bukti
+            document.getElementById('foto').setAttribute('required', '');
+            document.getElementById('file_bukti').removeAttribute('required');
+            
+            // Jalankan deteksi lokasi GPS (fungsi existing)
+            detectLocation();
+            
+        } else if (status === 'Tidak Hadir') {
+            sectionTidakHadir.style.display = 'block';
+            
+            // Set required pada file_bukti, hapus required pada foto
+            document.getElementById('file_bukti').setAttribute('required', '');
+            document.getElementById('foto').removeAttribute('required');
+            
+            // Aktifkan tombol submit (tidak perlu validasi lokasi)
+            btnSubmit.disabled = false;
+        }
+    });
+
+    // Preview file bukti (gambar atau PDF)
+    function previewFileBukti(event) {
+        const input = event.target;
+        const file = input.files[0];
+        
+        const imgContainer = document.getElementById('buktiPreviewContainer');
+        const imgPreview = document.getElementById('buktiImagePreview');
+        const pdfContainer = document.getElementById('buktiPdfInfo');
+        const pdfName = document.getElementById('buktiPdfName');
+        const pdfSize = document.getElementById('buktiPdfSize');
+        
+        // Reset semua preview
+        imgContainer.style.display = 'none';
+        pdfContainer.style.display = 'none';
+        
+        if (!file) return;
+        
+        // Validasi ukuran (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('⚠️ Ukuran file maksimal 5MB. File Anda: ' + (file.size / 1024 / 1024).toFixed(2) + ' MB');
+            input.value = '';
+            return;
+        }
+        
+        if (file.type === 'application/pdf') {
+            // Tampilkan info PDF
+            pdfName.textContent = file.name;
+            pdfSize.textContent = (file.size / 1024).toFixed(1) + ' KB';
+            pdfContainer.style.display = 'block';
+        } else if (file.type.startsWith('image/')) {
+            // Tampilkan preview gambar
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imgPreview.src = e.target.result;
+                imgContainer.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
 // =========================================================
 // SCRIPT: Deteksi Lokasi GPS dan Validasi Jarak
 // =========================================================
@@ -523,16 +663,53 @@ function detectLocation() {
 
 // Jalankan deteksi lokasi otomatis saat halaman dimuat
 document.addEventListener('DOMContentLoaded', function() {
-    detectLocation();
+    // Deteksi lokasi TIDAK otomatis lagi
+    // Akan dipanggil saat user memilih status "Hadir" pada option box
 });
 
-// Cegah submit jika lokasi belum valid
+// Cegah submit jika lokasi belum valid atau data tidak lengkap
 document.querySelector('form').addEventListener('submit', function(e) {
-    if (HAS_LOCATION) {
-        const lokasiValid = document.getElementById('lokasi_valid').value;
-        if (lokasiValid !== '1') {
+    const nip = document.getElementById('nip').value;
+    if (!nip) {
+        e.preventDefault();
+        alert('⚠️ Silakan pilih Nama Pegawai dari daftar pilihan yang muncul saat Anda mengetik.');
+        return false;
+    }
+
+    const statusKehadiran = document.getElementById('status_kehadiran').value;
+    
+    if (!statusKehadiran) {
+        e.preventDefault();
+        alert('⚠️ Silakan pilih Status Kehadiran terlebih dahulu.');
+        return false;
+    }
+    
+    if (statusKehadiran === 'Hadir') {
+        // Validasi lokasi GPS (hanya jika kegiatan punya koordinat)
+        if (HAS_LOCATION) {
+            const lokasiValid = document.getElementById('lokasi_valid').value;
+            if (lokasiValid !== '1') {
+                e.preventDefault();
+                alert('⚠️ Lokasi Anda belum terverifikasi atau di luar radius kegiatan.\n\nSilakan pastikan Anda berada di lokasi kegiatan dan klik "Coba Deteksi Ulang".');
+                return false;
+            }
+        }
+        
+        // Validasi foto
+        const fotoInput = document.getElementById('foto');
+        if (!fotoInput.files || fotoInput.files.length === 0) {
             e.preventDefault();
-            alert('⚠️ Lokasi Anda belum terverifikasi atau di luar radius kegiatan.\n\nSilakan pastikan Anda berada di lokasi kegiatan dan klik "Coba Deteksi Ulang".');
+            alert('⚠️ Foto kehadiran wajib diunggah.');
+            return false;
+        }
+    }
+    
+    if (statusKehadiran === 'Tidak Hadir') {
+        // Validasi file bukti
+        const fileBukti = document.getElementById('file_bukti');
+        if (!fileBukti.files || fileBukti.files.length === 0) {
+            e.preventDefault();
+            alert('⚠️ File bukti ketidakhadiran wajib diunggah.');
             return false;
         }
     }

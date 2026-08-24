@@ -60,9 +60,15 @@
             <div class="data-item" style="margin-top: 0.5rem;">
                 <span class="data-label">Status Kehadiran</span>
                 <div>
-                    <span class="badge-success">
-                        <i class='bx bx-check'></i> Hadir
-                    </span>
+                    <?php if (isset($absensi['status_kehadiran']) && $absensi['status_kehadiran'] === 'Tidak Hadir'): ?>
+                        <span style="display: inline-flex; align-items: center; gap: 0.25rem; background-color: #fee2e2; color: #991b1b; padding: 0.35rem 0.875rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 700;">
+                            <i class='bx bx-x'></i> Tidak Hadir
+                        </span>
+                    <?php else: ?>
+                        <span class="badge-success">
+                            <i class='bx bx-check'></i> Hadir
+                        </span>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

@@ -18,6 +18,10 @@
 </head>
 <body>
     
+    <!-- Background Kantor Kemenag (blur/transparan) -->
+    <div class="kemenag-bg-overlay" 
+         style="background-image: url('<?= asset('img/kemenag-kaltara.jpeg') ?>');"></div>
+    
     <div class="pegawai-wrapper">
         <header class="pegawai-header">
             <div class="container header-container">

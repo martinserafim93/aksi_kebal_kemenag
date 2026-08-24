@@ -30,10 +30,11 @@
 
 body {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background: var(--bg-gradient);
+    background-color: #f8fafc; /* Warna fallback jika gambar gagal dimuat */
     color: var(--text-main);
     line-height: 1.6;
     min-height: 100vh;
+    position: relative;
 }
 
 a {
@@ -53,11 +54,44 @@ a {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    position: relative;
+    z-index: 1;
+}
+
+/* ============================================================
+   Background Kantor Kemenag (Blur + Transparan)
+   ============================================================ */
+
+/* Layer background yang menutupi seluruh layar */
+.kemenag-bg-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;  /* Di belakang semua konten */
+    
+    /* Gambar background */
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    
+    /* Efek blur */
+    filter: blur(6px);
+    
+    /* Sedikit zoom agar blur tidak menampilkan tepi putih */
+    transform: scale(1.05);
+    
+    /* Transparansi / opacity */
+    opacity: 0.25;
 }
 
 .pegawai-header {
-    background: linear-gradient(90deg, var(--primary-dark) 0%, var(--primary) 100%);
-    color: white;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: var(--primary-dark);
     padding: 1.25rem 0;
     box-shadow: var(--shadow-md);
     position: sticky;
@@ -111,10 +145,11 @@ a {
 
 /* Cards (Glassmorphism effect) */
 .card {
-    background: var(--card-bg);
+    background: rgba(255, 255, 255, 0.92);
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border-radius: 1.25rem;
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.4);
     overflow: hidden;
     margin-bottom: 2rem;
