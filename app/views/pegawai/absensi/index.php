@@ -49,7 +49,7 @@
             <input type="hidden" id="jarak_meter" name="jarak_meter" value="">
             <input type="hidden" id="lokasi_valid" name="lokasi_valid" value="">
             
-            <div class="form-group stagger-4">
+            <div class="form-group autocomplete-form-group stagger-4">
                 <label for="nama_search" class="form-label">Nama Lengkap <span style="color: var(--danger-color)">*</span></label>
                 
                 <input type="hidden" name="nip" id="nip" required>

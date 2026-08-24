@@ -100,9 +100,14 @@
 }
 
 /* Input Search Wrapper */
+.autocomplete-form-group {
+    position: relative;
+    z-index: 60; /* Harus di set di parent terluar (form-group) karena animasi transform menciptakan stacking context baru */
+}
+
 .autocomplete-wrapper {
     position: relative;
-    z-index: 50; /* Memastikan dropdown tidak tertimpa input NIP */
+    z-index: 50;
 }
 
 .autocomplete-input-container {
