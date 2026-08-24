@@ -1,0 +1,335 @@
+/**
+ * Impeccable CSS untuk Halaman Absensi Pegawai
+ */
+
+:root {
+    /* Brand Colors */
+    --abs-primary: #10b981;
+    --abs-primary-dark: #059669;
+    --abs-primary-light: #d1fae5;
+    
+    /* Alerts & Status */
+    --abs-success-bg: #f0fdf4;
+    --abs-success-border: #86efac;
+    --abs-success-text: #166534;
+    
+    --abs-danger-bg: #fef2f2;
+    --abs-danger-border: #fca5a5;
+    --abs-danger-text: #991b1b;
+    
+    --abs-warning-bg: #fffbeb;
+    --abs-warning-border: #fcd34d;
+    --abs-warning-text: #92400e;
+    
+    --abs-info-bg: #f0f9ff;
+    --abs-info-border: #bae6fd;
+    --abs-info-text: #1e40af;
+    
+    /* Effects */
+    --abs-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --abs-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --abs-transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================================
+   Stagger Animations
+   ============================================================ */
+@keyframes absFadeInUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.stagger-1 { animation: absFadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both; }
+.stagger-2 { animation: absFadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.10s both; }
+.stagger-3 { animation: absFadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both; }
+.stagger-4 { animation: absFadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.20s both; }
+.stagger-5 { animation: absFadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both; }
+
+/* ============================================================
+   Flash Messages
+   ============================================================ */
+.abs-flash {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 500;
+    box-shadow: var(--abs-shadow-sm);
+    animation: absFadeInUp 0.5s ease-out;
+}
+.abs-flash-error {
+    background: var(--abs-danger-bg);
+    color: var(--abs-danger-text);
+    border: 1px solid var(--abs-danger-border);
+}
+.abs-flash-success {
+    background: var(--abs-success-bg);
+    color: var(--abs-success-text);
+    border: 1px solid var(--abs-success-border);
+}
+.abs-flash-warning {
+    background: var(--abs-warning-bg);
+    color: var(--abs-warning-text);
+    border: 1px solid var(--abs-warning-border);
+}
+
+/* ============================================================
+   Card & Form Adjustments
+   ============================================================ */
+.abs-card {
+    background: #ffffff;
+    border-radius: 1rem;
+    box-shadow: var(--abs-shadow);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.abs-card form {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px dashed rgba(0, 0, 0, 0.1);
+}
+
+/* Glow Effect pada Input Focus */
+.form-control:focus {
+    border-color: var(--abs-primary);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+    outline: none;
+}
+
+/* Input Search Wrapper */
+.autocomplete-form-group {
+    position: relative;
+    z-index: 60; /* Harus di set di parent terluar (form-group) karena animasi transform menciptakan stacking context baru */
+}
+
+.autocomplete-wrapper {
+    position: relative;
+    z-index: 50;
+}
+
+.autocomplete-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.autocomplete-icon-box {
+    position: absolute;
+    left: 1rem;
+    color: #64748b;
+    font-size: 1.25rem;
+    pointer-events: none;
+    display: flex;
+}
+
+.autocomplete-input {
+    padding-left: 2.75rem;
+}
+
+.autocomplete-clear-btn {
+    position: absolute;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: #94a3b8;
+    font-size: 1.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    padding: 0.25rem;
+    transition: all var(--abs-transition);
+}
+
+.autocomplete-clear-btn:hover {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+/* ============================================================
+   Status Lokasi (Soft Alerts)
+   ============================================================ */
+.lokasi-status-container {
+    margin-bottom: 1.5rem;
+}
+
+.lokasi-status-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #334155;
+}
+
+.lokasi-alert {
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    animation: absFadeInUp 0.4s ease-out;
+}
+
+.lokasi-alert-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.lokasi-alert-desc {
+    margin: 0 0 0 2rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.lokasi-alert-action {
+    margin-top: 0.75rem;
+    margin-left: 2rem;
+}
+
+/* Loading State */
+.lokasi-loading {
+    background: var(--abs-info-bg);
+    border: 1px solid var(--abs-info-border);
+}
+.lokasi-loading .lokasi-alert-header { color: var(--abs-info-text); }
+
+/* Ok State */
+.lokasi-ok {
+    background: var(--abs-success-bg);
+    border: 1px solid var(--abs-success-border);
+}
+.lokasi-ok .lokasi-alert-header { color: var(--abs-success-text); }
+.lokasi-ok .lokasi-alert-desc { color: #15803d; }
+
+/* Fail State */
+.lokasi-fail {
+    background: var(--abs-danger-bg);
+    border: 1px solid var(--abs-danger-border);
+}
+.lokasi-fail .lokasi-alert-header { color: var(--abs-danger-text); }
+.lokasi-fail .lokasi-alert-desc { color: #b91c1c; }
+
+/* Error State */
+.lokasi-error {
+    background: var(--abs-warning-bg);
+    border: 1px solid var(--abs-warning-border);
+}
+.lokasi-error .lokasi-alert-header { color: var(--abs-warning-text); }
+.lokasi-error .lokasi-alert-desc { color: #a16207; }
+
+/* Tombol Aksi dalam Alert */
+.btn-alert {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--abs-transition);
+}
+
+.btn-retry-fail {
+    background: #ef4444;
+    color: white;
+}
+.btn-retry-fail:hover { background: #dc2626; transform: translateY(-1px); box-shadow: var(--abs-shadow-sm); }
+
+.btn-retry-error {
+    background: #f59e0b;
+    color: white;
+}
+.btn-retry-error:hover { background: #d97706; transform: translateY(-1px); box-shadow: var(--abs-shadow-sm); }
+
+/* ============================================================
+   Image / PDF Preview
+   ============================================================ */
+.preview-container {
+    margin-top: 1rem;
+    animation: absFadeInUp 0.3s ease-out;
+}
+
+.preview-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #64748b;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.preview-image {
+    max-width: 100%;
+    max-height: 250px;
+    border-radius: 0.75rem;
+    border: 2px dashed #cbd5e1;
+    padding: 0.25rem;
+    object-fit: contain;
+}
+
+.preview-pdf {
+    padding: 1rem;
+    background: var(--abs-info-bg);
+    border: 1px solid var(--abs-info-border);
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.preview-pdf-icon {
+    font-size: 1.75rem;
+    color: #ef4444;
+}
+
+.preview-pdf-name {
+    margin: 0;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #1e293b;
+}
+
+.preview-pdf-size {
+    color: #64748b;
+    font-size: 0.8rem;
+}
+
+/* ============================================================
+   Spinner Animasi (CSS murni)
+   ============================================================ */
+.abs-spinner {
+    width: 20px;
+    height: 20px;
+    border: 3px solid #3b82f6;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: absSpin 1s linear infinite;
+}
+
+@keyframes absSpin {
+    to { transform: rotate(360deg); }
+}
+
+/* ============================================================
+   Smooth Section Toggle
+   ============================================================ */
+.fade-section {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.fade-section.show {
+    opacity: 1;
+    transform: translateY(0);
+}
