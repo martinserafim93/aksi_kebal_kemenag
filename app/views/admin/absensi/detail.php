@@ -99,8 +99,20 @@
                                 <?php endif; ?>
                             </td>
                             <td style="padding: 1rem; vertical-align: middle; text-align: center;">
-                                <?php if (!empty($a['foto'])): ?>
-                                    <img src="<?= url('uploads/foto_absensi/' . $a['foto']) ?>" alt="Foto Absensi" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover; border-radius: 0.25rem; cursor: pointer; border: 1px solid var(--border-color);" onclick="showImageModal(this.src)">
+                                <?php if ($a['status_kehadiran'] === 'Tidak Hadir' && !empty($a['file_bukti'])): ?>
+                                    <?php if ($a['tipe_file_bukti'] === 'pdf'): ?>
+                                        <a href="<?= url('uploads/file_bukti/' . $a['file_bukti']) ?>" target="_blank" class="btn btn-sm" style="background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; font-size: 0.8rem; padding: 0.25rem 0.5rem; display: inline-flex; align-items: center; gap: 0.25rem; text-decoration: none;">
+                                            <i class='bx bxs-file-pdf'></i> PDF
+                                        </a>
+                                    <?php else: ?>
+                                        <button type="button" class="btn btn-sm" style="background: #e0f2fe; color: #0284c7; border: 1px solid #7dd3fc; font-size: 0.8rem; padding: 0.25rem 0.5rem; display: inline-flex; align-items: center; gap: 0.25rem;" onclick="showImageModal('<?= url('uploads/file_bukti/' . $a['file_bukti']) ?>')">
+                                            <i class='bx bx-image'></i> Bukti
+                                        </button>
+                                    <?php endif; ?>
+                                <?php elseif (!empty($a['foto'])): ?>
+                                    <button type="button" class="btn btn-sm" style="background: #dcfce7; color: #166534; border: 1px solid #86efac; font-size: 0.8rem; padding: 0.25rem 0.5rem; display: inline-flex; align-items: center; gap: 0.25rem;" onclick="showImageModal('<?= url('uploads/foto_absensi/' . $a['foto']) ?>')">
+                                        <i class='bx bx-camera'></i> Foto
+                                    </button>
                                 <?php else: ?>
                                     <span style="color: var(--text-muted); font-size: 0.85rem;">-</span>
                                 <?php endif; ?>

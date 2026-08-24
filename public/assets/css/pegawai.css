@@ -77,24 +77,16 @@ a {
     background-repeat: no-repeat;
     background-attachment: fixed;
     
-    /* Efek blur dan pencahayaan */
-    filter: blur(3px) brightness(0.65);
-    
-    /* Sedikit zoom agar blur tidak menampilkan tepi putih */
-    transform: scale(1.05);
-    
-    /* Transparansi / opacity */
-    opacity: 0.8;
+    /* Efek watermark yang rapi (tanpa filter berat) */
+    opacity: 0.12;
 }
 
 .pegawai-header {
-    background: rgba(255, 255, 255, 0.35);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+    background: #ffffff;
+    border-bottom: 1px solid var(--border-color);
     color: var(--primary-dark);
     padding: 1.25rem 0;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     position: sticky;
     top: 0;
     z-index: 50;
@@ -146,12 +138,10 @@ a {
 
 /* Cards (Glassmorphism effect) */
 .card {
-    background: rgba(255, 255, 255, 0.92);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: #ffffff;
     border-radius: 1.25rem;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    border: 1px solid var(--border-color);
     overflow: hidden;
     margin-bottom: 2rem;
     transition: transform 0.3s ease, box-shadow 0.3s ease;

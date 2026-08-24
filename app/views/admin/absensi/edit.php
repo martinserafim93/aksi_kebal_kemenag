@@ -7,7 +7,7 @@
             <p style="margin: 0.25rem 0 0 0; color: var(--text-muted); font-size: 0.95rem;">Ubah status kehadiran pegawai untuk kegiatan ini.</p>
         </div>
         <div>
-            <a href="<?= url('admin/absensi') ?>" class="btn" style="background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
+            <a href="<?= url('admin/absensi-detail/' . $absensi['kode_kegiatan']) ?>" class="btn" style="background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
                 <i class='bx bx-arrow-back'></i> Kembali
             </a>
         </div>
@@ -55,14 +55,31 @@
                 </div>
                 
                 <div class="form-group" style="grid-column: 1 / -1;">
-                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem; color: var(--text-main);">Foto Bukti</label>
-                    <?php if (!empty($absensi['foto'])): ?>
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem; color: var(--text-main);">Bukti (Foto/File)</label>
+                    <?php if ($absensi['status_kehadiran'] === 'Tidak Hadir' && !empty($absensi['file_bukti'])): ?>
+                        <?php if ($absensi['tipe_file_bukti'] === 'pdf'): ?>
+                            <div style="margin-top: 0.5rem; padding: 1rem; border: 1px dashed var(--border-color); border-radius: 0.5rem; background: #f8fafc; display: flex; align-items: center; gap: 0.5rem;">
+                                <i class='bx bxs-file-pdf' style="font-size: 2rem; color: #ef4444;"></i>
+                                <a href="<?= url('uploads/file_bukti/' . $absensi['file_bukti']) ?>" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 500;">
+                                    Lihat File PDF Bukti
+                                </a>
+                            </div>
+                        <?php else: ?>
+                            <div style="margin-top: 0.5rem; padding: 1rem; border: 1px dashed var(--border-color); border-radius: 0.5rem; text-align: center; background: #f8fafc;">
+                                <a href="<?= url('uploads/file_bukti/' . $absensi['file_bukti']) ?>" target="_blank">
+                                    <img src="<?= url('uploads/file_bukti/' . $absensi['file_bukti']) ?>" alt="Bukti Tidak Hadir" style="max-width: 100%; max-height: 300px; border-radius: 0.25rem; border: 1px solid var(--border-color);">
+                                </a>
+                            </div>
+                        <?php endif; ?>
+                    <?php elseif (!empty($absensi['foto'])): ?>
                         <div style="margin-top: 0.5rem; padding: 1rem; border: 1px dashed var(--border-color); border-radius: 0.5rem; text-align: center; background: #f8fafc;">
-                            <img src="<?= url('uploads/foto_absensi/' . $absensi['foto']) ?>" alt="Foto Absensi" style="max-width: 100%; max-height: 300px; border-radius: 0.25rem; border: 1px solid var(--border-color);">
+                            <a href="<?= url('uploads/foto_absensi/' . $absensi['foto']) ?>" target="_blank">
+                                <img src="<?= url('uploads/foto_absensi/' . $absensi['foto']) ?>" alt="Foto Absensi" style="max-width: 100%; max-height: 300px; border-radius: 0.25rem; border: 1px solid var(--border-color);">
+                            </a>
                         </div>
                     <?php else: ?>
                         <div style="padding: 1rem; border: 1px dashed var(--border-color); border-radius: 0.5rem; text-align: center; background: #f8fafc; color: var(--text-muted);">
-                            <i>Tidak ada foto.</i>
+                            <i>Tidak ada foto atau bukti yang diunggah.</i>
                         </div>
                     <?php endif; ?>
                 </div>

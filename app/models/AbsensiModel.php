@@ -26,7 +26,7 @@ class AbsensiModel
      */
     public function getAllPaginated(array $filters = [], int $limit = 10, int $offset = 0): array
     {
-        $query = "SELECT a.id_absensi, a.kode_absensi, a.nip, a.id_kegiatan, a.status_kehadiran, a.created_at, 
+        $query = "SELECT a.id_absensi, a.kode_absensi, a.nip, a.id_kegiatan, a.status_kehadiran, a.created_at, a.foto, a.file_bukti, a.tipe_file_bukti,
                          p.nama_lengkap, 
                          k.nama_kegiatan, k.jenis_kegiatan, k.tanggal_kegiatan, k.waktu_mulai, k.waktu_selesai, k.lokasi_kegiatan
                   FROM absensi a
