@@ -145,6 +145,16 @@
 
     <table class="info-table">
         <tr>
+            <td>Filter Laporan</td>
+            <td>: <?php
+                switch ($filter ?? 'semua') {
+                    case 'hadir': echo 'Pegawai Hadir Saja'; break;
+                    case 'tidak_hadir': echo 'Pegawai Tidak Hadir Saja'; break;
+                    default: echo 'Semua Pegawai (Hadir + Tidak Hadir)';
+                }
+            ?></td>
+        </tr>
+        <tr>
             <td>Nama Kegiatan</td>
             <td>: <?= e($kegiatan['nama_kegiatan']) ?></td>
         </tr>
@@ -187,7 +197,7 @@
                         <td class="text-center"><?= $no++ ?></td>
                         <td><?= e($row['nip']) ?></td>
                         <td><?= e($row['nama_lengkap']) ?></td>
-                        <td class="text-center"><?= date('d/m/Y H:i', strtotime($row['created_at'])) ?></td>
+                        <td class="text-center"><?= !empty($row['created_at']) ? date('d/m/Y H:i', strtotime($row['created_at'])) : '-' ?></td>
                         <td class="text-center"><?= e($row['status_kehadiran']) ?></td>
                     </tr>
                 <?php endforeach; ?>
@@ -205,9 +215,13 @@
             <span>Tidak Hadir</span>
             <span><?= $statistik['tidak_hadir'] ?> Orang</span>
         </div>
+        <div class="summary-row">
+            <span>Tidak Mengisi Absen</span>
+            <span><?= $statistik['tidak_absen'] ?> Orang</span>
+        </div>
         <div class="summary-row total">
-            <span>Total Data</span>
-            <span><?= $statistik['total'] ?> Orang</span>
+            <span>Total Pegawai</span>
+            <span><?= $statistik['total_pegawai'] ?> Orang</span>
         </div>
     </div>
 

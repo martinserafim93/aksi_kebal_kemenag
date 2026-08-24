@@ -94,6 +94,61 @@ class AbsensiModel
     }
 
     /**
+     * Ambil pegawai yang tidak melakukan absensi sama sekali pada kegiatan tertentu
+     */
+    public function getPegawaiTidakAbsen(int $id_kegiatan): array
+    {
+        $this->db->query(
+            "SELECT p.nip, p.nama_lengkap
+             FROM pegawai p
+             WHERE p.nip NOT IN (
+                 SELECT a.nip FROM absensi a WHERE a.id_kegiatan = :id_kegiatan
+             )
+             ORDER BY p.nama_lengkap ASC"
+        );
+        $this->db->bind(':id_kegiatan', $id_kegiatan, PDO::PARAM_INT);
+        return $this->db->fetchAll();
+    }
+
+    /**
+     * Hitung statistik absensi yang mencakup pegawai tidak mengisi absensi
+     */
+    public function getStatistikLengkap(int $id_kegiatan): array
+    {
+        // Hitung pegawai yang sudah absen
+        $this->db->query(
+            "SELECT 
+                SUM(CASE WHEN status_kehadiran = 'Hadir' THEN 1 ELSE 0 END) as hadir,
+                SUM(CASE WHEN status_kehadiran = 'Tidak Hadir' THEN 1 ELSE 0 END) as tidak_hadir_absen
+             FROM absensi WHERE id_kegiatan = :id_kegiatan"
+        );
+        $this->db->bind(':id_kegiatan', $id_kegiatan, PDO::PARAM_INT);
+        $result = $this->db->fetch();
+
+        // Hitung total pegawai di sistem
+        $this->db->query("SELECT COUNT(*) as total FROM pegawai");
+        $totalPegawai = (int) $this->db->fetch()['total'];
+
+        // Hitung pegawai yang tidak melakukan absensi sama sekali
+        $this->db->query(
+            "SELECT COUNT(*) as jumlah FROM pegawai
+             WHERE nip NOT IN (SELECT nip FROM absensi WHERE id_kegiatan = :id_kegiatan)"
+        );
+        $this->db->bind(':id_kegiatan', $id_kegiatan, PDO::PARAM_INT);
+        $tidakAbsen = (int) $this->db->fetch()['jumlah'];
+
+        $hadir = $result && $result['hadir'] ? (int) $result['hadir'] : 0;
+        $tidakHadirAbsen = $result && $result['tidak_hadir_absen'] ? (int) $result['tidak_hadir_absen'] : 0;
+
+        return [
+            'total_pegawai'    => $totalPegawai,
+            'hadir'            => $hadir,
+            'tidak_hadir'      => $tidakHadirAbsen + $tidakAbsen,
+            'tidak_absen'      => $tidakAbsen,
+        ];
+    }
+
+    /**
      * Hitung statistik kehadiran berdasarkan filter aktif
      * 
      * @param array $filters Filter aktif

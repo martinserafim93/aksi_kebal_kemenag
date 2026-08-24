@@ -1038,14 +1038,56 @@ class AdminController extends Controller
         }
 
         $model = $this->model('AbsensiModel');
-        $absensi = $model->getAllFilteredForExport(['kegiatan' => $kegiatan['id_kegiatan']]);
-        $statistik = $model->getStatistik(['kegiatan' => $kegiatan['id_kegiatan']]);
+        $filter = query('filter', 'semua');
+
+        // Ambil data absensi yang sudah diisi
+        $semuaAbsensi = $model->getAllFilteredForExport(['kegiatan' => $kegiatan['id_kegiatan']]);
+
+        // Ambil pegawai yang tidak melakukan absensi sama sekali
+        $pegawaiTidakAbsen = $model->getPegawaiTidakAbsen($kegiatan['id_kegiatan']);
+
+        // Siapkan data berdasarkan filter
+        switch ($filter) {
+            case 'hadir':
+                $absensi = array_filter($semuaAbsensi, fn($r) => $r['status_kehadiran'] === 'Hadir');
+                break;
+            case 'tidak_hadir':
+                // Pegawai yang isi "Tidak Hadir" + yang tidak isi absen sama sekali
+                $tidakHadir = array_filter($semuaAbsensi, fn($r) => $r['status_kehadiran'] === 'Tidak Hadir');
+                // Gabungkan dengan pegawai yang tidak absen (format-kan datanya agar seragam)
+                foreach ($pegawaiTidakAbsen as $p) {
+                    $tidakHadir[] = [
+                        'nip'               => $p['nip'],
+                        'nama_lengkap'      => $p['nama_lengkap'],
+                        'status_kehadiran'  => 'Tidak Hadir',
+                        'created_at'        => null, // tidak ada waktu submit
+                    ];
+                }
+                $absensi = array_values($tidakHadir);
+                break;
+            default: // semua
+                // Gabungkan absensi yang ada + pegawai yang tidak mengisi absen
+                $absensi = $semuaAbsensi;
+                foreach ($pegawaiTidakAbsen as $p) {
+                    $absensi[] = [
+                        'nip'               => $p['nip'],
+                        'nama_lengkap'      => $p['nama_lengkap'],
+                        'status_kehadiran'  => 'Tidak Hadir',
+                        'created_at'        => null,
+                    ];
+                }
+                break;
+        }
+
+        // Hitung statistik lengkap
+        $statistik = $model->getStatistikLengkap($kegiatan['id_kegiatan']);
 
         $this->view('admin/absensi/pdf_export', [
-            'title' => 'Laporan Absensi - ' . $kegiatan['nama_kegiatan'],
-            'kegiatan' => $kegiatan,
-            'absensi' => $absensi,
-            'statistik' => $statistik
+            'title'     => 'Laporan Absensi - ' . $kegiatan['nama_kegiatan'],
+            'kegiatan'  => $kegiatan,
+            'absensi'   => $absensi,
+            'statistik' => $statistik,
+            'filter'    => $filter
         ]);
     }
 

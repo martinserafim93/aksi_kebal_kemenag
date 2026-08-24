@@ -54,9 +54,22 @@
     <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
         <h3 class="card-title" style="margin: 0;">Daftar Hadir Pegawai</h3>
         <div style="display: flex; gap: 0.5rem;">
-            <a href="<?= url('admin/absensi-export-pdf/' . $kegiatan['kode_kegiatan']) ?>" target="_blank" class="btn btn-danger" style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; padding: 0.5rem 1rem;">
-                <i class='bx bxs-file-pdf'></i> Export PDF
-            </a>
+            <div style="position: relative; display: inline-block;" class="pdf-dropdown-container">
+                <button class="btn btn-danger" style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; padding: 0.5rem 1rem; cursor: pointer;" onclick="document.getElementById('pdfDropdown').style.display = document.getElementById('pdfDropdown').style.display === 'none' ? 'block' : 'none'; event.stopPropagation();">
+                    <i class='bx bxs-file-pdf'></i> Export PDF <i class='bx bx-chevron-down'></i>
+                </button>
+                <div id="pdfDropdown" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 0.5rem; background: #fff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid var(--border-color); border-radius: 0.5rem; min-width: 200px; z-index: 50; overflow: hidden;">
+                    <a href="<?= url('admin/absensi-export-pdf/' . $kegiatan['kode_kegiatan'] . '?filter=semua') ?>" target="_blank" style="display: block; padding: 0.75rem 1rem; color: var(--text-main); text-decoration: none; font-size: 0.85rem; border-bottom: 1px solid var(--border-color);">
+                        Semua (Hadir & Tidak Hadir)
+                    </a>
+                    <a href="<?= url('admin/absensi-export-pdf/' . $kegiatan['kode_kegiatan'] . '?filter=hadir') ?>" target="_blank" style="display: block; padding: 0.75rem 1rem; color: var(--text-main); text-decoration: none; font-size: 0.85rem; border-bottom: 1px solid var(--border-color);">
+                        Hadir Saja
+                    </a>
+                    <a href="<?= url('admin/absensi-export-pdf/' . $kegiatan['kode_kegiatan'] . '?filter=tidak_hadir') ?>" target="_blank" style="display: block; padding: 0.75rem 1rem; color: var(--text-main); text-decoration: none; font-size: 0.85rem;">
+                        Tidak Hadir Saja
+                    </a>
+                </div>
+            </div>
             <a href="<?= url('admin/absensi-export/' . $kegiatan['kode_kegiatan']) ?>" class="btn btn-success" style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; padding: 0.5rem 1rem;">
                 <i class='bx bx-export'></i> Export CSV
             </a>
@@ -195,6 +208,7 @@
         transition: all 0.2s ease-in-out;
     }
 </style>
+<script>document.addEventListener("click", function(event) { var dropdown = document.getElementById("pdfDropdown"); if (dropdown && dropdown.style.display === "block" && !event.target.closest(".pdf-dropdown-container")) { dropdown.style.display = "none"; } });</script>
 <?php 
 $extra_js = ob_get_clean(); 
 $content = ob_get_clean();
