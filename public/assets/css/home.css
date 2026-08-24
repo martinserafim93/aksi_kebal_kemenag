@@ -1,0 +1,325 @@
+/**
+ * AKSI KEBAL - Public Homepage Styles
+ * 
+ * Desain modern, premium, dan konsisten dengan sistem admin
+ * menggunakan gaya glassmorphism dan animasi halus.
+ */
+
+/* ============================================================
+   Google Fonts Import
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
+
+/* ============================================================
+   CSS Custom Properties (Design Tokens)
+   ============================================================ */
+:root {
+    /* Brand Colors */
+    --primary: #10b981;
+    --primary-hover: #059669;
+    --primary-light: #d1fae5;
+    --primary-glow: rgba(16, 185, 129, 0.4);
+
+    /* Text & Neutrals */
+    --text-main: #ffffff;
+    --text-muted: rgba(255, 255, 255, 0.8);
+    --text-dark: #334155;
+    
+    /* Typography */
+    --font-heading: 'Poppins', sans-serif;
+    --font-body: 'Inter', -apple-system, sans-serif;
+
+    /* Shadows & Effects */
+    --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    
+    /* Transitions */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================================
+   Reset & Base
+   ============================================================ */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body.home-page {
+    font-family: var(--font-body);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.5rem;
+    color: var(--text-main);
+    position: relative;
+    overflow-x: hidden;
+    
+    /* Premium Gradient Mesh Background */
+    background: 
+        radial-gradient(circle at 15% 50%, rgba(20, 184, 166, 0.8) 0%, transparent 50%),
+        radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.9) 0%, transparent 50%),
+        radial-gradient(circle at 50% 80%, rgba(5, 150, 105, 0.8) 0%, transparent 50%),
+        linear-gradient(135deg, #0f766e 0%, #064e3b 100%);
+    background-attachment: fixed;
+}
+
+/* ============================================================
+   Decorative Floating Shapes
+   ============================================================ */
+.home-decoration {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.home-shape {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.15;
+    background: #ffffff;
+    filter: blur(40px);
+}
+
+.home-shape-1 {
+    width: 500px;
+    height: 500px;
+    top: -150px;
+    right: -150px;
+    animation: float 22s infinite ease-in-out;
+}
+
+.home-shape-2 {
+    width: 300px;
+    height: 300px;
+    bottom: -100px;
+    left: -100px;
+    animation: float 28s infinite ease-in-out reverse;
+}
+
+@keyframes float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -40px) scale(1.1); }
+    66% { transform: translate(-20px, 30px) scale(0.9); }
+}
+
+/* ============================================================
+   Main Container (Glassmorphism)
+   ============================================================ */
+.home-container {
+    text-align: center;
+    padding: 3rem 2.5rem;
+    max-width: 650px;
+    width: 100%;
+    z-index: 1;
+    
+    /* Glassmorphism Effect */
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 1.5rem;
+    box-shadow: var(--shadow-glass);
+}
+
+/* Stagger Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.home-logo-wrapper {
+    animation: fadeInUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+}
+
+.home-title {
+    animation: fadeInUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+}
+
+.home-subtitle {
+    animation: fadeInUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+}
+
+.home-actions {
+    animation: fadeInUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both;
+}
+
+/* ============================================================
+   Typography & Branding
+   ============================================================ */
+.home-logo-wrapper {
+    margin: 0 auto 1.5rem;
+}
+
+.home-logo {
+    width: 110px;
+    height: 110px;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2));
+    transition: transform var(--transition-base);
+}
+
+.home-logo:hover {
+    transform: scale(1.05) rotate(2deg);
+}
+
+.home-title {
+    font-family: var(--font-heading);
+    font-size: 2.75rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.home-subtitle {
+    font-family: var(--font-body);
+    font-size: 1.125rem;
+    color: var(--text-muted);
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+    font-weight: 400;
+}
+
+.home-subtitle strong {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* ============================================================
+   Buttons & Actions
+   ============================================================ */
+.home-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    padding: 0.875rem 2rem;
+    border-radius: 0.75rem;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all var(--transition-base);
+    border: none;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary {
+    background: #ffffff;
+    color: var(--primary-hover);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.25);
+    color: var(--primary);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Shimmer effect on hover */
+.btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent, rgba(16, 185, 129, 0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+}
+
+.btn-primary:hover::after {
+    transform: translateX(100%);
+}
+
+.btn-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ============================================================
+   Footer
+   ============================================================ */
+.home-footer {
+    margin-top: 3rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.8125rem;
+    text-align: center;
+    line-height: 1.6;
+    z-index: 1;
+    animation: fadeInUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.5s both;
+}
+
+.home-footer strong {
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 600px) {
+    .home-container {
+        padding: 2.5rem 1.5rem;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+    }
+
+    .home-title {
+        font-size: 2.25rem;
+    }
+
+    .home-subtitle {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    body.home-page {
+        padding: 1rem;
+    }
+
+    .home-title {
+        font-size: 1.875rem;
+    }
+    
+    .home-logo {
+        width: 90px;
+        height: 90px;
+    }
+
+    .home-actions {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}

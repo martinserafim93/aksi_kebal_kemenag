@@ -9,6 +9,15 @@
 class AdminController extends Controller
 {
     /**
+     * Halaman Default Admin (/admin)
+     * Redirect otomatis ke dashboard (middleware akan menangani cek login)
+     */
+    public function index(): void
+    {
+        $this->redirect('admin/dashboard');
+    }
+
+    /**
      * Halaman Login Admin (GET & POST)
      * 
      * GET  → Tampilkan form login
