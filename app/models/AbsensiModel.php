@@ -233,11 +233,19 @@ class AbsensiModel
         $this->db->bind(':id', $id, PDO::PARAM_INT);
         $result = $this->db->execute();
 
-        // Hapus file foto fisik jika ada
+        // Hapus file foto fisik jika ada (Hadir)
         if ($result && $absensi && !empty($absensi['foto'])) {
             $fotoPath = __DIR__ . '/../../public/uploads/foto_absensi/' . $absensi['foto'];
             if (file_exists($fotoPath)) {
                 unlink($fotoPath);
+            }
+        }
+        
+        // Hapus file bukti (Tidak Hadir)
+        if ($result && $absensi && !empty($absensi['file_bukti'])) {
+            $buktiPath = __DIR__ . '/../../public/uploads/file_bukti/' . $absensi['file_bukti'];
+            if (file_exists($buktiPath)) {
+                unlink($buktiPath);
             }
         }
 
@@ -282,13 +290,15 @@ class AbsensiModel
     {
         $kode_absensi = $this->generateKodeAbsensi();
 
-        $this->db->query("INSERT INTO absensi (kode_absensi, nip, id_kegiatan, foto, status_kehadiran, latitude_absensi, longitude_absensi, jarak_meter, lokasi_valid) 
-                          VALUES (:kode_absensi, :nip, :id_kegiatan, :foto, :status_kehadiran, :latitude_absensi, :longitude_absensi, :jarak_meter, :lokasi_valid)");
+        $this->db->query("INSERT INTO absensi (kode_absensi, nip, id_kegiatan, foto, file_bukti, tipe_file_bukti, status_kehadiran, latitude_absensi, longitude_absensi, jarak_meter, lokasi_valid) 
+                          VALUES (:kode_absensi, :nip, :id_kegiatan, :foto, :file_bukti, :tipe_file_bukti, :status_kehadiran, :latitude_absensi, :longitude_absensi, :jarak_meter, :lokasi_valid)");
         
         $this->db->bind(':kode_absensi', $kode_absensi);
         $this->db->bind(':nip', $data['nip']);
         $this->db->bind(':id_kegiatan', $data['id_kegiatan'], PDO::PARAM_INT);
         $this->db->bind(':foto', $data['foto']);
+        $this->db->bind(':file_bukti', $data['file_bukti'] ?? null);
+        $this->db->bind(':tipe_file_bukti', $data['tipe_file_bukti'] ?? null);
         $this->db->bind(':status_kehadiran', $data['status_kehadiran'] ?? 'Hadir');
         $this->db->bind(':latitude_absensi', !empty($data['latitude_absensi']) ? $data['latitude_absensi'] : null);
         $this->db->bind(':longitude_absensi', !empty($data['longitude_absensi']) ? $data['longitude_absensi'] : null);

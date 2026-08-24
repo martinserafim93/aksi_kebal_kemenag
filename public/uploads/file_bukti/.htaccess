@@ -1,0 +1,30 @@
+# ============================================================
+# PROTEKSI FOLDER UPLOAD BUKTI ABSENSI
+# ============================================================
+
+# 1. Matikan engine PHP di dalam folder ini
+<IfModule mod_php5.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+
+# 2. Hapus handler eksekusi script
+RemoveHandler .php .phtml .php3 .php4 .php5 .pl .py .jsp .asp .aspx .sh .cgi
+
+# 3. Paksa file-file tersebut hanya menjadi teks biasa
+AddType text/plain .php .phtml .php3 .php4 .php5 .pl .py .jsp .asp .aspx .sh .cgi
+
+# 4. Izinkan hanya akses file gambar dan PDF
+Order Deny,Allow
+Deny from all
+<FilesMatch "\.(?i:jpg|jpeg|png|pdf)$">
+    Allow from all
+</FilesMatch>
+
+# 5. Cegah directory listing (melihat isi folder)
+Options -Indexes
