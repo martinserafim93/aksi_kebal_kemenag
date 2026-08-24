@@ -1,20 +1,21 @@
 <?php ob_start(); ?>
 
+<link rel="stylesheet" href="<?= asset('css/absensi.css') ?>?v=<?= time() ?>">
+
 <?php $flash = getFlash(); ?>
 <?php if ($flash): ?>
-    <div style="padding: 1rem; margin-bottom: 1rem; border-radius: 8px; 
-                background: <?= $flash['type'] === 'error' ? '#fee2e2' : ($flash['type'] === 'success' ? '#dcfce7' : '#fef3c7') ?>;
-                color: <?= $flash['type'] === 'error' ? '#991b1b' : ($flash['type'] === 'success' ? '#166534' : '#92400e') ?>;">
+    <div class="abs-flash abs-flash-<?= $flash['type'] ?>">
+        <i class='bx <?= $flash['type'] === 'error' ? 'bxs-error-circle' : ($flash['type'] === 'success' ? 'bxs-check-circle' : 'bxs-info-circle') ?>' style="font-size: 1.25rem;"></i>
         <?= $flash['message'] ?>
     </div>
 <?php endif; ?>
 
-<div class="card">
+<div class="card abs-card stagger-1">
     <div class="card-body">
         <h1 class="card-title">Formulir Absensi</h1>
         <p class="text-muted" style="margin-bottom: 2rem;">Silakan isi formulir di bawah ini untuk mencatat kehadiran Anda.</p>
 
-        <div class="data-list">
+        <div class="data-list stagger-2">
             <div class="data-item">
                 <span class="data-label">Nama Kegiatan</span>
                 <span class="data-value"><?= e($kegiatan['nama_kegiatan']) ?></span>
@@ -37,7 +38,7 @@
             </div>
         </div>
 
-        <form action="<?= url('absensi/submit') ?>" method="POST" enctype="multipart/form-data">
+        <form action="<?= url('absensi/submit') ?>" method="POST" enctype="multipart/form-data" class="stagger-3">
             <input type="hidden" name="id_kegiatan" value="<?= e($kegiatan['id_kegiatan']) ?>">
             <input type="hidden" name="kode_kegiatan" value="<?= e($kegiatan['kode_kegiatan']) ?>">
             <?= csrfField() ?>
@@ -48,16 +49,14 @@
             <input type="hidden" id="jarak_meter" name="jarak_meter" value="">
             <input type="hidden" id="lokasi_valid" name="lokasi_valid" value="">
             
-            <div class="form-group">
+            <div class="form-group stagger-4">
                 <label for="nama_search" class="form-label">Nama Lengkap <span style="color: var(--danger-color)">*</span></label>
                 
-                <!-- Hidden input yang mengirim NIP ke server (value sebenarnya) -->
                 <input type="hidden" name="nip" id="nip" required>
                 
-                <!-- Input pencarian yang terlihat oleh user -->
                 <div class="autocomplete-wrapper" id="autocompleteWrapper">
                     <div class="autocomplete-input-container">
-                        <span class="autocomplete-icon">🔍</span>
+                        <span class="autocomplete-icon-box"><i class='bx bx-search'></i></span>
                         <input 
                             type="text" 
                             id="nama_search" 
@@ -66,21 +65,20 @@
                             autocomplete="off"
                             required
                         >
-                        <!-- Tombol clear (X) muncul saat ada teks -->
-                        <button type="button" class="autocomplete-clear" id="clearBtn" title="Hapus" style="display: none;">✕</button>
+                        <button type="button" class="autocomplete-clear-btn" id="clearBtn" title="Hapus" style="display: none;">
+                            <i class='bx bx-x'></i>
+                        </button>
                     </div>
-                    
-                    <!-- Dropdown suggestions -->
                     <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
                 </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group stagger-4">
                 <label class="form-label">NIP</label>
                 <input type="text" id="display_nip" class="form-control" readonly placeholder="NIP akan terisi otomatis">
             </div>
 
-            <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group stagger-4" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                 <div>
                     <label class="form-label">Jabatan</label>
                     <input type="text" id="display_jabatan" class="form-control" readonly placeholder="-">
@@ -91,94 +89,80 @@
                 </div>
             </div>
 
-            <!-- === SECTION: Status Kehadiran === -->
-            <div class="form-group">
+            <div class="form-group stagger-5">
                 <label for="status_kehadiran" class="form-label">
                     Status Kehadiran <span style="color: var(--danger-color)">*</span>
                 </label>
                 <select name="status_kehadiran" id="status_kehadiran" class="form-control" required>
                     <option value="" disabled selected>-- Pilih Status Kehadiran --</option>
-                    <option value="Hadir">✅ Hadir</option>
-                    <option value="Tidak Hadir">❌ Tidak Hadir</option>
+                    <option value="Hadir">Hadir</option>
+                    <option value="Tidak Hadir">Tidak Hadir</option>
                 </select>
             </div>
-            <!-- === END: Status Kehadiran === -->
 
-            <!-- === SECTION: Form Hadir (Foto + Lokasi GPS) === -->
-            <div id="section-hadir" style="display: none;">
-
+            <!-- === SECTION: Form Hadir === -->
+            <div id="section-hadir" class="fade-section" style="display: none;">
                 <div class="form-group">
                     <label for="foto" class="form-label">Upload Foto Kehadiran <span style="color: var(--danger-color)">*</span></label>
                     <input type="file" name="foto" id="foto" class="form-control" accept="image/jpeg, image/png" onchange="previewImage(event)">
                     <small class="text-muted" style="display: block; margin-top: 0.5rem; font-size: 0.85rem;">Format: JPG/PNG, Maksimal: 5MB.</small>
                     
-                    <div id="imagePreviewContainer" style="display: none; margin-top: 1rem;">
-                        <p style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem;">Preview:</p>
-                        <img id="imagePreview" src="" alt="Preview" style="max-width: 100%; max-height: 250px; border-radius: 0.75rem; border: 2px dashed var(--border-color); padding: 0.25rem;">
+                    <div id="imagePreviewContainer" class="preview-container" style="display: none;">
+                        <span class="preview-label">Preview:</span>
+                        <img id="imagePreview" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Preview" class="preview-image">
                     </div>
                 </div>
 
-            <!-- === SECTION: Status Lokasi GPS === -->
-            <div id="lokasi-status" class="form-group" style="margin-bottom: 1.5rem;">
-                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.95rem;">
-                    📍 Verifikasi Lokasi
-                </label>
-                
-                <!-- Loading state -->
-                <div id="lokasi-loading" style="padding: 1rem; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 0.5rem; display: flex; align-items: center; gap: 0.75rem;">
-                    <div style="width: 20px; height: 20px; border: 3px solid #3b82f6; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-                    <span style="color: #1e40af;">Mendeteksi lokasi Anda...</span>
-                </div>
-                
-                <!-- Sukses: dalam radius -->
-                <div id="lokasi-ok" style="padding: 1rem; background: #f0fdf4; border: 1px solid #86efac; border-radius: 0.5rem; display: none;">
-                    <div style="display: flex; align-items: center; gap: 0.5rem; color: #166534;">
-                        <i class='bx bxs-check-circle' style="font-size: 1.25rem;"></i>
-                        <strong>Lokasi Valid</strong>
+                <div id="lokasi-status" class="lokasi-status-container">
+                    <label class="lokasi-status-title">
+                        <i class='bx bx-map-pin'></i> Verifikasi Lokasi
+                    </label>
+                    
+                    <div id="lokasi-loading" class="lokasi-alert lokasi-loading">
+                        <div class="lokasi-alert-header">
+                            <div class="abs-spinner"></div>
+                            <span>Mendeteksi lokasi Anda...</span>
+                        </div>
                     </div>
-                    <p id="lokasi-ok-detail" style="margin: 0.25rem 0 0 1.75rem; font-size: 0.85rem; color: #15803d;"></p>
-                </div>
+                    
+                    <div id="lokasi-ok" class="lokasi-alert lokasi-ok" style="display: none;">
+                        <div class="lokasi-alert-header">
+                            <i class='bx bxs-check-circle' style="font-size: 1.25rem;"></i>
+                            <span>Lokasi Valid</span>
+                        </div>
+                        <p id="lokasi-ok-detail" class="lokasi-alert-desc"></p>
+                    </div>
 
-                <!-- Gagal: di luar radius -->
-                <div id="lokasi-fail" style="padding: 1rem; background: #fef2f2; border: 1px solid #fca5a5; border-radius: 0.5rem; display: none;">
-                    <div style="display: flex; align-items: center; gap: 0.5rem; color: #991b1b;">
-                        <i class='bx bxs-x-circle' style="font-size: 1.25rem;"></i>
-                        <strong>Lokasi Tidak Sesuai!</strong>
+                    <div id="lokasi-fail" class="lokasi-alert lokasi-fail" style="display: none;">
+                        <div class="lokasi-alert-header">
+                            <i class='bx bxs-x-circle' style="font-size: 1.25rem;"></i>
+                            <span>Lokasi Tidak Sesuai!</span>
+                        </div>
+                        <p id="lokasi-fail-detail" class="lokasi-alert-desc"></p>
+                        <div class="lokasi-alert-action">
+                            <button type="button" id="btn-retry-lokasi" class="btn-alert btn-retry-fail" onclick="detectLocation()">
+                                <i class='bx bx-refresh'></i> Coba Deteksi Ulang
+                            </button>
+                        </div>
                     </div>
-                    <p id="lokasi-fail-detail" style="margin: 0.25rem 0 0 1.75rem; font-size: 0.85rem; color: #b91c1c;"></p>
-                    <button type="button" id="btn-retry-lokasi" onclick="detectLocation()" 
-                            style="margin-top: 0.75rem; margin-left: 1.75rem; padding: 0.5rem 1rem; background: #ef4444; color: white; border: none; border-radius: 0.375rem; cursor: pointer; font-size: 0.85rem;">
-                        <i class='bx bx-refresh'></i> Coba Deteksi Ulang
-                    </button>
-                </div>
 
-                <!-- Error: GPS mati / tidak support -->
-                <div id="lokasi-error" style="padding: 1rem; background: #fffbeb; border: 1px solid #fcd34d; border-radius: 0.5rem; display: none;">
-                    <div style="display: flex; align-items: center; gap: 0.5rem; color: #92400e;">
-                        <i class='bx bxs-error' style="font-size: 1.25rem;"></i>
-                        <strong>Akses Lokasi Diperlukan</strong>
+                    <div id="lokasi-error" class="lokasi-alert lokasi-error" style="display: none;">
+                        <div class="lokasi-alert-header">
+                            <i class='bx bxs-error' style="font-size: 1.25rem;"></i>
+                            <span>Akses Lokasi Diperlukan</span>
+                        </div>
+                        <p id="lokasi-error-detail" class="lokasi-alert-desc"></p>
+                        <div class="lokasi-alert-action">
+                            <button type="button" class="btn-alert btn-retry-error" onclick="detectLocation()">
+                                <i class='bx bx-refresh'></i> Coba Lagi
+                            </button>
+                        </div>
                     </div>
-                    <p id="lokasi-error-detail" style="margin: 0.25rem 0 0 1.75rem; font-size: 0.85rem; color: #a16207;"></p>
-                    <button type="button" onclick="detectLocation()"
-                            style="margin-top: 0.75rem; margin-left: 1.75rem; padding: 0.5rem 1rem; background: #f59e0b; color: white; border: none; border-radius: 0.375rem; cursor: pointer; font-size: 0.85rem;">
-                        <i class='bx bx-refresh'></i> Coba Lagi
-                    </button>
                 </div>
             </div>
 
-            <style>
-            @keyframes spin {
-                to { transform: rotate(360deg); }
-            }
-            </style>
-            <!-- === END: Status Lokasi GPS === -->
-            
-            </div>
-            <!-- === END: Form Hadir === -->
-
-            <!-- === SECTION: Form Tidak Hadir (File Bukti) === -->
-            <div id="section-tidak-hadir" style="display: none;">
-
+            <!-- === SECTION: Form Tidak Hadir === -->
+            <div id="section-tidak-hadir" class="fade-section" style="display: none;">
                 <div class="form-group">
                     <label for="file_bukti" class="form-label">
                         Upload Bukti Ketidakhadiran <span style="color: var(--danger-color)">*</span>
@@ -191,37 +175,29 @@
                         Contoh: Surat izin, surat sakit, atau bukti lainnya.
                     </small>
                     
-                    <!-- Preview untuk gambar -->
-                    <div id="buktiPreviewContainer" style="display: none; margin-top: 1rem;">
-                        <p style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem;">Preview:</p>
-                        <img id="buktiImagePreview" src="" alt="Preview Bukti" 
-                             style="max-width: 100%; max-height: 250px; border-radius: 0.75rem; border: 2px dashed var(--border-color); padding: 0.25rem;">
+                    <div id="buktiPreviewContainer" class="preview-container" style="display: none;">
+                        <span class="preview-label">Preview:</span>
+                        <img id="buktiImagePreview" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Preview Bukti" class="preview-image">
                     </div>
                     
-                    <!-- Info untuk PDF (tidak bisa di-preview, cukup tampilkan nama file) -->
-                    <div id="buktiPdfInfo" style="display: none; margin-top: 1rem; padding: 1rem; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 0.5rem;">
-                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                            <i class='bx bxs-file-pdf' style="font-size: 1.5rem; color: #ef4444;"></i>
-                            <div>
-                                <p style="margin: 0; font-weight: 600; font-size: 0.9rem;" id="buktiPdfName">-</p>
-                                <small class="text-muted" id="buktiPdfSize">-</small>
-                            </div>
+                    <div id="buktiPdfInfo" class="preview-pdf" style="display: none; margin-top: 1rem;">
+                        <i class='bx bxs-file-pdf preview-pdf-icon'></i>
+                        <div>
+                            <p class="preview-pdf-name" id="buktiPdfName">-</p>
+                            <span class="preview-pdf-size" id="buktiPdfSize">-</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Informasi: Lokasi GPS TIDAK diwajibkan -->
-                <div style="padding: 1rem; background: #fffbeb; border: 1px solid #fcd34d; border-radius: 0.5rem; margin-bottom: 1rem;">
-                    <div style="display: flex; align-items: center; gap: 0.5rem; color: #92400e;">
-                        <i class='bx bxs-info-circle' style="font-size: 1.25rem;"></i>
-                        <span style="font-size: 0.9rem;">Lokasi GPS <strong>tidak diwajibkan</strong> karena Anda tidak hadir di lokasi kegiatan.</span>
+                <div class="lokasi-alert lokasi-error" style="margin-bottom: 1rem;">
+                    <div class="lokasi-alert-header" style="font-size: 0.9rem;">
+                        <i class='bx bxs-info-circle'></i>
+                        <span>Lokasi GPS <strong>tidak diwajibkan</strong> karena Anda tidak hadir.</span>
                     </div>
                 </div>
-                
             </div>
-            <!-- === END: Form Tidak Hadir === -->
 
-            <button type="submit" id="btn-submit-absensi" class="btn btn-primary" style="margin-top: 1.5rem;">
+            <button type="submit" id="btn-submit-absensi" class="btn btn-primary stagger-5" style="margin-top: 1.5rem;">
                 <i class='bx bx-send'></i> Submit Absensi
             </button>
         </form>
@@ -230,7 +206,6 @@
 
 <?php ob_start(); ?>
 <script>
-    // Data pegawai dari PHP dikonversi ke JSON untuk autocomplete
     const pegawaiData = <?= json_encode(array_map(function($p) {
         return [
             'nip' => $p['nip'],
@@ -238,9 +213,6 @@
         ];
     }, $pegawaiList)) ?>;
 
-    // ============================================================
-    // Autocomplete Logic
-    // ============================================================
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('nama_search');
         const hiddenNip = document.getElementById('nip');
@@ -248,18 +220,14 @@
         const clearBtn = document.getElementById('clearBtn');
         const wrapper = document.getElementById('autocompleteWrapper');
 
-        let activeIndex = -1; // Index item yang di-highlight via keyboard
-        let filteredResults = []; // Hasil filter saat ini
+        let activeIndex = -1;
+        let filteredResults = [];
 
-        // Event: User mengetik di input
         searchInput.addEventListener('input', function() {
             const query = this.value.trim().toLowerCase();
             activeIndex = -1;
             
-            // Tampilkan/sembunyikan tombol clear
             clearBtn.style.display = query.length > 0 ? 'flex' : 'none';
-            
-            // Reset hidden NIP ketika user mengetik ulang
             hiddenNip.value = '';
             
             if (query.length < 1) {
@@ -267,7 +235,6 @@
                 return;
             }
             
-            // Filter data pegawai
             filteredResults = pegawaiData.filter(function(p) {
                 return p.nama.toLowerCase().includes(query);
             });
@@ -275,7 +242,6 @@
             renderDropdown(filteredResults, query);
         });
 
-        // Render dropdown items
         function renderDropdown(results, query) {
             if (results.length === 0) {
                 dropdown.innerHTML = '<div class="autocomplete-empty">Tidak ditemukan pegawai dengan nama tersebut</div>';
@@ -285,7 +251,6 @@
             
             let html = '';
             results.forEach(function(item, index) {
-                // Highlight teks yang cocok
                 const regex = new RegExp('(' + escapeRegex(query) + ')', 'gi');
                 const highlightedName = item.nama.replace(regex, '<mark>$1</mark>');
                 
@@ -301,7 +266,6 @@
             dropdown.innerHTML = html;
             dropdown.classList.add('show');
             
-            // Tambah event click ke setiap item
             dropdown.querySelectorAll('.autocomplete-item').forEach(function(el) {
                 el.addEventListener('click', function() {
                     selectItem(this.dataset.nip, this.dataset.nama);
@@ -309,18 +273,14 @@
             });
         }
 
-        // Pilih item
         window.selectItem = function(nip, nama) {
             searchInput.value = nama;
             hiddenNip.value = nip;
             clearBtn.style.display = 'flex';
             closeDropdown();
-            
-            // Trigger fetch data pegawai (NIP, Jabatan, Tim Kerja)
             fetchPegawaiData();
         }
 
-        // Tutup dropdown
         function closeDropdown() {
             dropdown.classList.remove('show');
             dropdown.innerHTML = '';
@@ -328,7 +288,6 @@
             filteredResults = [];
         }
 
-        // Tombol clear
         clearBtn.addEventListener('click', function() {
             searchInput.value = '';
             hiddenNip.value = '';
@@ -336,13 +295,11 @@
             closeDropdown();
             searchInput.focus();
             
-            // Reset display fields
             document.getElementById('display_nip').value = '';
             document.getElementById('display_jabatan').value = '';
             document.getElementById('display_tim_kerja').value = '';
         });
 
-        // Keyboard navigation (↑ ↓ Enter Escape)
         searchInput.addEventListener('keydown', function(e) {
             const items = dropdown.querySelectorAll('.autocomplete-item');
             
@@ -369,31 +326,28 @@
             items.forEach(function(el, i) {
                 el.classList.toggle('active', i === activeIndex);
             });
-            // Scroll into view
             if (items[activeIndex]) {
                 items[activeIndex].scrollIntoView({ block: 'nearest' });
             }
         }
 
-        // Tutup dropdown saat klik di luar
         document.addEventListener('click', function(e) {
             if (!wrapper.contains(e.target)) {
                 closeDropdown();
             }
         });
 
-        // Utility: Escape regex special characters
         function escapeRegex(str) {
             return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         }
 
-        // Utility: Escape HTML
         function escapeHtml(str) {
             const div = document.createElement('div');
             div.textContent = str;
             return div.innerHTML;
         }
     });
+
     function fetchPegawaiData() {
         const nip = document.getElementById('nip').value;
         const displayNip = document.getElementById('display_nip');
@@ -444,43 +398,48 @@
         }
     }
 
-    // ============================================================
-    // Toggle Section: Hadir / Tidak Hadir
-    // ============================================================
     document.getElementById('status_kehadiran').addEventListener('change', function() {
         const status = this.value;
         const sectionHadir = document.getElementById('section-hadir');
         const sectionTidakHadir = document.getElementById('section-tidak-hadir');
         const btnSubmit = document.getElementById('btn-submit-absensi');
         
-        // Reset: Sembunyikan semua dulu
-        sectionHadir.style.display = 'none';
-        sectionTidakHadir.style.display = 'none';
+        // Animasi fade out cepat sebelum ditukar
+        sectionHadir.classList.remove('show');
+        sectionTidakHadir.classList.remove('show');
         
-        if (status === 'Hadir') {
-            sectionHadir.style.display = 'block';
-            document.getElementById('lokasi-status').style.display = 'block';
+        setTimeout(() => {
+            sectionHadir.style.display = 'none';
+            sectionTidakHadir.style.display = 'none';
             
-            // Set required pada foto, hapus required pada file_bukti
-            document.getElementById('foto').setAttribute('required', '');
-            document.getElementById('file_bukti').removeAttribute('required');
-            
-            // Jalankan deteksi lokasi GPS (fungsi existing)
-            detectLocation();
-            
-        } else if (status === 'Tidak Hadir') {
-            sectionTidakHadir.style.display = 'block';
-            
-            // Set required pada file_bukti, hapus required pada foto
-            document.getElementById('file_bukti').setAttribute('required', '');
-            document.getElementById('foto').removeAttribute('required');
-            
-            // Aktifkan tombol submit (tidak perlu validasi lokasi)
-            btnSubmit.disabled = false;
-        }
+            if (status === 'Hadir') {
+                sectionHadir.style.display = 'block';
+                document.getElementById('lokasi-status').style.display = 'block';
+                
+                // Allow reflow
+                void sectionHadir.offsetWidth;
+                sectionHadir.classList.add('show');
+                
+                document.getElementById('foto').setAttribute('required', '');
+                document.getElementById('file_bukti').removeAttribute('required');
+                
+                detectLocation();
+                
+            } else if (status === 'Tidak Hadir') {
+                sectionTidakHadir.style.display = 'block';
+                
+                // Allow reflow
+                void sectionTidakHadir.offsetWidth;
+                sectionTidakHadir.classList.add('show');
+                
+                document.getElementById('file_bukti').setAttribute('required', '');
+                document.getElementById('foto').removeAttribute('required');
+                
+                btnSubmit.disabled = false;
+            }
+        }, 50);
     });
 
-    // Preview file bukti (gambar atau PDF)
     function previewFileBukti(event) {
         const input = event.target;
         const file = input.files[0];
@@ -491,13 +450,11 @@
         const pdfName = document.getElementById('buktiPdfName');
         const pdfSize = document.getElementById('buktiPdfSize');
         
-        // Reset semua preview
         imgContainer.style.display = 'none';
         pdfContainer.style.display = 'none';
         
         if (!file) return;
         
-        // Validasi ukuran (max 5MB)
         if (file.size > 5 * 1024 * 1024) {
             alert('⚠️ Ukuran file maksimal 5MB. File Anda: ' + (file.size / 1024 / 1024).toFixed(2) + ' MB');
             input.value = '';
@@ -505,12 +462,10 @@
         }
         
         if (file.type === 'application/pdf') {
-            // Tampilkan info PDF
             pdfName.textContent = file.name;
             pdfSize.textContent = (file.size / 1024).toFixed(1) + ' KB';
-            pdfContainer.style.display = 'block';
+            pdfContainer.style.display = 'flex';
         } else if (file.type.startsWith('image/')) {
-            // Tampilkan preview gambar
             const reader = new FileReader();
             reader.onload = function(e) {
                 imgPreview.src = e.target.result;
@@ -520,48 +475,31 @@
         }
     }
 
-// =========================================================
-// SCRIPT: Deteksi Lokasi GPS dan Validasi Jarak
-// =========================================================
-
-// Data lokasi kegiatan dari server (embed via PHP)
+// GPS Validation
 const KEGIATAN_LAT = <?= json_encode($kegiatan['latitude_kegiatan'] ?? null) ?>;
 const KEGIATAN_LNG = <?= json_encode($kegiatan['longitude_kegiatan'] ?? null) ?>;
 const KEGIATAN_RADIUS = <?= json_encode($kegiatan['radius_meter'] ?? 50) ?>;
 
-// Apakah kegiatan ini punya validasi lokasi?
 const HAS_LOCATION = (KEGIATAN_LAT !== null && KEGIATAN_LNG !== null);
 
-// Elemen UI
 const elLoading = document.getElementById('lokasi-loading');
 const elOk      = document.getElementById('lokasi-ok');
 const elFail    = document.getElementById('lokasi-fail');
 const elError   = document.getElementById('lokasi-error');
 const btnSubmit = document.getElementById('btn-submit-absensi');
 
-/**
- * Hitung jarak antara 2 titik koordinat (Haversine Formula)
- * @return {number} Jarak dalam meter
- */
 function hitungJarak(lat1, lng1, lat2, lng2) {
-    const R = 6371000; // Radius bumi dalam meter
+    const R = 6371000;
     const toRad = (deg) => deg * (Math.PI / 180);
-    
     const dLat = toRad(lat2 - lat1);
     const dLng = toRad(lng2 - lng1);
-    
     const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
               Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
               Math.sin(dLng / 2) * Math.sin(dLng / 2);
-    
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    
-    return R * c; // Hasil dalam meter
+    return R * c;
 }
 
-/**
- * Sembunyikan semua status box
- */
 function hideAllStatus() {
     elLoading.style.display = 'none';
     elOk.style.display      = 'none';
@@ -569,42 +507,30 @@ function hideAllStatus() {
     elError.style.display    = 'none';
 }
 
-/**
- * Deteksi lokasi GPS pegawai
- */
 function detectLocation() {
-    // Jika kegiatan tidak punya koordinat, skip validasi lokasi
     if (!HAS_LOCATION) {
         document.getElementById('lokasi-status').style.display = 'none';
         return;
     }
 
-    // Tampilkan loading
     hideAllStatus();
     elLoading.style.display = 'flex';
     btnSubmit.disabled = true;
 
-    // Cek apakah browser support Geolocation
     if (!navigator.geolocation) {
         hideAllStatus();
-        elError.style.display = 'block';
-        document.getElementById('lokasi-error-detail').textContent = 
-            'Browser Anda tidak mendukung GPS. Gunakan browser modern (Chrome/Safari).';
+        elError.style.display = 'flex';
+        document.getElementById('lokasi-error-detail').textContent = 'Browser Anda tidak mendukung GPS.';
         return;
     }
 
-    // Minta lokasi GPS
     navigator.geolocation.getCurrentPosition(
-        // SUCCESS: Lokasi berhasil didapat
         function (position) {
             const userLat = position.coords.latitude;
             const userLng = position.coords.longitude;
-
-            // Hitung jarak
             const jarak = hitungJarak(userLat, userLng, KEGIATAN_LAT, KEGIATAN_LNG);
-            const jarakBulat = Math.round(jarak * 100) / 100; // 2 desimal
+            const jarakBulat = Math.round(jarak * 100) / 100;
 
-            // Simpan ke hidden inputs
             document.getElementById('latitude_absensi').value  = userLat.toFixed(8);
             document.getElementById('longitude_absensi').value = userLng.toFixed(8);
             document.getElementById('jarak_meter').value       = jarakBulat;
@@ -612,90 +538,64 @@ function detectLocation() {
             hideAllStatus();
 
             if (jarak <= KEGIATAN_RADIUS) {
-                // ✅ DALAM RADIUS — boleh submit
                 document.getElementById('lokasi_valid').value = '1';
-                elOk.style.display = 'block';
-                document.getElementById('lokasi-ok-detail').textContent = 
-                    'Anda berada ' + jarakBulat + ' meter dari lokasi kegiatan (radius: ' + KEGIATAN_RADIUS + ' m).';
+                elOk.style.display = 'flex';
+                document.getElementById('lokasi-ok-detail').textContent = 'Anda berada ' + jarakBulat + ' meter dari lokasi kegiatan (radius: ' + KEGIATAN_RADIUS + ' m).';
                 btnSubmit.disabled = false;
             } else {
-                // ❌ DI LUAR RADIUS — tidak boleh submit
                 document.getElementById('lokasi_valid').value = '0';
-                elFail.style.display = 'block';
-                document.getElementById('lokasi-fail-detail').textContent = 
-                    'Anda berada ' + jarakBulat + ' meter dari lokasi kegiatan. ' +
-                    'Maksimal radius: ' + KEGIATAN_RADIUS + ' meter. ' +
-                    'Silakan pindah ke lokasi kegiatan dan coba lagi.';
+                elFail.style.display = 'flex';
+                document.getElementById('lokasi-fail-detail').textContent = 'Anda berada ' + jarakBulat + ' meter dari lokasi. Maksimal radius: ' + KEGIATAN_RADIUS + ' m.';
                 btnSubmit.disabled = true;
             }
         },
-        // ERROR: Gagal mendapatkan lokasi
         function (error) {
             hideAllStatus();
-            elError.style.display = 'block';
+            elError.style.display = 'flex';
             
             let pesan = '';
             switch (error.code) {
                 case error.PERMISSION_DENIED:
-                    pesan = 'Anda menolak akses lokasi. Silakan aktifkan GPS dan izinkan akses lokasi di pengaturan browser Anda, lalu coba lagi.';
-                    break;
+                    pesan = 'Anda menolak akses lokasi. Aktifkan GPS dan izinkan browser.'; break;
                 case error.POSITION_UNAVAILABLE:
-                    pesan = 'Informasi lokasi tidak tersedia. Pastikan GPS perangkat Anda aktif.';
-                    break;
+                    pesan = 'Informasi lokasi tidak tersedia. Pastikan GPS aktif.'; break;
                 case error.TIMEOUT:
-                    pesan = 'Waktu deteksi lokasi habis. Pastikan Anda berada di area dengan sinyal GPS yang baik.';
-                    break;
+                    pesan = 'Waktu deteksi habis. Pastikan sinyal GPS baik.'; break;
                 default:
-                    pesan = 'Terjadi kesalahan saat mendeteksi lokasi. Silakan coba lagi.';
+                    pesan = 'Terjadi kesalahan saat mendeteksi lokasi.';
             }
-            
             document.getElementById('lokasi-error-detail').textContent = pesan;
             btnSubmit.disabled = true;
         },
-        // OPTIONS
-        {
-            enableHighAccuracy: true,  // Gunakan GPS presisi tinggi
-            timeout: 15000,            // Timeout 15 detik
-            maximumAge: 0              // Jangan pakai cache, selalu minta lokasi baru
-        }
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
 }
 
-// Jalankan deteksi lokasi otomatis saat halaman dimuat
-document.addEventListener('DOMContentLoaded', function() {
-    // Deteksi lokasi TIDAK otomatis lagi
-    // Akan dipanggil saat user memilih status "Hadir" pada option box
-});
-
-// Cegah submit jika lokasi belum valid atau data tidak lengkap
 document.querySelector('form').addEventListener('submit', function(e) {
     const nip = document.getElementById('nip').value;
     if (!nip) {
         e.preventDefault();
-        alert('⚠️ Silakan pilih Nama Pegawai dari daftar pilihan yang muncul saat Anda mengetik.');
+        alert('⚠️ Silakan pilih Nama Pegawai dari daftar pilihan.');
         return false;
     }
 
     const statusKehadiran = document.getElementById('status_kehadiran').value;
-    
     if (!statusKehadiran) {
         e.preventDefault();
-        alert('⚠️ Silakan pilih Status Kehadiran terlebih dahulu.');
+        alert('⚠️ Silakan pilih Status Kehadiran.');
         return false;
     }
     
     if (statusKehadiran === 'Hadir') {
-        // Validasi lokasi GPS (hanya jika kegiatan punya koordinat)
         if (HAS_LOCATION) {
             const lokasiValid = document.getElementById('lokasi_valid').value;
             if (lokasiValid !== '1') {
                 e.preventDefault();
-                alert('⚠️ Lokasi Anda belum terverifikasi atau di luar radius kegiatan.\n\nSilakan pastikan Anda berada di lokasi kegiatan dan klik "Coba Deteksi Ulang".');
+                alert('⚠️ Lokasi Anda belum terverifikasi atau di luar radius.');
                 return false;
             }
         }
         
-        // Validasi foto
         const fotoInput = document.getElementById('foto');
         if (!fotoInput.files || fotoInput.files.length === 0) {
             e.preventDefault();
@@ -705,11 +605,10 @@ document.querySelector('form').addEventListener('submit', function(e) {
     }
     
     if (statusKehadiran === 'Tidak Hadir') {
-        // Validasi file bukti
         const fileBukti = document.getElementById('file_bukti');
         if (!fileBukti.files || fileBukti.files.length === 0) {
             e.preventDefault();
-            alert('⚠️ File bukti ketidakhadiran wajib diunggah.');
+            alert('⚠️ File bukti wajib diunggah.');
             return false;
         }
     }
