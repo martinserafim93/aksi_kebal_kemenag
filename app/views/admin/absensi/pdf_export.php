@@ -145,12 +145,13 @@
 
     <table class="info-table">
         <tr>
-            <td>Filter Laporan</td>
+            <td>Laporan</td>
             <td>: <?php
                 switch ($filter ?? 'semua') {
-                    case 'hadir': echo 'Pegawai Hadir Saja'; break;
-                    case 'tidak_hadir': echo 'Pegawai Tidak Hadir Saja'; break;
-                    default: echo 'Semua Pegawai (Hadir + Tidak Hadir)';
+                    case 'hadir': echo 'Pegawai Hadir'; break;
+                    case 'tidak_hadir': echo 'Pegawai Tidak Hadir'; break;
+                    case 'tidak_absen': echo 'Pegawai Tidak Absen'; break;
+                    default: echo 'Semua Pegawai';
                 }
             ?></td>
         </tr>

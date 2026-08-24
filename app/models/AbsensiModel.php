@@ -143,7 +143,7 @@ class AbsensiModel
         return [
             'total_pegawai'    => $totalPegawai,
             'hadir'            => $hadir,
-            'tidak_hadir'      => $tidakHadirAbsen + $tidakAbsen,
+            'tidak_hadir'      => $tidakHadirAbsen,
             'tidak_absen'      => $tidakAbsen,
         ];
     }

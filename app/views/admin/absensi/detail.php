@@ -60,13 +60,16 @@
                 </button>
                 <div id="pdfDropdown" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 0.5rem; background: #fff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid var(--border-color); border-radius: 0.5rem; min-width: 200px; z-index: 50; overflow: hidden;">
                     <a href="<?= url('admin/absensi-export-pdf/' . $kegiatan['kode_kegiatan'] . '?filter=semua') ?>" target="_blank" style="display: block; padding: 0.75rem 1rem; color: var(--text-main); text-decoration: none; font-size: 0.85rem; border-bottom: 1px solid var(--border-color);">
-                        Semua (Hadir & Tidak Hadir)
+                        Semua Pegawai
                     </a>
                     <a href="<?= url('admin/absensi-export-pdf/' . $kegiatan['kode_kegiatan'] . '?filter=hadir') ?>" target="_blank" style="display: block; padding: 0.75rem 1rem; color: var(--text-main); text-decoration: none; font-size: 0.85rem; border-bottom: 1px solid var(--border-color);">
-                        Hadir Saja
+                        Pegawai Hadir
                     </a>
-                    <a href="<?= url('admin/absensi-export-pdf/' . $kegiatan['kode_kegiatan'] . '?filter=tidak_hadir') ?>" target="_blank" style="display: block; padding: 0.75rem 1rem; color: var(--text-main); text-decoration: none; font-size: 0.85rem;">
-                        Tidak Hadir Saja
+                    <a href="<?= url('admin/absensi-export-pdf/' . $kegiatan['kode_kegiatan'] . '?filter=tidak_hadir') ?>" target="_blank" style="display: block; padding: 0.75rem 1rem; color: var(--text-main); text-decoration: none; font-size: 0.85rem; border-bottom: 1px solid var(--border-color);">
+                        Pegawai Tidak Hadir
+                    </a>
+                    <a href="<?= url('admin/absensi-export-pdf/' . $kegiatan['kode_kegiatan'] . '?filter=tidak_absen') ?>" target="_blank" style="display: block; padding: 0.75rem 1rem; color: var(--text-main); text-decoration: none; font-size: 0.85rem;">
+                        Pegawai Tidak Absen
                     </a>
                 </div>
             </div>

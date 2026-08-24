@@ -1052,27 +1052,26 @@ class AdminController extends Controller
                 $absensi = array_filter($semuaAbsensi, fn($r) => $r['status_kehadiran'] === 'Hadir');
                 break;
             case 'tidak_hadir':
-                // Pegawai yang isi "Tidak Hadir" + yang tidak isi absen sama sekali
-                $tidakHadir = array_filter($semuaAbsensi, fn($r) => $r['status_kehadiran'] === 'Tidak Hadir');
-                // Gabungkan dengan pegawai yang tidak absen (format-kan datanya agar seragam)
+                $absensi = array_filter($semuaAbsensi, fn($r) => $r['status_kehadiran'] === 'Tidak Hadir');
+                break;
+            case 'tidak_absen':
+                $absensi = [];
                 foreach ($pegawaiTidakAbsen as $p) {
-                    $tidakHadir[] = [
+                    $absensi[] = [
                         'nip'               => $p['nip'],
                         'nama_lengkap'      => $p['nama_lengkap'],
-                        'status_kehadiran'  => 'Tidak Hadir',
-                        'created_at'        => null, // tidak ada waktu submit
+                        'status_kehadiran'  => 'Tidak Melakukan Absensi',
+                        'created_at'        => null,
                     ];
                 }
-                $absensi = array_values($tidakHadir);
                 break;
             default: // semua
-                // Gabungkan absensi yang ada + pegawai yang tidak mengisi absen
                 $absensi = $semuaAbsensi;
                 foreach ($pegawaiTidakAbsen as $p) {
                     $absensi[] = [
                         'nip'               => $p['nip'],
                         'nama_lengkap'      => $p['nama_lengkap'],
-                        'status_kehadiran'  => 'Tidak Hadir',
+                        'status_kehadiran'  => 'Tidak Melakukan Absensi',
                         'created_at'        => null,
                     ];
                 }
