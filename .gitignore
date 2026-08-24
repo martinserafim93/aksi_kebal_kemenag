@@ -58,6 +58,9 @@ next-env.d.ts
 # Uploaded files (keep directory structure with .gitkeep)
 public/uploads/foto_absensi/*
 !public/uploads/foto_absensi/.gitkeep
+public/uploads/file_bukti/*
+!public/uploads/file_bukti/.gitkeep
+!public/uploads/file_bukti/.htaccess
 
 # Temporary script files
 *.ps1
