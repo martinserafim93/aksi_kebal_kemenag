@@ -1150,7 +1150,7 @@ class AdminController extends Controller
         $total_data = $model->countAll($filters);
         $total_page = ceil($total_data / $limit);
         
-        $statistik = $model->getStatistik($filters);
+        $statistik = $model->getStatistikLengkap($kegiatan['id_kegiatan']);
 
         $this->view('admin/absensi/detail', [
             'title' => 'Detail Absensi - ' . $kegiatan['nama_kegiatan'],
