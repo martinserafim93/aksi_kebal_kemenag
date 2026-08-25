@@ -32,8 +32,8 @@
 <div style="display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;">
     <div class="card" style="flex: 1; min-width: 200px; margin-bottom: 0;">
         <div class="card-body" style="text-align: center;">
-            <h3 style="margin: 0; color: var(--text-muted); font-size: 1rem; font-weight: 500;">Total Data</h3>
-            <div style="font-size: 2rem; font-weight: 700; color: var(--text-main); margin-top: 0.5rem;"><?= $statistik['total'] ?></div>
+            <h3 style="margin: 0; color: var(--text-muted); font-size: 1rem; font-weight: 500;">Total Pegawai</h3>
+            <div style="font-size: 2rem; font-weight: 700; color: var(--text-main); margin-top: 0.5rem;"><?= $statistik['total_pegawai'] ?></div>
         </div>
     </div>
     <div class="card" style="flex: 1; min-width: 200px; margin-bottom: 0; border-bottom: 4px solid #10b981;">
@@ -46,6 +46,12 @@
         <div class="card-body" style="text-align: center;">
             <h3 style="margin: 0; color: var(--text-muted); font-size: 1rem; font-weight: 500;">Tidak Hadir</h3>
             <div style="font-size: 2rem; font-weight: 700; color: #ef4444; margin-top: 0.5rem;"><?= $statistik['tidak_hadir'] ?></div>
+        </div>
+    </div>
+    <div class="card" style="flex: 1; min-width: 200px; margin-bottom: 0; border-bottom: 4px solid #f59e0b;">
+        <div class="card-body" style="text-align: center;">
+            <h3 style="margin: 0; color: var(--text-muted); font-size: 1rem; font-weight: 500;">Belum Absen</h3>
+            <div style="font-size: 2rem; font-weight: 700; color: #f59e0b; margin-top: 0.5rem;"><?= $statistik['tidak_absen'] ?></div>
         </div>
     </div>
 </div>
