@@ -1103,15 +1103,22 @@ class AdminController extends Controller
         
         $search = query('search', '');
         $jenis = query('jenis', '');
+        $page = max(1, (int)query('page', 1));
+        $limit = 10;
+        $offset = ($page - 1) * $limit;
         
         // Ambil data kegiatan (hanya yang Published)
-        $kegiatan = $model->getAll($search, 'Published', $jenis);
+        $kegiatan = $model->getAllPaginated($search, 'Published', $jenis, $limit, $offset);
+        $total_data = $model->countAll($search, 'Published', $jenis);
+        $total_page = ceil($total_data / $limit);
 
         $this->view('admin/absensi/kegiatan_list', [
             'title' => 'Manajemen Absensi - AKSI KEBAL',
             'kegiatan' => $kegiatan,
             'search' => $search,
             'jenis' => $jenis,
+            'page' => $page,
+            'total_page' => $total_page,
             'active_menu' => 'absensi'
         ]);
     }

@@ -2,7 +2,7 @@
 $qrCodeUrl = !empty($kegiatan['qr_code']) ? $kegiatan['qr_code'] : url("absensi?kegiatan=" . $kegiatan['kode_kegiatan']);
 ?>
 
-<div class="card" style="margin-bottom: 2rem;">
+<div class="card" >
     <div class="card-body" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
         <div>
             <h2 style="margin: 0; font-size: 1.5rem; color: var(--text-main);">QR Code Absensi</h2>
@@ -16,8 +16,8 @@ $qrCodeUrl = !empty($kegiatan['qr_code']) ? $kegiatan['qr_code'] : url("absensi?
     </div>
 </div>
 
-<div class="card" style="max-width: 600px; margin: 0 auto; text-align: center;">
-    <div class="card-body" style="padding: 3rem 1.5rem;">
+<div class="card" style="max-width: 800px; margin: 0 auto;">
+    <div class="card-body" style="text-align: center; padding: 2rem;">
         <h3 style="margin-bottom: 1.5rem;">Scan untuk Absensi</h3>
         <p style="color: var(--text-muted); margin-bottom: 2rem;">
             Silakan scan QR code di bawah ini atau bagikan link absensi kepada pegawai.

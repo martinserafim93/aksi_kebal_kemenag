@@ -1,7 +1,7 @@
 <?php ob_start(); ?>
 
-<div class="card" style="margin-bottom: 2rem; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
-    <div class="card-body" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+<div class="card" style="border-radius: var(--radius-xl); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); margin-bottom: 2rem;">
+    <div class="card-body" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1.5rem; padding: 1.5rem;">
         <div>
             <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
                 <a href="<?= url('admin/absensi') ?>" class="btn" style="background: #f1f5f9; color: #475569; padding: 0.35rem 0.6rem; border-radius: 0.375rem; display: flex; align-items: center; gap: 0.25rem; font-size: 0.85rem; text-decoration: none; font-weight: 500;">
@@ -29,35 +29,35 @@
     </div>
 </div>
 
-<div style="display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;">
-    <div class="card" style="flex: 1; min-width: 200px; margin-bottom: 0;">
-        <div class="card-body" style="text-align: center;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+    <div class="card" style="margin-bottom: 0;">
+        <div class="card-body" >
             <h3 style="margin: 0; color: var(--text-muted); font-size: 1rem; font-weight: 500;">Total Pegawai</h3>
             <div style="font-size: 2rem; font-weight: 700; color: var(--text-main); margin-top: 0.5rem;"><?= $statistik['total_pegawai'] ?></div>
         </div>
     </div>
-    <div class="card" style="flex: 1; min-width: 200px; margin-bottom: 0; border-bottom: 4px solid #10b981;">
-        <div class="card-body" style="text-align: center;">
+    <div class="card" style="margin-bottom: 0;">
+        <div class="card-body" >
             <h3 style="margin: 0; color: var(--text-muted); font-size: 1rem; font-weight: 500;">Hadir</h3>
             <div style="font-size: 2rem; font-weight: 700; color: #10b981; margin-top: 0.5rem;"><?= $statistik['hadir'] ?></div>
         </div>
     </div>
-    <div class="card" style="flex: 1; min-width: 200px; margin-bottom: 0; border-bottom: 4px solid #ef4444;">
-        <div class="card-body" style="text-align: center;">
+    <div class="card" style="margin-bottom: 0;">
+        <div class="card-body" >
             <h3 style="margin: 0; color: var(--text-muted); font-size: 1rem; font-weight: 500;">Tidak Hadir</h3>
             <div style="font-size: 2rem; font-weight: 700; color: #ef4444; margin-top: 0.5rem;"><?= $statistik['tidak_hadir'] ?></div>
         </div>
     </div>
-    <div class="card" style="flex: 1; min-width: 200px; margin-bottom: 0; border-bottom: 4px solid #f59e0b;">
-        <div class="card-body" style="text-align: center;">
+    <div class="card" style="margin-bottom: 0;">
+        <div class="card-body" >
             <h3 style="margin: 0; color: var(--text-muted); font-size: 1rem; font-weight: 500;">Belum Absen</h3>
             <div style="font-size: 2rem; font-weight: 700; color: #f59e0b; margin-top: 0.5rem;"><?= $statistik['tidak_absen'] ?></div>
         </div>
     </div>
 </div>
 
-<div class="card">
-    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+<div class="card" style="border-radius: var(--radius-xl); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem; border-bottom: 1px solid var(--border-color);">
         <h3 class="card-title" style="margin: 0;">Daftar Hadir Pegawai</h3>
         <div style="display: flex; gap: 0.5rem;">
             <div style="position: relative; display: inline-block;" class="pdf-dropdown-container">
@@ -166,7 +166,7 @@
     
     <!-- Pagination -->
     <?php if ($total_page > 1): ?>
-    <div class="card-body" style="border-top: 1px solid var(--border-color); display: flex; justify-content: center;">
+    <div class="card-body" >
         <div style="display: flex; gap: 0.25rem;">
             <?php for ($i = 1; $i <= $total_page; $i++): ?>
                 <a href="<?= url('admin/absensi-detail/' . $kegiatan['kode_kegiatan'] . '?page=' . $i) ?>" 

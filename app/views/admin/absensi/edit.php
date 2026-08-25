@@ -1,6 +1,6 @@
 <?php ob_start(); ?>
 
-<div class="card" style="margin-bottom: 2rem;">
+<div class="card" >
     <div class="card-body" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
         <div>
             <h2 style="margin: 0; font-size: 1.5rem; color: var(--text-main);">Koreksi Absensi</h2>
@@ -25,14 +25,14 @@
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
                 
                 <div class="form-group" style="grid-column: 1 / -1;">
-                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem; color: var(--text-main);">Pegawai</label>
+                    <label class="form-label">Pegawai</label>
                     <div style="padding: 0.75rem; background: #f8fafc; border: 1px solid var(--border-color); border-radius: 0.375rem; color: var(--text-muted);">
                         <strong><?= e($absensi['nama_lengkap']) ?></strong> (NIP: <?= e($absensi['nip']) ?>)
                     </div>
                 </div>
 
                 <div class="form-group" style="grid-column: 1 / -1;">
-                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem; color: var(--text-main);">Kegiatan</label>
+                    <label class="form-label">Kegiatan</label>
                     <div style="padding: 0.75rem; background: #f8fafc; border: 1px solid var(--border-color); border-radius: 0.375rem; color: var(--text-muted);">
                         <strong><?= e($absensi['nama_kegiatan']) ?></strong><br>
                         <small><?= date('d M Y', strtotime($absensi['tanggal_kegiatan'])) ?> (<?= date('H:i', strtotime($absensi['waktu_mulai'])) ?> - <?= date('H:i', strtotime($absensi['waktu_selesai'])) ?>)</small>
@@ -40,22 +40,22 @@
                 </div>
 
                 <div class="form-group">
-                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem; color: var(--text-main);">Waktu Submit</label>
+                    <label class="form-label">Waktu Submit</label>
                     <div style="padding: 0.75rem; background: #f8fafc; border: 1px solid var(--border-color); border-radius: 0.375rem; color: var(--text-muted);">
                         <?= date('d M Y, H:i:s', strtotime($absensi['created_at'])) ?>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="status_kehadiran" style="display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem; color: var(--text-main);">Status Kehadiran <span style="color: #ef4444;">*</span></label>
-                    <select name="status_kehadiran" id="status_kehadiran" class="form-control" required style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.375rem; font-size: 0.95rem;">
+                    <label for="status_kehadiran" class="form-label">Status Kehadiran <span style="color: #ef4444;">*</span></label>
+                    <select name="status_kehadiran" id="status_kehadiran" class="form-control" required >
                         <option value="Hadir" <?= $absensi['status_kehadiran'] === 'Hadir' ? 'selected' : '' ?>>Hadir</option>
                         <option value="Tidak Hadir" <?= $absensi['status_kehadiran'] === 'Tidak Hadir' ? 'selected' : '' ?>>Tidak Hadir</option>
                     </select>
                 </div>
                 
                 <div class="form-group" style="grid-column: 1 / -1;">
-                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem; color: var(--text-main);">Bukti (Foto/File)</label>
+                    <label class="form-label">Bukti (Foto/File)</label>
                     <?php if ($absensi['status_kehadiran'] === 'Tidak Hadir' && !empty($absensi['file_bukti'])): ?>
                         <?php if ($absensi['tipe_file_bukti'] === 'pdf'): ?>
                             <div style="margin-top: 0.5rem; padding: 1rem; border: 1px dashed var(--border-color); border-radius: 0.5rem; background: #f8fafc; display: flex; align-items: center; gap: 0.5rem;">
