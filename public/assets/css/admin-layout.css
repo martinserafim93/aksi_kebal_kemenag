@@ -8,7 +8,7 @@
 /* ============================================================
    Google Fonts & Variables Import
    ============================================================ */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap');
 
 :root {
     /* Colors */
@@ -30,6 +30,13 @@
     
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --shadow-glass: 0 8px 32px rgba(16, 185, 129, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    
+    /* Radius */
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    --radius-full: 9999px;
     
     /* Layout Dimensions */
     --sidebar-width: 260px;
@@ -49,7 +56,7 @@
 }
 
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Figtree', sans-serif;
     background-color: var(--content-bg);
     color: var(--text-main);
     overflow-x: hidden;
@@ -175,13 +182,15 @@ a {
 
 .sidebar-menu li {
     margin-bottom: 0.25rem;
+    padding: 0 1rem;
 }
 
 .sidebar-menu a {
     display: flex;
     align-items: center;
     gap: 1rem;
-    padding: 0.75rem 1.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
     color: var(--sidebar-color);
     transition: var(--transition);
     font-weight: 500;
@@ -202,11 +211,11 @@ a {
 .sidebar-menu a.active {
     background-color: var(--primary);
     color: #ffffff;
-    border-left: 4px solid #ffffff;
+    box-shadow: var(--shadow-sm);
 }
 
 .sidebar-menu a.active i {
-    margin-left: -4px; /* Adjust for border */
+    margin-left: 0;
 }
 
 /* ============================================================
@@ -283,18 +292,19 @@ a {
 /* Cards used in dashboard/content */
 .card {
     background: #ffffff;
-    border-radius: 0.5rem;
+    border-radius: var(--radius-xl);
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--border-color);
     margin-bottom: 1.5rem;
 }
 
 .card-header {
-    padding: 1.25rem 1.5rem;
+    padding: 1.5rem;
     border-bottom: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background: transparent;
 }
 
 .card-title {
@@ -305,6 +315,44 @@ a {
 
 .card-body {
     padding: 1.5rem;
+}
+
+/* ============================================================
+   Forms
+   ============================================================ */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text-main);
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background-color: #ffffff;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--text-main);
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    box-shadow: var(--shadow-sm);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+}
+
+.form-control::placeholder {
+    color: #94a3b8;
 }
 
 /* ============================================================

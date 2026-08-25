@@ -2,8 +2,8 @@
 ob_start();
 ?>
 
-<div class="card" style="margin-bottom: 2rem;">
-    <div class="card-body" style="display: flex; justify-content: space-between; align-items: center;">
+<div class="card" >
+    <div class="card-body" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
         <div>
             <h2 style="margin: 0; font-size: 1.5rem; color: var(--text-main);">Tambah Tim Kerja</h2>
             <p style="margin: 0.25rem 0 0 0; color: var(--text-muted); font-size: 0.95rem;">Buat data tim kerja baru.</p>
@@ -16,7 +16,7 @@ ob_start();
     </div>
 </div>
 
-<div class="card" style="max-width: 600px;">
+<div class="card" style="max-width: 800px; margin: 0 auto;">
     <div class="card-header">
         <h3 class="card-title">Form Data Tim Kerja</h3>
     </div>
@@ -25,8 +25,8 @@ ob_start();
             <input type="hidden" name="csrf_token" value="<?= Middleware::generateCsrfToken() ?>">
             
             <div class="form-group" style="margin-bottom: 1.5rem;">
-                <label for="nama_tim_kerja" style="display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.95rem;">Nama Tim Kerja <span style="color: red;">*</span></label>
-                <input type="text" id="nama_tim_kerja" name="nama_tim_kerja" class="form-control" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;" required autofocus placeholder="Contoh: Tim Pelayanan">
+                <label for="nama_tim_kerja" class="form-label">Nama Tim Kerja <span style="color: red;">*</span></label>
+                <input type="text" id="nama_tim_kerja" name="nama_tim_kerja" class="form-control"  required autofocus placeholder="Contoh: Tim Pelayanan">
             </div>
 
             <div style="text-align: right;">

@@ -23,25 +23,25 @@ ob_start();
     
     .stat-card {
         background: #ffffff;
-        border-radius: 0.75rem;
+        border-radius: var(--radius-xl);
         padding: 1.5rem;
         box-shadow: var(--shadow-sm);
         border: 1px solid var(--border-color);
         display: flex;
         align-items: center;
         gap: 1.25rem;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1);
     }
     
     .stat-card:hover {
-        transform: translateY(-3px);
+        transform: translateY(-2px);
         box-shadow: var(--shadow-md);
     }
     
     .stat-icon {
         width: 60px;
         height: 60px;
-        border-radius: 0.75rem;
+        border-radius: var(--radius-lg);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -123,16 +123,16 @@ ob_start();
 </style>
 
 <!-- Welcome Banner -->
-<div class="card" style="background: linear-gradient(135deg, var(--sidebar-bg), #0f172a); color: white; border: none;">
-    <div class="card-body" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+<div class="card" style="background: linear-gradient(135deg, var(--sidebar-bg), #0f172a); color: white; border: none; margin-bottom: 2rem;">
+    <div class="card-body" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem; padding: 2rem;">
         <div>
             <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; color: white;">Selamat Datang, <?= e(adminData('nama_lengkap')) ?>! 👋</h2>
-            <p style="color: #94a3b8; font-size: 0.95rem;">
+            <p style="color: #94a3b8; font-size: 0.95rem; margin: 0;">
                 Anda masuk sebagai <strong><?= e(adminData('role')) ?></strong> (<?= e(adminData('nama_jabatan') ?? '-') ?>). Pantau seluruh aktivitas dan absensi hari ini.
             </p>
         </div>
         <div>
-            <div style="background: rgba(255, 255, 255, 0.1); padding: 0.75rem 1.25rem; border-radius: 0.5rem; border: 1px solid rgba(255, 255, 255, 0.2); text-align: center;">
+            <div style="background: rgba(255, 255, 255, 0.1); padding: 0.75rem 1.25rem; border-radius: var(--radius-lg); border: 1px solid rgba(255, 255, 255, 0.1); text-align: center; backdrop-filter: blur(4px);">
                 <div style="font-size: 0.75rem; text-transform: uppercase; color: #cbd5e1; font-weight: 600;">Hari Ini</div>
                 <div style="font-size: 1.1rem; font-weight: 700; margin-top: 0.25rem;"><?= e(formatTanggal(date('Y-m-d'))) ?></div>
             </div>
@@ -185,12 +185,12 @@ ob_start();
 
 <div class="dashboard-grid">
     <!-- Latest Activities Table -->
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Kegiatan Terbaru</h3>
-            <a href="<?= url('admin/kegiatan') ?>" style="font-size: 0.85rem; color: var(--primary); font-weight: 500;">Lihat Semua</a>
+    <div class="card" >
+        <div class="card-header" >
+            <h3 class="card-title" style="font-weight: 600;">Kegiatan Terbaru</h3>
+            <a href="<?= url('admin/kegiatan') ?>" style="font-size: 0.875rem; color: var(--primary); font-weight: 600; text-decoration: none;">Lihat Semua &rarr;</a>
         </div>
-        <div class="card-body" style="padding: 0;">
+        <div class="card-body" >
             <div style="overflow-x: auto;">
                 <table class="table-activities">
                     <thead>
@@ -237,11 +237,11 @@ ob_start();
     </div>
 
     <!-- Chart -->
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Status Kegiatan</h3>
+    <div class="card" >
+        <div class="card-header" >
+            <h3 class="card-title" style="font-weight: 600;">Status Kegiatan</h3>
         </div>
-        <div class="card-body" style="display: flex; align-items: center; justify-content: center; min-height: 300px;">
+        <div class="card-body" >
             <canvas id="kegiatanChart"></canvas>
         </div>
     </div>

@@ -2,7 +2,7 @@
 ob_start();
 ?>
 
-<div class="card" style="margin-bottom: 2rem;">
+<div class="card" >
     <div class="card-body" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
         <div>
             <h2 style="margin: 0; font-size: 1.5rem; color: var(--text-main);">Manajemen Jabatan</h2>
@@ -16,9 +16,9 @@ ob_start();
     </div>
 </div>
 
-<div class="card">
-    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-        <h3 class="card-title">Daftar Jabatan</h3>
+<div class="card" >
+    <div class="card-header" >
+        <h3 class="card-title" style="font-weight: 600;">Daftar Jabatan</h3>
         
         <form action="<?= url('admin/jabatan') ?>" method="GET"
             style="display: flex; gap: 0.5rem; align-items: center;">
@@ -43,15 +43,15 @@ ob_start();
         </form>
     </div>
     
-    <div class="card-body" style="padding: 0;">
+    <div class="card-body" >
         <div style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse;">
-                <thead>
+            <table class="table" style="width: 100%; border-collapse: collapse;">
+                <thead style="background: var(--content-bg); border-bottom: 1px solid var(--border-color);">
                     <tr>
-                        <th style="text-align: center; padding: 1rem; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; width: 60px;">No</th>
-                        <th style="text-align: left; padding: 1rem; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase;">Nama Jabatan</th>
-                        <th style="text-align: center; padding: 1rem; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase;">Jumlah Pegawai</th>
-                        <th style="text-align: center; padding: 1rem; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; width: 150px;">Aksi</th>
+                        <th style="text-align: center; padding: 1rem; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; width: 60px;">No</th>
+                        <th style="text-align: left; padding: 1rem; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">Nama Jabatan</th>
+                        <th style="text-align: center; padding: 1rem; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">Jumlah Pegawai</th>
+                        <th style="text-align: center; padding: 1rem; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; width: 150px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -100,7 +100,7 @@ ob_start();
     
     <!-- Pagination -->
     <?php if ($total_page > 1): ?>
-        <div class="card-body" style="border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div class="card-body" style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding: 1.5rem;">
             <span style="color: var(--text-muted); font-size: 0.9rem;">
                 Halaman <?= $page ?> dari <?= $total_page ?>
             </span>

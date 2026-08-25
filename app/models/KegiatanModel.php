@@ -46,6 +46,70 @@ class KegiatanModel
         return $this->db->fetchAll();
     }
 
+    public function getAllPaginated(string $search = '', string $status = '', string $jenis = '', int $limit = 10, int $offset = 0): array
+    {
+        $query = "SELECT * FROM kegiatan WHERE 1=1";
+        
+        if (!empty($search)) {
+            $query .= " AND nama_kegiatan LIKE :search";
+        }
+        if (!empty($status)) {
+            $query .= " AND status_kegiatan = :status";
+        }
+        if (!empty($jenis)) {
+            $query .= " AND jenis_kegiatan = :jenis";
+        }
+        
+        $query .= " ORDER BY tanggal_kegiatan DESC, waktu_mulai DESC LIMIT :limit OFFSET :offset";
+        
+        $this->db->query($query);
+        
+        if (!empty($search)) {
+            $this->db->bind(':search', '%' . $search . '%');
+        }
+        if (!empty($status)) {
+            $this->db->bind(':status', $status);
+        }
+        if (!empty($jenis)) {
+            $this->db->bind(':jenis', $jenis);
+        }
+        
+        $this->db->bind(':limit', $limit);
+        $this->db->bind(':offset', $offset);
+        
+        return $this->db->fetchAll();
+    }
+
+    public function countAll(string $search = '', string $status = '', string $jenis = ''): int
+    {
+        $query = "SELECT COUNT(*) as total FROM kegiatan WHERE 1=1";
+        
+        if (!empty($search)) {
+            $query .= " AND nama_kegiatan LIKE :search";
+        }
+        if (!empty($status)) {
+            $query .= " AND status_kegiatan = :status";
+        }
+        if (!empty($jenis)) {
+            $query .= " AND jenis_kegiatan = :jenis";
+        }
+        
+        $this->db->query($query);
+        
+        if (!empty($search)) {
+            $this->db->bind(':search', '%' . $search . '%');
+        }
+        if (!empty($status)) {
+            $this->db->bind(':status', $status);
+        }
+        if (!empty($jenis)) {
+            $this->db->bind(':jenis', $jenis);
+        }
+        
+        $row = $this->db->fetch();
+        return (int) $row['total'];
+    }
+
     public function findById(int $id)
     {
         $this->db->query("SELECT * FROM kegiatan WHERE id_kegiatan = :id");

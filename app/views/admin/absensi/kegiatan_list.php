@@ -1,6 +1,6 @@
 <?php ob_start(); ?>
 
-<div class="card" style="margin-bottom: 2rem; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+<div class="card" >
     <div class="card-body" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
         <div>
             <h2 style="margin: 0; font-size: 1.5rem; color: var(--text-main);">Manajemen Absensi</h2>
@@ -9,22 +9,22 @@
     </div>
 </div>
 
-<div class="card" style="margin-bottom: 2rem; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
-    <div class="card-header" style="background: #f8fafc; border-bottom: 1px solid var(--border-color); border-radius: 0.75rem 0.75rem 0 0; padding: 1.25rem 1.5rem;">
-        <h4 style="margin: 0; font-size: 1.1rem; color: var(--text-main); display: flex; align-items: center; gap: 0.5rem;"><i class='bx bx-search-alt'></i> Cari Kegiatan</h4>
+<div class="card" >
+    <div class="card-header" >
+        <h4 style="margin: 0; font-size: 1.1rem; font-weight: 600; color: var(--text-main); display: flex; align-items: center; gap: 0.5rem;"><i class='bx bx-search-alt'></i> Cari Kegiatan</h4>
     </div>
-    <div class="card-body" style="padding: 1.5rem;">
+    <div class="card-body" >
         <form action="<?= url('admin/absensi') ?>" method="GET" style="display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: flex-end;">
             <div class="form-group" style="flex: 1; min-width: 250px;">
-                <label for="search" style="display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.95rem; color: #475569;">Nama Kegiatan</label>
+                <label for="search" class="form-label">Nama Kegiatan</label>
                 <div style="position: relative;">
                     <i class='bx bx-search' style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 1.1rem;"></i>
                     <input type="text" name="search" id="search" value="<?= e($search) ?>" placeholder="Masukkan kata kunci..." class="form-control" style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1.5px solid #e2e8f0; border-radius: 0.5rem; font-size: 0.95rem; transition: all 0.2s;" onfocus="this.style.borderColor='var(--primary)'; this.style.boxShadow='0 0 0 3px rgba(37,99,235,0.1)';">
                 </div>
             </div>
             <div class="form-group" style="flex: 1; min-width: 180px;">
-                <label for="jenis" style="display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.95rem; color: #475569;">Jenis Kegiatan</label>
-                <select name="jenis" id="jenis" class="form-control" style="width: 100%; padding: 0.75rem 1rem; border: 1.5px solid #e2e8f0; border-radius: 0.5rem; font-size: 0.95rem; transition: all 0.2s; cursor: pointer;">
+                <label for="jenis" class="form-label">Jenis Kegiatan</label>
+                <select name="jenis" id="jenis" class="form-control" >
                     <option value="">Semua Jenis</option>
                     <option value="Kerja Bakti" <?= $jenis === 'Kerja Bakti' ? 'selected' : '' ?>>Kerja Bakti</option>
                     <option value="Doa Bersama" <?= $jenis === 'Doa Bersama' ? 'selected' : '' ?>>Doa Bersama</option>
@@ -47,21 +47,21 @@
     </div>
 </div>
 
-<div class="card">
-    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-        <h3 class="card-title">Daftar Kegiatan</h3>
+<div class="card" >
+    <div class="card-header" >
+        <h3 class="card-title" style="font-weight: 600;">Daftar Kegiatan</h3>
     </div>
     
-    <div class="table-responsive" style="border-radius: 0.5rem; overflow: hidden; box-shadow: 0 0 0 1px var(--border-color);">
-        <table class="table table-hover" style="width: 100%; border-collapse: collapse; background: #fff;">
-            <thead style="background: #f8fafc; border-bottom: 2px solid var(--border-color);">
+    <div class="table-responsive" style="overflow-x: auto;">
+        <table class="table" style="width: 100%; border-collapse: collapse;">
+            <thead style="background: var(--content-bg); border-bottom: 1px solid var(--border-color);">
                 <tr>
-                    <th width="5%" style="padding: 1.25rem 1rem; font-weight: 600; text-align: center;">No</th>
-                    <th width="30%" style="padding: 1.25rem 1rem; font-weight: 600;">Nama Kegiatan</th>
-                    <th width="15%" style="padding: 1.25rem 1rem; font-weight: 600;">Jenis</th>
-                    <th width="20%" style="padding: 1.25rem 1rem; font-weight: 600;">Waktu & Lokasi</th>
-                    <th width="10%" style="padding: 1.25rem 1rem; font-weight: 600;">Status</th>
-                    <th width="20%" style="padding: 1.25rem 1rem; font-weight: 600; text-align: center;">Aksi</th>
+                    <th width="5%" style="padding: 1rem; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; text-align: center;">No</th>
+                    <th width="30%" style="padding: 1rem; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; text-align: left;">Nama Kegiatan</th>
+                    <th width="15%" style="padding: 1rem; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">Jenis</th>
+                    <th width="20%" style="padding: 1rem; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">Waktu & Lokasi</th>
+                    <th width="10%" style="padding: 1rem; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">Status</th>
+                    <th width="20%" style="padding: 1rem; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; text-align: center;">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -101,6 +101,62 @@
             </tbody>
         </table>
     </div>
+
+    <!-- Pagination -->
+    <?php if (isset($total_page) && $total_page > 1): ?>
+        <div class="card-body" style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding: 1.5rem;">
+            <span style="color: var(--text-muted); font-size: 0.9rem;">
+                Halaman <?= $page ?> dari <?= $total_page ?>
+            </span>
+            <div style="display: flex; gap: 0.25rem; align-items: center;">
+                <!-- Tombol Sebelumnya -->
+                <?php if ($page > 1): ?>
+                    <a href="<?= url('admin/absensi?page=' . ($page - 1) . (!empty($search) ? '&search=' . urlencode($search) : '') . (!empty($jenis) ? '&jenis=' . urlencode($jenis) : '')) ?>"
+                        style="padding: 0.5rem 0.75rem; border-radius: 0.25rem; text-decoration: none; font-size: 0.9rem; font-weight: 500; background: #f1f5f9; color: #475569;">
+                        &laquo; Sebelumnya
+                    </a>
+                <?php else: ?>
+                    <span style="padding: 0.5rem 0.75rem; border-radius: 0.25rem; font-size: 0.9rem; font-weight: 500; background: #f1f5f9; color: #94a3b8; cursor: not-allowed;">
+                        &laquo; Sebelumnya
+                    </span>
+                <?php endif; ?>
+
+                <!-- Angka Halaman -->
+                <?php
+                $start = max(1, $page - 2);
+                $end = min($total_page, $page + 2);
+                
+                if ($start > 1) {
+                    echo '<span style="padding: 0.5rem; color: #94a3b8;">...</span>';
+                }
+                
+                for ($i = $start; $i <= $end; $i++): ?>
+                    <a href="<?= url('admin/absensi?page=' . $i . (!empty($search) ? '&search=' . urlencode($search) : '') . (!empty($jenis) ? '&jenis=' . urlencode($jenis) : '')) ?>"
+                        style="padding: 0.5rem 0.75rem; border-radius: 0.25rem; text-decoration: none; font-size: 0.9rem; font-weight: 500; 
+                          <?= $i === $page ? 'background: var(--primary); color: white;' : 'background: #f1f5f9; color: #475569;' ?>">
+                        <?= $i ?>
+                    </a>
+                <?php endfor; 
+                
+                if ($end < $total_page) {
+                    echo '<span style="padding: 0.5rem; color: #94a3b8;">...</span>';
+                }
+                ?>
+
+                <!-- Tombol Selanjutnya -->
+                <?php if ($page < $total_page): ?>
+                    <a href="<?= url('admin/absensi?page=' . ($page + 1) . (!empty($search) ? '&search=' . urlencode($search) : '') . (!empty($jenis) ? '&jenis=' . urlencode($jenis) : '')) ?>"
+                        style="padding: 0.5rem 0.75rem; border-radius: 0.25rem; text-decoration: none; font-size: 0.9rem; font-weight: 500; background: #f1f5f9; color: #475569;">
+                        Selanjutnya &raquo;
+                    </a>
+                <?php else: ?>
+                    <span style="padding: 0.5rem 0.75rem; border-radius: 0.25rem; font-size: 0.9rem; font-weight: 500; background: #f1f5f9; color: #94a3b8; cursor: not-allowed;">
+                        Selanjutnya &raquo;
+                    </span>
+                <?php endif; ?>
+            </div>
+        </div>
+    <?php endif; ?>
 </div>
 
 <style>
