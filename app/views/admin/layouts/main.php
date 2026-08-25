@@ -91,6 +91,12 @@ $admin_role = adminData('nama_jabatan') ?? 'Administrator';
                     </a>
                 </li>
                 <li>
+                    <a href="<?= url('admin/unit-kerja') ?>" class="<?= $active_menu === 'unit-kerja' || $active_menu === 'unit_kerja' ? 'active' : '' ?>">
+                        <i class='bx bxs-building'></i>
+                        <span>Unit Kerja</span>
+                    </a>
+                </li>
+                <li>
                     <a href="<?= url('admin/jabatan') ?>" class="<?= $active_menu === 'jabatan' ? 'active' : '' ?>">
                         <i class='bx bxs-briefcase'></i>
                         <span>Jabatan</span>

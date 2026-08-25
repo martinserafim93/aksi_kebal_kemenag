@@ -220,6 +220,7 @@ class AdminController extends Controller
             $nama = input('nama_lengkap');
             $id_jabatan = input('id_jabatan');
             $id_tim_kerja = input('id_tim_kerja');
+            $id_unit_kerja = input('id_unit_kerja');
             $email = input('email');
             $password = input('password');
             $role = input('role', 'pegawai');
@@ -246,6 +247,7 @@ class AdminController extends Controller
                 'nama_lengkap' => $nama,
                 'id_jabatan' => $id_jabatan,
                 'id_tim_kerja' => $id_tim_kerja,
+                'id_unit_kerja' => $id_unit_kerja,
                 'email' => $email,
                 'password' => empty($password) ? password_hash($nip, PASSWORD_DEFAULT) : password_hash($password, PASSWORD_DEFAULT),
                 'role' => $role
@@ -266,6 +268,7 @@ class AdminController extends Controller
             'title'      => 'Tambah Pegawai - ' . APP_NAME,
             'jabatan'    => $pegawaiModel->getAllJabatan(),
             'tim_kerja'  => $pegawaiModel->getAllTimKerja(),
+            'unit_kerja' => $pegawaiModel->getAllUnitKerja(),
             'active_menu'=> 'pegawai'
         ]);
     }
@@ -307,6 +310,7 @@ class AdminController extends Controller
             $nama = input('nama_lengkap');
             $id_jabatan = input('id_jabatan');
             $id_tim_kerja = input('id_tim_kerja');
+            $id_unit_kerja = input('id_unit_kerja');
             $email = input('email');
             $password = input('password');
             $role = input('role', 'pegawai');
@@ -332,6 +336,7 @@ class AdminController extends Controller
                 'nama_lengkap' => $nama,
                 'id_jabatan' => $id_jabatan,
                 'id_tim_kerja' => $id_tim_kerja,
+                'id_unit_kerja' => $id_unit_kerja,
                 'email' => $email,
                 'role' => $role
             ];
@@ -356,6 +361,7 @@ class AdminController extends Controller
             'pegawai'    => $pegawai,
             'jabatan'    => $pegawaiModel->getAllJabatan(),
             'tim_kerja'  => $pegawaiModel->getAllTimKerja(),
+            'unit_kerja' => $pegawaiModel->getAllUnitKerja(),
             'active_menu'=> 'pegawai'
         ]);
     }
@@ -403,11 +409,22 @@ class AdminController extends Controller
     {
         Middleware::authAdmin();
         $model = $this->model('TimKerjaModel');
-        $tim_kerja = $model->getAll();
+        
+        $search = query('search', '');
+        $page = (int) query('page', 1);
+        $limit = 10;
+        $offset = ($page - 1) * $limit;
+
+        $tim_kerja = $model->getAllPaginated($search, $limit, $offset);
+        $total_data = $model->countAll($search);
+        $total_page = ceil($total_data / $limit);
         
         $this->view('admin/tim-kerja/index', [
             'title' => 'Manajemen Tim Kerja - AKSI KEBAL',
             'tim_kerja' => $tim_kerja,
+            'search' => $search,
+            'page' => $page,
+            'total_page' => $total_page,
             'active_menu' => 'tim_kerja'
         ]);
     }
@@ -542,6 +559,166 @@ class AdminController extends Controller
     }
 
     // ==========================================
+    // MANAJEMEN UNIT KERJA
+    // ==========================================
+
+    /**
+     * Halaman Daftar Unit Kerja
+     */
+    public function unit_kerja(): void
+    {
+        Middleware::authAdmin();
+        $model = $this->model('UnitKerjaModel');
+        
+        $search = query('search', '');
+        $page = (int) query('page', 1);
+        $limit = 10;
+        $offset = ($page - 1) * $limit;
+
+        $unit_kerja = $model->getAllPaginated($search, $limit, $offset);
+        $total_data = $model->countAll($search);
+        $total_page = ceil($total_data / $limit);
+        
+        $this->view('admin/unit-kerja/index', [
+            'title' => 'Manajemen Unit Kerja - AKSI KEBAL',
+            'unit_kerja' => $unit_kerja,
+            'search' => $search,
+            'page' => $page,
+            'total_page' => $total_page,
+            'active_menu' => 'unit_kerja'
+        ]);
+    }
+
+    /**
+     * Proses Tambah Unit Kerja
+     */
+    public function unit_kerja_create(): void
+    {
+        Middleware::authAdmin();
+        $model = $this->model('UnitKerjaModel');
+
+        if (isPost()) {
+            $csrfToken = input('csrf_token');
+            if (!$csrfToken || !Middleware::validateCsrfToken($csrfToken)) {
+                setFlash('error', 'Sesi tidak valid.');
+                $this->redirect('admin/unit-kerja-create');
+                return;
+            }
+
+            $nama_unit_kerja = input('nama_unit_kerja');
+
+            if (empty($nama_unit_kerja)) {
+                setFlash('error', 'Nama unit kerja tidak boleh kosong.');
+                $this->redirect('admin/unit-kerja-create');
+                return;
+            }
+
+            if ($model->isNameExists($nama_unit_kerja)) {
+                setFlash('error', 'Nama unit kerja sudah terdaftar.');
+                $this->redirect('admin/unit-kerja-create');
+                return;
+            }
+
+            if ($model->create(['nama_unit_kerja' => $nama_unit_kerja])) {
+                setFlash('success', 'Unit Kerja berhasil ditambahkan.');
+                $this->redirect('admin/unit-kerja');
+                return;
+            } else {
+                setFlash('error', 'Gagal menambahkan unit kerja.');
+            }
+        }
+
+        $this->view('admin/unit-kerja/create', [
+            'title' => 'Tambah Unit Kerja - AKSI KEBAL',
+            'active_menu' => 'unit_kerja'
+        ]);
+    }
+
+    /**
+     * Proses Edit Unit Kerja
+     */
+    public function unit_kerja_edit($id = null): void
+    {
+        Middleware::authAdmin();
+        if (!$id) {
+            $this->redirect('admin/unit-kerja');
+            return;
+        }
+
+        $model = $this->model('UnitKerjaModel');
+        $unit_kerja = $model->findById((int)$id);
+
+        if (!$unit_kerja) {
+            setFlash('error', 'Unit kerja tidak ditemukan.');
+            $this->redirect('admin/unit-kerja');
+            return;
+        }
+
+        if (isPost()) {
+            $csrfToken = input('csrf_token');
+            if (!$csrfToken || !Middleware::validateCsrfToken($csrfToken)) {
+                setFlash('error', 'Sesi tidak valid.');
+                $this->redirect('admin/unit-kerja-edit/' . $id);
+                return;
+            }
+
+            $nama_unit_kerja = input('nama_unit_kerja');
+
+            if (empty($nama_unit_kerja)) {
+                setFlash('error', 'Nama unit kerja tidak boleh kosong.');
+                $this->redirect('admin/unit-kerja-edit/' . $id);
+                return;
+            }
+
+            if ($model->isNameExists($nama_unit_kerja, (int)$id)) {
+                setFlash('error', 'Nama unit kerja sudah terdaftar.');
+                $this->redirect('admin/unit-kerja-edit/' . $id);
+                return;
+            }
+
+            if ($model->update((int)$id, ['nama_unit_kerja' => $nama_unit_kerja])) {
+                setFlash('success', 'Unit Kerja berhasil diperbarui.');
+                $this->redirect('admin/unit-kerja');
+                return;
+            } else {
+                setFlash('error', 'Gagal memperbarui unit kerja.');
+            }
+        }
+
+        $this->view('admin/unit-kerja/edit', [
+            'title' => 'Edit Unit Kerja - AKSI KEBAL',
+            'unit_kerja' => $unit_kerja,
+            'active_menu' => 'unit_kerja'
+        ]);
+    }
+
+    /**
+     * Proses Hapus Unit Kerja
+     */
+    public function unit_kerja_delete($id = null): void
+    {
+        Middleware::authAdmin();
+
+        if (isPost() && $id) {
+            $csrfToken = input('csrf_token');
+            if (!$csrfToken || !Middleware::validateCsrfToken($csrfToken)) {
+                setFlash('error', 'Sesi tidak valid.');
+            } else {
+                $model = $this->model('UnitKerjaModel');
+                $unit_kerja = $model->findById((int)$id);
+                
+                if ($unit_kerja && $model->delete((int)$id)) {
+                    setFlash('success', 'Unit Kerja berhasil dihapus.');
+                } else {
+                    setFlash('error', 'Gagal menghapus! Unit Kerja ini masih memiliki anggota pegawai atau tidak ditemukan.');
+                }
+            }
+        }
+        
+        $this->redirect('admin/unit-kerja');
+    }
+
+    // ==========================================
     // MANAJEMEN JABATAN
     // ==========================================
 
@@ -552,11 +729,22 @@ class AdminController extends Controller
     {
         Middleware::authAdmin();
         $model = $this->model('JabatanModel');
-        $jabatan = $model->getAll();
+        
+        $search = query('search', '');
+        $page = (int) query('page', 1);
+        $limit = 10;
+        $offset = ($page - 1) * $limit;
+
+        $jabatan = $model->getAllPaginated($search, $limit, $offset);
+        $total_data = $model->countAll($search);
+        $total_page = ceil($total_data / $limit);
         
         $this->view('admin/jabatan/index', [
             'title' => 'Manajemen Jabatan - AKSI KEBAL',
             'jabatan' => $jabatan,
+            'search' => $search,
+            'page' => $page,
+            'total_page' => $total_page,
             'active_menu' => 'jabatan'
         ]);
     }

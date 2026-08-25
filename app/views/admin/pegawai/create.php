@@ -36,7 +36,17 @@ ob_start();
                 </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                <div class="form-group">
+                    <label for="id_unit_kerja" style="display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.95rem;">Unit Kerja</label>
+                    <select id="id_unit_kerja" name="id_unit_kerja" class="form-control" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;">
+                        <option value="">-- Pilih Unit Kerja --</option>
+                        <?php foreach ($unit_kerja as $u): ?>
+                            <option value="<?= $u['id_unit_kerja'] ?>"><?= e($u['nama_unit_kerja']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
                 <div class="form-group">
                     <label for="id_jabatan" style="display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.95rem;">Jabatan</label>
                     <select id="id_jabatan" name="id_jabatan" class="form-control" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;">

@@ -5,12 +5,12 @@ ob_start();
 <div class="card" style="margin-bottom: 2rem;">
     <div class="card-body" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
         <div>
-            <h2 style="margin: 0; font-size: 1.5rem; color: var(--text-main);">Manajemen Jabatan</h2>
-            <p style="margin: 0.25rem 0 0 0; color: var(--text-muted); font-size: 0.95rem;">Kelola data referensi Jabatan untuk penugasan pegawai.</p>
+            <h2 style="margin: 0; font-size: 1.5rem; color: var(--text-main);">Manajemen Unit Kerja</h2>
+            <p style="margin: 0.25rem 0 0 0; color: var(--text-muted); font-size: 0.95rem;">Kelola data referensi Unit Kerja untuk penugasan pegawai.</p>
         </div>
         <div>
-            <a href="<?= url('admin/jabatan-create') ?>" class="btn btn-gradient-primary">
-                <i class='bx bx-plus'></i> Tambah Jabatan
+            <a href="<?= url('admin/unit-kerja-create') ?>" class="btn btn-gradient-primary">
+                <i class='bx bx-plus'></i> Tambah Unit Kerja
             </a>
         </div>
     </div>
@@ -18,13 +18,13 @@ ob_start();
 
 <div class="card">
     <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-        <h3 class="card-title">Daftar Jabatan</h3>
+        <h3 class="card-title">Daftar Unit Kerja</h3>
         
-        <form action="<?= url('admin/jabatan') ?>" method="GET"
+        <form action="<?= url('admin/unit-kerja') ?>" method="GET"
             style="display: flex; gap: 0.5rem; align-items: center;">
             <div style="position: relative; display: flex; align-items: center;">
                 <i class='bx bx-search' style="position: absolute; left: 1rem; color: #94a3b8; font-size: 1.1rem;"></i>
-                <input type="text" name="search" value="<?= e($search) ?>" placeholder="Cari Jabatan..."
+                <input type="text" name="search" value="<?= e($search) ?>" placeholder="Cari Unit Kerja..."
                     class="form-control"
                     style="width: 250px; padding: 0.6rem 1.2rem 0.6rem 2.5rem; border-radius: 9999px; border: 1px solid #e2e8f0; outline: none; transition: all 0.3s ease; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);"
                     onfocus="this.style.borderColor='var(--primary)'; this.style.boxShadow='0 0 0 3px rgba(37, 99, 235, 0.2)';"
@@ -35,7 +35,7 @@ ob_start();
                 Cari
             </button>
             <?php if (!empty($search)): ?>
-                <a href="<?= url('admin/jabatan') ?>" class="btn"
+                <a href="<?= url('admin/unit-kerja') ?>" class="btn"
                     style="padding: 0.6rem 1.2rem; border-radius: 9999px; font-weight: 500; background: #f1f5f9; color: #475569;">
                     Reset
                 </a>
@@ -49,40 +49,40 @@ ob_start();
                 <thead>
                     <tr>
                         <th style="text-align: center; padding: 1rem; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; width: 60px;">No</th>
-                        <th style="text-align: left; padding: 1rem; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase;">Nama Jabatan</th>
-                        <th style="text-align: center; padding: 1rem; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase;">Jumlah Pegawai</th>
+                        <th style="text-align: left; padding: 1rem; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase;">Nama Unit Kerja</th>
+                        <th style="text-align: center; padding: 1rem; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase;">Jumlah Anggota</th>
                         <th style="text-align: center; padding: 1rem; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; width: 150px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if (empty($jabatan)): ?>
+                    <?php if (empty($unit_kerja)): ?>
                         <tr>
                             <td colspan="4" style="text-align: center; padding: 2rem; color: var(--text-muted);">
-                                Tidak ada data jabatan ditemukan.
+                                Tidak ada data unit kerja ditemukan.
                             </td>
                         </tr>
                     <?php else: ?>
                         <?php $no = 1; ?>
-                        <?php foreach ($jabatan as $j): ?>
+                        <?php foreach ($unit_kerja as $u): ?>
                             <tr style="border-bottom: 1px solid var(--border-color);">
                                 <td style="padding: 1rem; text-align: center; color: var(--text-muted); font-size: 0.95rem; font-weight: 500;">
                                     <?= $no++ ?>
                                 </td>
                                 <td style="padding: 1rem;">
-                                    <div style="font-weight: 600; color: var(--text-main); font-size: 1rem;"><?= e($j['nama_jabatan']) ?></div>
+                                    <div style="font-weight: 600; color: var(--text-main); font-size: 1rem;"><?= e($u['nama_unit_kerja']) ?></div>
                                 </td>
                                 <td style="padding: 1rem; text-align: center;">
                                     <span style="display: inline-block; padding: 0.25rem 0.75rem; background: #eff6ff; color: #1d4ed8; font-size: 0.85rem; border-radius: 999px; font-weight: 600;">
-                                        <?= e($j['jumlah_pegawai']) ?> Pegawai
+                                        <?= e($u['jumlah_anggota']) ?> Pegawai
                                     </span>
                                 </td>
                                 <td style="padding: 1rem; text-align: center;">
                                     <div style="display: flex; gap: 0.5rem; justify-content: center;">
-                                        <a href="<?= url('admin/jabatan-edit/' . urlencode($j['slug_jabatan'])) ?>" class="btn" style="background: #eff6ff; color: #1d4ed8; padding: 0.4rem 0.6rem; border-radius: 0.25rem;" title="Edit">
+                                        <a href="<?= url('admin/unit-kerja-edit/' . $u['id_unit_kerja']) ?>" class="btn" style="background: #eff6ff; color: #1d4ed8; padding: 0.4rem 0.6rem; border-radius: 0.25rem;" title="Edit">
                                             <i class='bx bx-edit-alt'></i>
                                         </a>
                                         
-                                        <form action="<?= url('admin/jabatan-delete/' . urlencode($j['slug_jabatan'])) ?>" method="POST" class="form-delete" style="display: inline-block;">
+                                        <form action="<?= url('admin/unit-kerja-delete/' . $u['id_unit_kerja']) ?>" method="POST" class="form-delete" style="display: inline-block;">
                                             <?= csrfField() ?>
                                             <button type="submit" class="btn btn-danger btn-sm" title="Hapus">
                                                 <i class='bx bx-trash'></i>
@@ -107,7 +107,7 @@ ob_start();
             <div style="display: flex; gap: 0.25rem; align-items: center;">
                 <!-- Tombol Sebelumnya -->
                 <?php if ($page > 1): ?>
-                    <a href="<?= url('admin/jabatan?page=' . ($page - 1) . (!empty($search) ? '&search=' . urlencode($search) : '')) ?>"
+                    <a href="<?= url('admin/unit-kerja?page=' . ($page - 1) . (!empty($search) ? '&search=' . urlencode($search) : '')) ?>"
                         style="padding: 0.5rem 0.75rem; border-radius: 0.25rem; text-decoration: none; font-size: 0.9rem; font-weight: 500; background: #f1f5f9; color: #475569;">
                         &laquo; Sebelumnya
                     </a>
@@ -127,7 +127,7 @@ ob_start();
                 }
                 
                 for ($i = $start; $i <= $end; $i++): ?>
-                    <a href="<?= url('admin/jabatan?page=' . $i . (!empty($search) ? '&search=' . urlencode($search) : '')) ?>"
+                    <a href="<?= url('admin/unit-kerja?page=' . $i . (!empty($search) ? '&search=' . urlencode($search) : '')) ?>"
                         style="padding: 0.5rem 0.75rem; border-radius: 0.25rem; text-decoration: none; font-size: 0.9rem; font-weight: 500; 
                           <?= $i === $page ? 'background: var(--primary); color: white;' : 'background: #f1f5f9; color: #475569;' ?>">
                         <?= $i ?>
@@ -141,7 +141,7 @@ ob_start();
 
                 <!-- Tombol Selanjutnya -->
                 <?php if ($page < $total_page): ?>
-                    <a href="<?= url('admin/jabatan?page=' . ($page + 1) . (!empty($search) ? '&search=' . urlencode($search) : '')) ?>"
+                    <a href="<?= url('admin/unit-kerja?page=' . ($page + 1) . (!empty($search) ? '&search=' . urlencode($search) : '')) ?>"
                         style="padding: 0.5rem 0.75rem; border-radius: 0.25rem; text-decoration: none; font-size: 0.9rem; font-weight: 500; background: #f1f5f9; color: #475569;">
                         Selanjutnya &raquo;
                     </a>
