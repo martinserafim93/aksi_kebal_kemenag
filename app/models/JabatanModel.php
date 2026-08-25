@@ -34,6 +34,55 @@ class JabatanModel
     }
 
     /**
+     * Ambil data jabatan dengan pagination dan pencarian
+     */
+    public function getAllPaginated(string $search = '', int $limit = 10, int $offset = 0): array
+    {
+        $query = "SELECT j.id_jabatan, j.nama_jabatan, j.slug_jabatan, j.created_at, 
+                         COUNT(p.nip) as jumlah_pegawai 
+                  FROM jabatan j
+                  LEFT JOIN pegawai p ON j.id_jabatan = p.id_jabatan";
+                  
+        if (!empty($search)) {
+            $query .= " WHERE j.nama_jabatan LIKE :search";
+        }
+        
+        $query .= " GROUP BY j.id_jabatan, j.nama_jabatan, j.slug_jabatan, j.created_at
+                    ORDER BY j.nama_jabatan ASC LIMIT :limit OFFSET :offset";
+
+        $this->db->query($query);
+
+        if (!empty($search)) {
+            $this->db->bind(':search', "%$search%");
+        }
+        $this->db->bind(':limit', $limit, PDO::PARAM_INT);
+        $this->db->bind(':offset', $offset, PDO::PARAM_INT);
+
+        return $this->db->fetchAll();
+    }
+
+    /**
+     * Menghitung total data jabatan (untuk pagination)
+     */
+    public function countAll(string $search = ''): int
+    {
+        $query = "SELECT COUNT(*) as total FROM jabatan";
+        
+        if (!empty($search)) {
+            $query .= " WHERE nama_jabatan LIKE :search";
+        }
+
+        $this->db->query($query);
+
+        if (!empty($search)) {
+            $this->db->bind(':search', "%$search%");
+        }
+
+        $result = $this->db->fetch();
+        return $result ? (int) $result['total'] : 0;
+    }
+
+    /**
      * Ambil jabatan berdasarkan ID
      *
      * @param int $id

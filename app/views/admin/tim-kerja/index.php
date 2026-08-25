@@ -17,8 +17,30 @@ ob_start();
 </div>
 
 <div class="card">
-    <div class="card-header">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
         <h3 class="card-title">Daftar Tim Kerja</h3>
+        
+        <form action="<?= url('admin/tim-kerja') ?>" method="GET"
+            style="display: flex; gap: 0.5rem; align-items: center;">
+            <div style="position: relative; display: flex; align-items: center;">
+                <i class='bx bx-search' style="position: absolute; left: 1rem; color: #94a3b8; font-size: 1.1rem;"></i>
+                <input type="text" name="search" value="<?= e($search) ?>" placeholder="Cari Tim Kerja..."
+                    class="form-control"
+                    style="width: 250px; padding: 0.6rem 1.2rem 0.6rem 2.5rem; border-radius: 9999px; border: 1px solid #e2e8f0; outline: none; transition: all 0.3s ease; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);"
+                    onfocus="this.style.borderColor='var(--primary)'; this.style.boxShadow='0 0 0 3px rgba(37, 99, 235, 0.2)';"
+                    onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='0 1px 2px 0 rgba(0, 0, 0, 0.05)';">
+            </div>
+            <button type="submit" class="btn btn-gradient-primary"
+                style="padding: 0.6rem 1.2rem; border-radius: 9999px; font-weight: 500;">
+                Cari
+            </button>
+            <?php if (!empty($search)): ?>
+                <a href="<?= url('admin/tim-kerja') ?>" class="btn"
+                    style="padding: 0.6rem 1.2rem; border-radius: 9999px; font-weight: 500; background: #f1f5f9; color: #475569;">
+                    Reset
+                </a>
+            <?php endif; ?>
+        </form>
     </div>
     
     <div class="card-body" style="padding: 0;">
@@ -75,6 +97,62 @@ ob_start();
             </table>
         </div>
     </div>
+    
+    <!-- Pagination -->
+    <?php if ($total_page > 1): ?>
+        <div class="card-body" style="border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <span style="color: var(--text-muted); font-size: 0.9rem;">
+                Halaman <?= $page ?> dari <?= $total_page ?>
+            </span>
+            <div style="display: flex; gap: 0.25rem; align-items: center;">
+                <!-- Tombol Sebelumnya -->
+                <?php if ($page > 1): ?>
+                    <a href="<?= url('admin/tim-kerja?page=' . ($page - 1) . (!empty($search) ? '&search=' . urlencode($search) : '')) ?>"
+                        style="padding: 0.5rem 0.75rem; border-radius: 0.25rem; text-decoration: none; font-size: 0.9rem; font-weight: 500; background: #f1f5f9; color: #475569;">
+                        &laquo; Sebelumnya
+                    </a>
+                <?php else: ?>
+                    <span style="padding: 0.5rem 0.75rem; border-radius: 0.25rem; font-size: 0.9rem; font-weight: 500; background: #f1f5f9; color: #94a3b8; cursor: not-allowed;">
+                        &laquo; Sebelumnya
+                    </span>
+                <?php endif; ?>
+
+                <!-- Angka Halaman -->
+                <?php
+                $start = max(1, $page - 2);
+                $end = min($total_page, $page + 2);
+                
+                if ($start > 1) {
+                    echo '<span style="padding: 0.5rem; color: #94a3b8;">...</span>';
+                }
+                
+                for ($i = $start; $i <= $end; $i++): ?>
+                    <a href="<?= url('admin/tim-kerja?page=' . $i . (!empty($search) ? '&search=' . urlencode($search) : '')) ?>"
+                        style="padding: 0.5rem 0.75rem; border-radius: 0.25rem; text-decoration: none; font-size: 0.9rem; font-weight: 500; 
+                          <?= $i === $page ? 'background: var(--primary); color: white;' : 'background: #f1f5f9; color: #475569;' ?>">
+                        <?= $i ?>
+                    </a>
+                <?php endfor; 
+                
+                if ($end < $total_page) {
+                    echo '<span style="padding: 0.5rem; color: #94a3b8;">...</span>';
+                }
+                ?>
+
+                <!-- Tombol Selanjutnya -->
+                <?php if ($page < $total_page): ?>
+                    <a href="<?= url('admin/tim-kerja?page=' . ($page + 1) . (!empty($search) ? '&search=' . urlencode($search) : '')) ?>"
+                        style="padding: 0.5rem 0.75rem; border-radius: 0.25rem; text-decoration: none; font-size: 0.9rem; font-weight: 500; background: #f1f5f9; color: #475569;">
+                        Selanjutnya &raquo;
+                    </a>
+                <?php else: ?>
+                    <span style="padding: 0.5rem 0.75rem; border-radius: 0.25rem; font-size: 0.9rem; font-weight: 500; background: #f1f5f9; color: #94a3b8; cursor: not-allowed;">
+                        Selanjutnya &raquo;
+                    </span>
+                <?php endif; ?>
+            </div>
+        </div>
+    <?php endif; ?>
 </div>
 
 <?php

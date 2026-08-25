@@ -19,10 +19,11 @@ class PegawaiModel
      */
     public function getAllPaginated(string $search = '', int $limit = 10, int $offset = 0): array
     {
-        $query = "SELECT p.*, j.nama_jabatan, t.nama_tim_kerja 
+        $query = "SELECT p.*, j.nama_jabatan, t.nama_tim_kerja, u.nama_unit_kerja 
                   FROM pegawai p
                   LEFT JOIN jabatan j ON p.id_jabatan = j.id_jabatan
-                  LEFT JOIN tim_kerja t ON p.id_tim_kerja = t.id_tim_kerja";
+                  LEFT JOIN tim_kerja t ON p.id_tim_kerja = t.id_tim_kerja
+                  LEFT JOIN unit_kerja u ON p.id_unit_kerja = u.id_unit_kerja";
         
         if (!empty($search)) {
             $query .= " WHERE p.nip LIKE :search_nip OR p.nama_lengkap LIKE :search_nama";
@@ -79,10 +80,11 @@ class PegawaiModel
      */
     public function findDetailByNip(string $nip)
     {
-        $this->db->query("SELECT p.*, j.nama_jabatan, t.nama_tim_kerja 
+        $this->db->query("SELECT p.*, j.nama_jabatan, t.nama_tim_kerja, u.nama_unit_kerja 
                           FROM pegawai p
                           LEFT JOIN jabatan j ON p.id_jabatan = j.id_jabatan
                           LEFT JOIN tim_kerja t ON p.id_tim_kerja = t.id_tim_kerja
+                          LEFT JOIN unit_kerja u ON p.id_unit_kerja = u.id_unit_kerja
                           WHERE p.nip = :nip");
         $this->db->bind(':nip', $nip);
         return $this->db->fetch();
@@ -112,13 +114,14 @@ class PegawaiModel
      */
     public function create(array $data): bool
     {
-        $this->db->query("INSERT INTO pegawai (nip, nama_lengkap, id_jabatan, id_tim_kerja, email, password, role) 
-                          VALUES (:nip, :nama_lengkap, :id_jabatan, :id_tim_kerja, :email, :password, :role)");
+        $this->db->query("INSERT INTO pegawai (nip, nama_lengkap, id_jabatan, id_tim_kerja, id_unit_kerja, email, password, role) 
+                          VALUES (:nip, :nama_lengkap, :id_jabatan, :id_tim_kerja, :id_unit_kerja, :email, :password, :role)");
         
         $this->db->bind(':nip', $data['nip']);
         $this->db->bind(':nama_lengkap', $data['nama_lengkap']);
         $this->db->bind(':id_jabatan', $data['id_jabatan'] ?: null);
         $this->db->bind(':id_tim_kerja', $data['id_tim_kerja'] ?: null);
+        $this->db->bind(':id_unit_kerja', $data['id_unit_kerja'] ?: null);
         $this->db->bind(':email', $data['email'] ?: null);
         $this->db->bind(':password', $data['password']);
         $this->db->bind(':role', $data['role'] ?? 'pegawai');
@@ -136,6 +139,7 @@ class PegawaiModel
                     nama_lengkap = :nama_lengkap, 
                     id_jabatan = :id_jabatan, 
                     id_tim_kerja = :id_tim_kerja, 
+                    id_unit_kerja = :id_unit_kerja, 
                     email = :email,
                     role = :role";
         
@@ -152,6 +156,7 @@ class PegawaiModel
         $this->db->bind(':nama_lengkap', $data['nama_lengkap']);
         $this->db->bind(':id_jabatan', $data['id_jabatan'] ?: null);
         $this->db->bind(':id_tim_kerja', $data['id_tim_kerja'] ?: null);
+        $this->db->bind(':id_unit_kerja', $data['id_unit_kerja'] ?: null);
         $this->db->bind(':email', $data['email'] ?: null);
         $this->db->bind(':role', $data['role'] ?? 'pegawai');
         $this->db->bind(':nip_lama', $nip_lama);
@@ -188,6 +193,15 @@ class PegawaiModel
     public function getAllTimKerja(): array
     {
         $this->db->query("SELECT * FROM tim_kerja ORDER BY nama_tim_kerja ASC");
+        return $this->db->fetchAll();
+    }
+
+    /**
+     * Mengambil daftar seluruh unit kerja untuk opsi select
+     */
+    public function getAllUnitKerja(): array
+    {
+        $this->db->query("SELECT * FROM unit_kerja ORDER BY nama_unit_kerja ASC");
         return $this->db->fetchAll();
     }
 

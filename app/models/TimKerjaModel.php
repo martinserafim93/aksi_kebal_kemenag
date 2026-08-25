@@ -34,6 +34,55 @@ class TimKerjaModel
     }
 
     /**
+     * Ambil data tim kerja dengan pagination dan pencarian
+     */
+    public function getAllPaginated(string $search = '', int $limit = 10, int $offset = 0): array
+    {
+        $query = "SELECT t.id_tim_kerja, t.nama_tim_kerja, t.slug_tim_kerja, t.created_at, 
+                         COUNT(p.nip) as jumlah_anggota 
+                  FROM tim_kerja t
+                  LEFT JOIN pegawai p ON t.id_tim_kerja = p.id_tim_kerja";
+                  
+        if (!empty($search)) {
+            $query .= " WHERE t.nama_tim_kerja LIKE :search";
+        }
+        
+        $query .= " GROUP BY t.id_tim_kerja, t.nama_tim_kerja, t.slug_tim_kerja, t.created_at
+                    ORDER BY t.nama_tim_kerja ASC LIMIT :limit OFFSET :offset";
+
+        $this->db->query($query);
+
+        if (!empty($search)) {
+            $this->db->bind(':search', "%$search%");
+        }
+        $this->db->bind(':limit', $limit, PDO::PARAM_INT);
+        $this->db->bind(':offset', $offset, PDO::PARAM_INT);
+
+        return $this->db->fetchAll();
+    }
+
+    /**
+     * Menghitung total data tim kerja (untuk pagination)
+     */
+    public function countAll(string $search = ''): int
+    {
+        $query = "SELECT COUNT(*) as total FROM tim_kerja";
+        
+        if (!empty($search)) {
+            $query .= " WHERE nama_tim_kerja LIKE :search";
+        }
+
+        $this->db->query($query);
+
+        if (!empty($search)) {
+            $this->db->bind(':search', "%$search%");
+        }
+
+        $result = $this->db->fetch();
+        return $result ? (int) $result['total'] : 0;
+    }
+
+    /**
      * Ambil tim kerja berdasarkan ID
      *
      * @param int $id

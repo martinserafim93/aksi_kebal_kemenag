@@ -57,7 +57,7 @@ ob_start();
                             NIP / Nama</th>
                         <th
                             style="text-align: left; padding: 1rem; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase;">
-                            Jabatan & Tim Kerja</th>
+                            Jabatan, Tim & Unit Kerja</th>
                         <th
                             style="text-align: left; padding: 1rem; border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase;">
                             Kontak</th>
@@ -96,6 +96,9 @@ ob_start();
                                     <div style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.25rem;">
                                         <i class='bx bx-group'></i> <?= e($p['nama_tim_kerja'] ?? '-') ?>
                                     </div>
+                                    <div style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.25rem;">
+                                        <i class='bx bx-building'></i> <?= e($p['nama_unit_kerja'] ?? '-') ?>
+                                    </div>
                                 </td>
                                 <td style="padding: 1rem; font-size: 0.95rem; color: var(--text-muted);">
                                     <?= e($p['email'] ?? '-') ?>
@@ -129,15 +132,56 @@ ob_start();
 
     <!-- Pagination -->
     <?php if ($total_page > 1): ?>
-        <div class="card-body" style="border-top: 1px solid var(--border-color); display: flex; justify-content: center;">
-            <div style="display: flex; gap: 0.25rem;">
-                <?php for ($i = 1; $i <= $total_page; $i++): ?>
+        <div class="card-body" style="border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <span style="color: var(--text-muted); font-size: 0.9rem;">
+                Halaman <?= $page ?> dari <?= $total_page ?>
+            </span>
+            <div style="display: flex; gap: 0.25rem; align-items: center;">
+                <!-- Tombol Sebelumnya -->
+                <?php if ($page > 1): ?>
+                    <a href="<?= url('admin/pegawai?page=' . ($page - 1) . (!empty($search) ? '&search=' . urlencode($search) : '')) ?>"
+                        style="padding: 0.5rem 0.75rem; border-radius: 0.25rem; text-decoration: none; font-size: 0.9rem; font-weight: 500; background: #f1f5f9; color: #475569;">
+                        &laquo; Sebelumnya
+                    </a>
+                <?php else: ?>
+                    <span style="padding: 0.5rem 0.75rem; border-radius: 0.25rem; font-size: 0.9rem; font-weight: 500; background: #f1f5f9; color: #94a3b8; cursor: not-allowed;">
+                        &laquo; Sebelumnya
+                    </span>
+                <?php endif; ?>
+
+                <!-- Angka Halaman -->
+                <?php
+                $start = max(1, $page - 2);
+                $end = min($total_page, $page + 2);
+                
+                if ($start > 1) {
+                    echo '<span style="padding: 0.5rem; color: #94a3b8;">...</span>';
+                }
+                
+                for ($i = $start; $i <= $end; $i++): ?>
                     <a href="<?= url('admin/pegawai?page=' . $i . (!empty($search) ? '&search=' . urlencode($search) : '')) ?>"
                         style="padding: 0.5rem 0.75rem; border-radius: 0.25rem; text-decoration: none; font-size: 0.9rem; font-weight: 500; 
                           <?= $i === $page ? 'background: var(--primary); color: white;' : 'background: #f1f5f9; color: #475569;' ?>">
                         <?= $i ?>
                     </a>
-                <?php endfor; ?>
+                <?php endfor; 
+                
+                if ($end < $total_page) {
+                    echo '<span style="padding: 0.5rem; color: #94a3b8;">...</span>';
+                }
+                ?>
+
+                <!-- Tombol Selanjutnya -->
+                <?php if ($page < $total_page): ?>
+                    <a href="<?= url('admin/pegawai?page=' . ($page + 1) . (!empty($search) ? '&search=' . urlencode($search) : '')) ?>"
+                        style="padding: 0.5rem 0.75rem; border-radius: 0.25rem; text-decoration: none; font-size: 0.9rem; font-weight: 500; background: #f1f5f9; color: #475569;">
+                        Selanjutnya &raquo;
+                    </a>
+                <?php else: ?>
+                    <span style="padding: 0.5rem 0.75rem; border-radius: 0.25rem; font-size: 0.9rem; font-weight: 500; background: #f1f5f9; color: #94a3b8; cursor: not-allowed;">
+                        Selanjutnya &raquo;
+                    </span>
+                <?php endif; ?>
             </div>
         </div>
     <?php endif; ?>
