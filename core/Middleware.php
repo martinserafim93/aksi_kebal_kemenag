@@ -58,12 +58,16 @@ class Middleware
 
     /**
      * Validasi CSRF token
+     * @param string $token Token untuk divalidasi
+     * @param bool $consume Jika true, token akan dihapus setelah validasi (default: true)
      */
-    public static function validateCsrfToken(string $token): bool
+    public static function validateCsrfToken(string $token, bool $consume = true): bool
     {
         if (isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token)) {
-            // Regenerate token setelah validasi sukses
-            unset($_SESSION['csrf_token']);
+            // Regenerate token setelah validasi sukses (jika consume = true)
+            if ($consume) {
+                unset($_SESSION['csrf_token']);
+            }
             return true;
         }
         return false;

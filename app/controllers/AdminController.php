@@ -915,6 +915,130 @@ class AdminController extends Controller
         ]);
     }
 
+    /**
+     * [AJAX] Resolve URL Google Maps menjadi koordinat lat/lng.
+     * Dipakai tombol "Cari Lokasi" pada form tambah & edit kegiatan.
+     * Response: JSON.
+     */
+    public function kegiatan_resolve_lokasi(): void
+    {
+        Middleware::authAdmin();
+
+        if (!isPost()) {
+            $this->json(['success' => false, 'message' => 'Metode tidak diizinkan.'], 405);
+            return;
+        }
+
+        // Validasi CSRF (token dikirim dari form yang sama)
+        // Set parameter kedua ke false agar token TIDAK di-unset setelah validasi AJAX,
+        // sehingga form tetap bisa di-submit setelahnya.
+        $csrfToken = input('csrf_token');
+        if (!$csrfToken || !Middleware::validateCsrfToken($csrfToken, false)) {
+            $this->json(['success' => false, 'message' => 'Sesi tidak valid. Muat ulang halaman.'], 403);
+            return;
+        }
+
+        $url = trim((string) input('url'));
+        if ($url === '') {
+            $this->json(['success' => false, 'message' => 'URL lokasi belum diisi.'], 422);
+            return;
+        }
+
+        // Batasi hanya domain Google Maps (mencegah SSRF)
+        $host = strtolower((string) parse_url($url, PHP_URL_HOST));
+        $allowed = ['maps.app.goo.gl', 'goo.gl', 'maps.google.com', 'www.google.com', 'google.com'];
+        if (!in_array($host, $allowed, true)) {
+            $this->json(['success' => false, 'message' => 'URL harus berasal dari Google Maps.'], 422);
+            return;
+        }
+
+        // 1) Ikuti redirect short-link -> URL final
+        $finalUrl = $this->followRedirect($url);
+        $haystack = $finalUrl ?: $url;
+
+        // 2) Ekstrak koordinat
+        $coords = $this->extractCoords($haystack);
+
+        if ($coords === null) {
+            $this->json(['success' => false, 'message' => 'Koordinat tidak ditemukan dari URL tersebut. Pastikan link menunjuk ke satu titik lokasi.']);
+            return;
+        }
+
+        $this->json([
+            'success'   => true,
+            'latitude'  => $coords['lat'],
+            'longitude' => $coords['lng'],
+        ]);
+    }
+
+    /**
+     * Ikuti redirect HTTP dan kembalikan URL final (efektif).
+     * Utama: cURL; cadangan: get_headers().
+     */
+    private function followRedirect(string $url): ?string
+    {
+        // --- Metode 1: cURL ---
+        if (function_exists('curl_init')) {
+            $ch = curl_init($url);
+            curl_setopt_array($ch, [
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_MAXREDIRS      => 5,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT        => 10,
+                CURLOPT_SSL_VERIFYPEER => true,
+                CURLOPT_USERAGENT      => 'Mozilla/5.0 (compatible; AKSIKEBAL/1.0)',
+            ]);
+            curl_exec($ch);
+            $effective = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
+            curl_close($ch);
+            if (!empty($effective)) {
+                return $effective;
+            }
+        }
+
+        // --- Metode 2 (cadangan): get_headers() ---
+        $context = stream_context_create(['http' => [
+            'follow_location' => 1,
+            'max_redirects'   => 5,
+            'timeout'         => 10,
+            'user_agent'      => 'Mozilla/5.0 (compatible; AKSIKEBAL/1.0)',
+        ]]);
+        $headers = @get_headers($url, true, $context);
+        if ($headers && isset($headers['Location'])) {
+            $loc = $headers['Location'];
+            return is_array($loc) ? end($loc) : $loc;
+        }
+
+        return null;
+    }
+
+    /**
+     * Ekstrak latitude & longitude dari string URL Google Maps.
+     * @return array{lat:string,lng:string}|null
+     */
+    private function extractCoords(string $text): ?array
+    {
+        $text = urldecode($text);
+
+        // Prioritas 1: !3d<lat>!4d<lng>  (titik tempat presisi)
+        if (preg_match('/!3d(-?\d{1,3}\.\d+)!4d(-?\d{1,3}\.\d+)/', $text, $m)) {
+            return ['lat' => $m[1], 'lng' => $m[2]];
+        }
+        // Prioritas 2: @<lat>,<lng>  (pusat tampilan peta)
+        if (preg_match('/@(-?\d{1,3}\.\d+),(-?\d{1,3}\.\d+)/', $text, $m)) {
+            return ['lat' => $m[1], 'lng' => $m[2]];
+        }
+        // Prioritas 3: parameter q= / query= / ll= / destination= / center=
+        if (preg_match('/[?&](?:q|query|ll|destination|center)=(-?\d{1,3}\.\d+),(-?\d{1,3}\.\d+)/', $text, $m)) {
+            return ['lat' => $m[1], 'lng' => $m[2]];
+        }
+        // Prioritas 4: /maps/search/lat,lng atau /maps/place/lat,lng
+        if (preg_match('/\/maps\/(?:search|place)\/(-?\d{1,3}\.\d+)\s*,\s*(-?\d{1,3}\.\d+)/', $text, $m)) {
+            return ['lat' => $m[1], 'lng' => $m[2]];
+        }
+        return null;
+    }
+
     public function kegiatan_create(): void
     {
         Middleware::authAdmin();
