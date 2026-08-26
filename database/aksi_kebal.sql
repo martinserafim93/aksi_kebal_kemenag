@@ -93,7 +93,7 @@ CREATE TABLE `kegiatan` (
   `id_kegiatan` int NOT NULL AUTO_INCREMENT,
   `kode_kegiatan` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `nama_kegiatan` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `jenis_kegiatan` enum('Kerja Bakti','Doa Bersama','Apel','Rapat','Sosialisasi') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `jenis_kegiatan` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `tanggal_kegiatan` date NOT NULL,
   `waktu_mulai` time NOT NULL,
   `waktu_selesai` time NOT NULL,
