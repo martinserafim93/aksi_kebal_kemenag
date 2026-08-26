@@ -16,11 +16,11 @@ class DashboardModel
     }
 
     /**
-     * Hitung total seluruh pegawai (hanya role pegawai)
+     * Hitung total seluruh pegawai
      */
     public function getTotalPegawai(): int
     {
-        $this->db->query("SELECT COUNT(*) as total FROM pegawai WHERE role = 'pegawai'");
+        $this->db->query("SELECT COUNT(*) as total FROM pegawai");
         $result = $this->db->fetch();
         return $result ? (int) $result['total'] : 0;
     }
