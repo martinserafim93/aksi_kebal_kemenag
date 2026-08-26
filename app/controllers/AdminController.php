@@ -930,8 +930,10 @@ class AdminController extends Controller
         }
 
         // Validasi CSRF (token dikirim dari form yang sama)
+        // Set parameter kedua ke false agar token TIDAK di-unset setelah validasi AJAX,
+        // sehingga form tetap bisa di-submit setelahnya.
         $csrfToken = input('csrf_token');
-        if (!$csrfToken || !Middleware::validateCsrfToken($csrfToken)) {
+        if (!$csrfToken || !Middleware::validateCsrfToken($csrfToken, false)) {
             $this->json(['success' => false, 'message' => 'Sesi tidak valid. Muat ulang halaman.'], 403);
             return;
         }
