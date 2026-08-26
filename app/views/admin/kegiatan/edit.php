@@ -29,14 +29,14 @@
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
                 <div class="form-group">
                     <label for="jenis_kegiatan" class="form-label">Jenis Kegiatan <span style="color: red;">*</span></label>
-                    <select id="jenis_kegiatan" name="jenis_kegiatan" class="form-control"  required>
-                        <option value="">Pilih Jenis</option>
-                        <option value="Kerja Bakti" <?= $kegiatan['jenis_kegiatan'] === 'Kerja Bakti' ? 'selected' : '' ?>>Kerja Bakti</option>
-                        <option value="Doa Bersama" <?= $kegiatan['jenis_kegiatan'] === 'Doa Bersama' ? 'selected' : '' ?>>Doa Bersama</option>
-                        <option value="Apel" <?= $kegiatan['jenis_kegiatan'] === 'Apel' ? 'selected' : '' ?>>Apel</option>
-                        <option value="Rapat" <?= $kegiatan['jenis_kegiatan'] === 'Rapat' ? 'selected' : '' ?>>Rapat</option>
-                        <option value="Sosialisasi" <?= $kegiatan['jenis_kegiatan'] === 'Sosialisasi' ? 'selected' : '' ?>>Sosialisasi</option>
-                    </select>
+                    <input list="jenis_kegiatan_options" id="jenis_kegiatan" name="jenis_kegiatan" class="form-control" value="<?= e($kegiatan['jenis_kegiatan']) ?>" required placeholder="Pilih atau ketik jenis kegiatan...">
+                    <datalist id="jenis_kegiatan_options">
+                        <option value="Kerja Bakti">
+                        <option value="Doa Bersama">
+                        <option value="Apel">
+                        <option value="Rapat">
+                        <option value="Sosialisasi">
+                    </datalist>
                 </div>
 
                 <div class="form-group">
