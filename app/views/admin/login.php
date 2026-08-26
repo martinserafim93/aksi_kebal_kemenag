@@ -6,6 +6,11 @@
     <meta name="description" content="Login Admin AKSI KEBAL - Sistem Informasi Absensi Kegiatan Pegawai Kementerian Agama">
     <meta name="robots" content="noindex, nofollow">
     <title><?= e($title ?? 'Login Admin') ?></title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="<?= asset('img/favicon.ico') ?>">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?= asset('img/favicon-32.png') ?>">
+    <link rel="apple-touch-icon" href="<?= asset('img/apple-touch-icon.png') ?>">
     <link rel="stylesheet" href="<?= asset('css/admin-auth.css') ?>?v=<?= time() ?>">
 </head>
 <body class="auth-page">

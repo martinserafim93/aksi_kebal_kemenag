@@ -27,6 +27,11 @@ $admin_role = adminData('nama_jabatan') ?? 'Administrator';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= e($title ?? 'Admin Dashboard') ?> - <?= e(APP_NAME) ?></title>
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="<?= asset('img/favicon.ico') ?>">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?= asset('img/favicon-32.png') ?>">
+    <link rel="apple-touch-icon" href="<?= asset('img/apple-touch-icon.png') ?>">
+    
     <!-- Boxicons for Icons -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     
