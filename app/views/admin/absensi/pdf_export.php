@@ -139,6 +139,7 @@
                 <h1>LAPORAN KEHADIRAN PEGAWAI PADA AKSI KEBAL</h1>
                 <h2>KANTOR WILAYAH KEMENTERIAN AGAMA PROVINSI KALIMANTAN UTARA</h2>
                 <p class="header-address">Jalan Ahmad Yani Poros Bulungan – Berau KM. 2, Tanjung Selor 77212</p>
+                <p class="header-address">Email : kanwilkaltara@kemenag.go.id</p>
             </div>
         </div>
     </div>
