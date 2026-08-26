@@ -115,6 +115,13 @@ class AdminController extends Controller
      */
     public function logout(): void
     {
+        // Hanya terima POST + validasi CSRF token
+        if (!isPost() || !Middleware::validateCsrfToken(input('csrf_token'))) {
+            setFlash('error', 'Sesi tidak valid. Silakan coba lagi.');
+            $this->redirect('admin/dashboard');
+            return;
+        }
+
         // Hapus semua data session
         $_SESSION = [];
 

@@ -124,10 +124,13 @@ $admin_role = adminData('nama_jabatan') ?? 'Administrator';
 
                 <div class="menu-label">Pengaturan</div>
                 <li>
-                    <a href="<?= url('admin/logout') ?>">
-                        <i class='bx bx-log-out text-danger'></i>
-                        <span>Logout</span>
-                    </a>
+                    <form action="<?= url('admin/logout') ?>" method="POST" class="form-logout" style="margin:0;">
+                        <?= csrfField() ?>
+                        <button type="submit">
+                            <i class='bx bx-log-out text-danger'></i>
+                            <span>Logout</span>
+                        </button>
+                    </form>
                 </li>
             </ul>
         </aside>
@@ -235,6 +238,32 @@ $admin_role = adminData('nama_jabatan') ?? 'Administrator';
                 });
             });
         });
+
+        // === Konfirmasi Logout (versi POST + CSRF) ===
+        var logoutForm = document.querySelector('form.form-logout');
+        if (logoutForm) {
+            logoutForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                var formEl = this;
+                Swal.fire({
+                    title: 'Keluar dari Akun?',
+                    text: 'Anda akan mengakhiri sesi dan keluar dari AKSI KEBAL.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ef4444',
+                    cancelButtonColor: '#64748b',
+                    confirmButtonText: '<i class="bx bx-log-out"></i> Ya, Logout',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true,
+                    focusCancel: true,
+                    customClass: { popup: 'swal-popup-custom' }
+                }).then(function(result) {
+                    if (result.isConfirmed) {
+                        formEl.submit();
+                    }
+                });
+            });
+        }
 
         // Tampilkan flash message sebagai SweetAlert toast
         <?php $swalFlash = getFlash(); ?>

@@ -208,6 +208,36 @@ a {
     color: #ffffff;
 }
 
+/* Styles for form-logout button */
+.sidebar-menu form.form-logout button {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    color: var(--sidebar-color);
+    transition: var(--transition);
+    font-weight: 500;
+    font-size: 0.95rem;
+    background: transparent;
+    border: none;
+    width: 100%;
+    cursor: pointer;
+    font-family: inherit;
+    text-align: left;
+}
+
+.sidebar-menu form.form-logout button i {
+    width: 20px;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+.sidebar-menu form.form-logout button:hover {
+    background-color: var(--sidebar-hover);
+    color: #ffffff;
+}
+
 .sidebar-menu a.active {
     background-color: var(--primary);
     color: #ffffff;
