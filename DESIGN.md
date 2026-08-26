@@ -130,6 +130,14 @@ Bentuk didominasi oleh sudut melengkung moderat (*rounded corners*) untuk menumb
 - **Shadow Strategy:** Shadow Glass / Shadow Medium
 - **Internal Padding:** 2.75rem (untuk layar Desktop)
 
+## Print / Laporan (PDF)
+- Font: Times New Roman (serif) — konvensi dokumen resmi.
+- Teks: hitam (#000) untuk keterbacaan cetak (aturan "no pure black" hanya layar).
+- Aksen emerald: garis kop `3px double #10b981`; header tabel `#d1fae5` teks `#334155`.
+- Kop surat: logo kiri + instansi + alamat + email, dipisah garis ganda.
+- Wajib: `print-color-adjust: exact` agar aksen latar tercetak.
+- Struktur wajib: kop -> info -> tabel data -> rekap + blok tanda tangan.
+
 ## Do's and Don'ts
 
 ### Do:

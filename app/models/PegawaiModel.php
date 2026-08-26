@@ -76,6 +76,18 @@ class PegawaiModel
     }
 
     /**
+     * Mengambil data satu pegawai berdasarkan nama jabatan
+     */
+    public function findByJabatanName(string $namaJabatan)
+    {
+        $this->db->query("SELECT p.*, j.nama_jabatan FROM pegawai p
+                          LEFT JOIN jabatan j ON p.id_jabatan = j.id_jabatan
+                          WHERE j.nama_jabatan = :nama_jabatan LIMIT 1");
+        $this->db->bind(':nama_jabatan', $namaJabatan);
+        return $this->db->fetch();
+    }
+
+    /**
      * Mengambil data satu pegawai beserta nama jabatan dan tim kerja berdasarkan NIP
      */
     public function findDetailByNip(string $nip)

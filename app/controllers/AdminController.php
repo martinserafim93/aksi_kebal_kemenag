@@ -37,7 +37,7 @@ class AdminController extends Controller
         $timeout = query('timeout');
 
         $this->view('admin/login', [
-            'title'   => 'Login Admin - ' . APP_NAME,
+            'title' => 'Login Admin - ' . APP_NAME,
             'timeout' => $timeout
         ]);
     }
@@ -57,7 +57,7 @@ class AdminController extends Controller
 
         // Ambil input
         $identifier = input('identifier'); // Email atau NIP
-        $password   = input('password');
+        $password = input('password');
 
         // Validasi input tidak kosong
         $errors = [];
@@ -96,11 +96,11 @@ class AdminController extends Controller
 
         $_SESSION['admin_logged_in'] = true;
         $_SESSION['admin_data'] = [
-            'nip'            => $admin['nip'],
-            'nama_lengkap'   => $admin['nama_lengkap'],
-            'email'          => $admin['email'],
-            'role'           => $admin['role'],
-            'nama_jabatan'   => $admin['nama_jabatan'],
+            'nip' => $admin['nip'],
+            'nama_lengkap' => $admin['nama_lengkap'],
+            'email' => $admin['email'],
+            'role' => $admin['role'],
+            'nama_jabatan' => $admin['nama_jabatan'],
             'nama_tim_kerja' => $admin['nama_tim_kerja']
         ];
         $_SESSION['last_activity'] = time();
@@ -189,12 +189,12 @@ class AdminController extends Controller
         $total_page = ceil($total_data / $limit);
 
         $this->view('admin/pegawai/index', [
-            'title'      => 'Manajemen Pegawai - ' . APP_NAME,
-            'pegawai'    => $pegawai,
-            'search'     => $search,
-            'page'       => $page,
+            'title' => 'Manajemen Pegawai - ' . APP_NAME,
+            'pegawai' => $pegawai,
+            'search' => $search,
+            'page' => $page,
             'total_page' => $total_page,
-            'active_menu'=> 'pegawai'
+            'active_menu' => 'pegawai'
         ]);
     }
 
@@ -227,10 +227,13 @@ class AdminController extends Controller
 
             // Validasi Input
             $errors = [];
-            if (empty($nip)) $errors[] = 'NIP wajib diisi.';
-            if (empty($nama)) $errors[] = 'Nama lengkap wajib diisi.';
-            if ($role === 'admin' && empty($password)) $errors[] = 'Password wajib diisi untuk Administrator.';
-            
+            if (empty($nip))
+                $errors[] = 'NIP wajib diisi.';
+            if (empty($nama))
+                $errors[] = 'Nama lengkap wajib diisi.';
+            if ($role === 'admin' && empty($password))
+                $errors[] = 'Password wajib diisi untuk Administrator.';
+
             if ($pegawaiModel->isNipExists($nip)) {
                 $errors[] = 'NIP sudah terdaftar.';
             }
@@ -265,11 +268,11 @@ class AdminController extends Controller
 
         // GET Request - Tampilkan form
         $this->view('admin/pegawai/create', [
-            'title'      => 'Tambah Pegawai - ' . APP_NAME,
-            'jabatan'    => $pegawaiModel->getAllJabatan(),
-            'tim_kerja'  => $pegawaiModel->getAllTimKerja(),
+            'title' => 'Tambah Pegawai - ' . APP_NAME,
+            'jabatan' => $pegawaiModel->getAllJabatan(),
+            'tim_kerja' => $pegawaiModel->getAllTimKerja(),
             'unit_kerja' => $pegawaiModel->getAllUnitKerja(),
-            'active_menu'=> 'pegawai'
+            'active_menu' => 'pegawai'
         ]);
     }
 
@@ -317,9 +320,11 @@ class AdminController extends Controller
 
             // Validasi Input
             $errors = [];
-            if (empty($nip_baru)) $errors[] = 'NIP wajib diisi.';
-            if (empty($nama)) $errors[] = 'Nama lengkap wajib diisi.';
-            
+            if (empty($nip_baru))
+                $errors[] = 'NIP wajib diisi.';
+            if (empty($nama))
+                $errors[] = 'Nama lengkap wajib diisi.';
+
             if ($pegawaiModel->isNipExists($nip_baru, $nip)) {
                 $errors[] = 'NIP sudah terdaftar pada pegawai lain.';
             }
@@ -357,12 +362,12 @@ class AdminController extends Controller
 
         // GET Request - Tampilkan form
         $this->view('admin/pegawai/edit', [
-            'title'      => 'Edit Pegawai - ' . APP_NAME,
-            'pegawai'    => $pegawai,
-            'jabatan'    => $pegawaiModel->getAllJabatan(),
-            'tim_kerja'  => $pegawaiModel->getAllTimKerja(),
+            'title' => 'Edit Pegawai - ' . APP_NAME,
+            'pegawai' => $pegawai,
+            'jabatan' => $pegawaiModel->getAllJabatan(),
+            'tim_kerja' => $pegawaiModel->getAllTimKerja(),
             'unit_kerja' => $pegawaiModel->getAllUnitKerja(),
-            'active_menu'=> 'pegawai'
+            'active_menu' => 'pegawai'
         ]);
     }
 
@@ -394,7 +399,7 @@ class AdminController extends Controller
                 }
             }
         }
-        
+
         $this->redirect('admin/pegawai');
     }
 
@@ -409,7 +414,7 @@ class AdminController extends Controller
     {
         Middleware::authAdmin();
         $model = $this->model('TimKerjaModel');
-        
+
         $search = query('search', '');
         $page = (int) query('page', 1);
         $limit = 10;
@@ -418,7 +423,7 @@ class AdminController extends Controller
         $tim_kerja = $model->getAllPaginated($search, $limit, $offset);
         $total_data = $model->countAll($search);
         $total_page = ceil($total_data / $limit);
-        
+
         $this->view('admin/tim-kerja/index', [
             'title' => 'Manajemen Tim Kerja - AKSI KEBAL',
             'tim_kerja' => $tim_kerja,
@@ -510,13 +515,13 @@ class AdminController extends Controller
                 return;
             }
 
-            if ($model->isSlugExists(generateSlug($nama_tim_kerja), (int)$tim_kerja['id_tim_kerja'])) {
+            if ($model->isSlugExists(generateSlug($nama_tim_kerja), (int) $tim_kerja['id_tim_kerja'])) {
                 setFlash('error', 'Nama tim kerja sudah terdaftar.');
                 $this->redirect('admin/tim-kerja-edit/' . $slug);
                 return;
             }
 
-            if ($model->update((int)$tim_kerja['id_tim_kerja'], ['nama_tim_kerja' => $nama_tim_kerja])) {
+            if ($model->update((int) $tim_kerja['id_tim_kerja'], ['nama_tim_kerja' => $nama_tim_kerja])) {
                 setFlash('success', 'Tim Kerja berhasil diperbarui.');
                 $this->redirect('admin/tim-kerja');
                 return;
@@ -546,15 +551,15 @@ class AdminController extends Controller
             } else {
                 $model = $this->model('TimKerjaModel');
                 $tim_kerja = $model->findBySlug($slug);
-                
-                if ($tim_kerja && $model->delete((int)$tim_kerja['id_tim_kerja'])) {
+
+                if ($tim_kerja && $model->delete((int) $tim_kerja['id_tim_kerja'])) {
                     setFlash('success', 'Tim Kerja berhasil dihapus.');
                 } else {
                     setFlash('error', 'Gagal menghapus! Tim Kerja ini masih memiliki anggota pegawai atau tidak ditemukan.');
                 }
             }
         }
-        
+
         $this->redirect('admin/tim-kerja');
     }
 
@@ -569,7 +574,7 @@ class AdminController extends Controller
     {
         Middleware::authAdmin();
         $model = $this->model('UnitKerjaModel');
-        
+
         $search = query('search', '');
         $page = (int) query('page', 1);
         $limit = 10;
@@ -578,7 +583,7 @@ class AdminController extends Controller
         $unit_kerja = $model->getAllPaginated($search, $limit, $offset);
         $total_data = $model->countAll($search);
         $total_page = ceil($total_data / $limit);
-        
+
         $this->view('admin/unit-kerja/index', [
             'title' => 'Manajemen Unit Kerja - AKSI KEBAL',
             'unit_kerja' => $unit_kerja,
@@ -646,7 +651,7 @@ class AdminController extends Controller
         }
 
         $model = $this->model('UnitKerjaModel');
-        $unit_kerja = $model->findById((int)$id);
+        $unit_kerja = $model->findById((int) $id);
 
         if (!$unit_kerja) {
             setFlash('error', 'Unit kerja tidak ditemukan.');
@@ -670,13 +675,13 @@ class AdminController extends Controller
                 return;
             }
 
-            if ($model->isNameExists($nama_unit_kerja, (int)$id)) {
+            if ($model->isNameExists($nama_unit_kerja, (int) $id)) {
                 setFlash('error', 'Nama unit kerja sudah terdaftar.');
                 $this->redirect('admin/unit-kerja-edit/' . $id);
                 return;
             }
 
-            if ($model->update((int)$id, ['nama_unit_kerja' => $nama_unit_kerja])) {
+            if ($model->update((int) $id, ['nama_unit_kerja' => $nama_unit_kerja])) {
                 setFlash('success', 'Unit Kerja berhasil diperbarui.');
                 $this->redirect('admin/unit-kerja');
                 return;
@@ -705,16 +710,16 @@ class AdminController extends Controller
                 setFlash('error', 'Sesi tidak valid.');
             } else {
                 $model = $this->model('UnitKerjaModel');
-                $unit_kerja = $model->findById((int)$id);
-                
-                if ($unit_kerja && $model->delete((int)$id)) {
+                $unit_kerja = $model->findById((int) $id);
+
+                if ($unit_kerja && $model->delete((int) $id)) {
                     setFlash('success', 'Unit Kerja berhasil dihapus.');
                 } else {
                     setFlash('error', 'Gagal menghapus! Unit Kerja ini masih memiliki anggota pegawai atau tidak ditemukan.');
                 }
             }
         }
-        
+
         $this->redirect('admin/unit-kerja');
     }
 
@@ -729,7 +734,7 @@ class AdminController extends Controller
     {
         Middleware::authAdmin();
         $model = $this->model('JabatanModel');
-        
+
         $search = query('search', '');
         $page = (int) query('page', 1);
         $limit = 10;
@@ -738,7 +743,7 @@ class AdminController extends Controller
         $jabatan = $model->getAllPaginated($search, $limit, $offset);
         $total_data = $model->countAll($search);
         $total_page = ceil($total_data / $limit);
-        
+
         $this->view('admin/jabatan/index', [
             'title' => 'Manajemen Jabatan - AKSI KEBAL',
             'jabatan' => $jabatan,
@@ -830,13 +835,13 @@ class AdminController extends Controller
                 return;
             }
 
-            if ($model->isSlugExists(generateSlug($nama_jabatan), (int)$jabatan['id_jabatan'])) {
+            if ($model->isSlugExists(generateSlug($nama_jabatan), (int) $jabatan['id_jabatan'])) {
                 setFlash('error', 'Nama jabatan sudah terdaftar.');
                 $this->redirect('admin/jabatan-edit/' . $slug);
                 return;
             }
 
-            if ($model->update((int)$jabatan['id_jabatan'], ['nama_jabatan' => $nama_jabatan])) {
+            if ($model->update((int) $jabatan['id_jabatan'], ['nama_jabatan' => $nama_jabatan])) {
                 setFlash('success', 'Jabatan berhasil diperbarui.');
                 $this->redirect('admin/jabatan');
                 return;
@@ -866,15 +871,15 @@ class AdminController extends Controller
             } else {
                 $model = $this->model('JabatanModel');
                 $jabatan = $model->findBySlug($slug);
-                
-                if ($jabatan && $model->delete((int)$jabatan['id_jabatan'])) {
+
+                if ($jabatan && $model->delete((int) $jabatan['id_jabatan'])) {
                     setFlash('success', 'Jabatan berhasil dihapus.');
                 } else {
                     setFlash('error', 'Gagal menghapus! Jabatan ini masih memiliki anggota pegawai atau tidak ditemukan.');
                 }
             }
         }
-        
+
         $this->redirect('admin/jabatan');
     }
 
@@ -886,11 +891,11 @@ class AdminController extends Controller
     {
         Middleware::authAdmin();
         $model = $this->model('KegiatanModel');
-        
+
         $search = input('search') ?? '';
         $status = input('status') ?? '';
         $jenis = input('jenis') ?? '';
-        
+
         $kegiatan = $model->getAll($search, $status, $jenis);
 
         $this->view('admin/kegiatan/index', [
@@ -958,7 +963,7 @@ class AdminController extends Controller
 
         $model = $this->model('KegiatanModel');
         if (ctype_digit($kode)) {
-            $kegiatan = $model->findById((int)$kode);
+            $kegiatan = $model->findById((int) $kode);
         } else {
             $kegiatan = $model->findByKode($kode);
         }
@@ -993,7 +998,7 @@ class AdminController extends Controller
             if (empty($data['nama_kegiatan']) || empty($data['jenis_kegiatan']) || empty($data['tanggal_kegiatan']) || empty($data['waktu_mulai']) || empty($data['waktu_selesai'])) {
                 setFlash('error', 'Semua kolom wajib (*) harus diisi.');
             } else {
-                if ($model->update((int)$kegiatan['id_kegiatan'], $data)) {
+                if ($model->update((int) $kegiatan['id_kegiatan'], $data)) {
                     setFlash('success', 'Kegiatan berhasil diperbarui.');
                     $this->redirect('admin/kegiatan');
                     return;
@@ -1021,12 +1026,12 @@ class AdminController extends Controller
             } else {
                 $model = $this->model('KegiatanModel');
                 if (ctype_digit($kode)) {
-                    $kegiatan = $model->findById((int)$kode);
+                    $kegiatan = $model->findById((int) $kode);
                 } else {
                     $kegiatan = $model->findByKode($kode);
                 }
-                
-                if ($kegiatan && $model->delete((int)$kegiatan['id_kegiatan'])) {
+
+                if ($kegiatan && $model->delete((int) $kegiatan['id_kegiatan'])) {
                     setFlash('success', 'Kegiatan berhasil dihapus.');
                 } else {
                     setFlash('error', 'Gagal menghapus! Kegiatan ini memiliki data absensi terikat atau tidak ditemukan.');
@@ -1047,14 +1052,14 @@ class AdminController extends Controller
             } else {
                 $model = $this->model('KegiatanModel');
                 if (ctype_digit($kode)) {
-                    $kegiatan = $model->findById((int)$kode);
+                    $kegiatan = $model->findById((int) $kode);
                 } else {
                     $kegiatan = $model->findByKode($kode);
                 }
-                
+
                 if ($kegiatan) {
                     $url = url("absensi?kegiatan=" . $kegiatan['kode_kegiatan']);
-                    if ($model->publish((int)$kegiatan['id_kegiatan'], $url)) {
+                    if ($model->publish((int) $kegiatan['id_kegiatan'], $url)) {
                         setFlash('success', 'Kegiatan berhasil di-publish!');
                     } else {
                         setFlash('error', 'Gagal mem-publish kegiatan.');
@@ -1075,7 +1080,7 @@ class AdminController extends Controller
 
         $model = $this->model('KegiatanModel');
         if (ctype_digit($identifier)) {
-            $kegiatan = $model->findById((int)$identifier);
+            $kegiatan = $model->findById((int) $identifier);
         } else {
             $kegiatan = $model->findByKode($identifier);
         }
@@ -1100,13 +1105,13 @@ class AdminController extends Controller
     {
         Middleware::authAdmin();
         $model = $this->model('KegiatanModel');
-        
+
         $search = query('search', '');
         $jenis = query('jenis', '');
-        $page = max(1, (int)query('page', 1));
+        $page = max(1, (int) query('page', 1));
         $limit = 10;
         $offset = ($page - 1) * $limit;
-        
+
         // Ambil data kegiatan (hanya yang Published)
         $kegiatan = $model->getAllPaginated($search, 'Published', $jenis, $limit, $offset);
         $total_data = $model->countAll($search, 'Published', $jenis);
@@ -1131,32 +1136,33 @@ class AdminController extends Controller
         }
 
         Middleware::authAdmin();
-        
+
         $kegiatanModel = $this->model('KegiatanModel');
         if (ctype_digit($identifier)) {
-            $kegiatan = $kegiatanModel->findById((int)$identifier);
+            $kegiatan = $kegiatanModel->findById((int) $identifier);
         } else {
             $kegiatan = $kegiatanModel->findByKode($identifier);
         }
-        
+
         if (!$kegiatan) {
             $this->redirect('admin/absensi');
             return;
         }
 
         $model = $this->model('AbsensiModel');
-        
+
         $filters = ['kegiatan' => $kegiatan['id_kegiatan']];
-        
+
         $page = (int) query('page', 1);
-        if ($page < 1) $page = 1;
+        if ($page < 1)
+            $page = 1;
         $limit = 10;
         $offset = ($page - 1) * $limit;
-        
+
         $absensi = $model->getAllPaginated($filters, $limit, $offset);
         $total_data = $model->countAll($filters);
         $total_page = ceil($total_data / $limit);
-        
+
         $statistik = $model->getStatistikLengkap($kegiatan['id_kegiatan']);
 
         $this->view('admin/absensi/detail', [
@@ -1181,11 +1187,11 @@ class AdminController extends Controller
 
         $kegiatanModel = $this->model('KegiatanModel');
         if (ctype_digit($identifier)) {
-            $kegiatan = $kegiatanModel->findById((int)$identifier);
+            $kegiatan = $kegiatanModel->findById((int) $identifier);
         } else {
             $kegiatan = $kegiatanModel->findByKode($identifier);
         }
-        
+
         if (!$kegiatan) {
             $this->redirect('admin/absensi');
             return;
@@ -1195,13 +1201,13 @@ class AdminController extends Controller
         $absensi = $model->getAllFilteredForExport(['kegiatan' => $kegiatan['id_kegiatan']]);
 
         $filename = "Laporan_Kehadiran_Pegawai_" . date('Ymd_His') . ".csv";
-        
+
         header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename="' . $filename . '"');
-        
+
         $output = fopen('php://output', 'w');
         fputcsv($output, ['No', 'NIP', 'Nama Pegawai', 'Kegiatan', 'Jenis Kegiatan', 'Tanggal', 'Waktu', 'Lokasi', 'Status Kehadiran', 'Waktu Submit']);
-        
+
         $no = 1;
         foreach ($absensi as $row) {
             fputcsv($output, [
@@ -1228,14 +1234,14 @@ class AdminController extends Controller
         }
 
         Middleware::authAdmin();
-        
+
         $kegiatanModel = $this->model('KegiatanModel');
         if (ctype_digit($identifier)) {
-            $kegiatan = $kegiatanModel->findById((int)$identifier);
+            $kegiatan = $kegiatanModel->findById((int) $identifier);
         } else {
             $kegiatan = $kegiatanModel->findByKode($identifier);
         }
-        
+
         if (!$kegiatan) {
             $this->redirect('admin/absensi');
             return;
@@ -1262,10 +1268,10 @@ class AdminController extends Controller
                 $absensi = [];
                 foreach ($pegawaiTidakAbsen as $p) {
                     $absensi[] = [
-                        'nip'               => $p['nip'],
-                        'nama_lengkap'      => $p['nama_lengkap'],
-                        'status_kehadiran'  => 'Tidak Melakukan Absensi',
-                        'created_at'        => null,
+                        'nip' => $p['nip'],
+                        'nama_lengkap' => $p['nama_lengkap'],
+                        'status_kehadiran' => 'Tidak Melakukan Absensi',
+                        'created_at' => null,
                     ];
                 }
                 break;
@@ -1273,10 +1279,10 @@ class AdminController extends Controller
                 $absensi = $semuaAbsensi;
                 foreach ($pegawaiTidakAbsen as $p) {
                     $absensi[] = [
-                        'nip'               => $p['nip'],
-                        'nama_lengkap'      => $p['nama_lengkap'],
-                        'status_kehadiran'  => 'Tidak Melakukan Absensi',
-                        'created_at'        => null,
+                        'nip' => $p['nip'],
+                        'nama_lengkap' => $p['nama_lengkap'],
+                        'status_kehadiran' => 'Tidak Melakukan Absensi',
+                        'created_at' => null,
                     ];
                 }
                 break;
@@ -1285,12 +1291,33 @@ class AdminController extends Controller
         // Hitung statistik lengkap
         $statistik = $model->getStatistikLengkap($kegiatan['id_kegiatan']);
 
+        $pegawaiModel = $this->model('PegawaiModel');
+
+        // Cari penandatangan berdasarkan jabatan
+        $kabag = $pegawaiModel->findByJabatanName('Kabag TU');
+
+        $nama_bersih = '';
+        if ($kabag) {
+            $nama = $kabag['nama_lengkap'];
+            // Hapus gelar belakang (setelah koma)
+            $nama = explode(',', $nama)[0];
+            // Hapus gelar depan (kata yang diakhiri titik, spt H., Dr., Dra.)
+            $nama = preg_replace('/^([a-zA-Z]+\.\s*)+/', '', $nama);
+            // Jadikan huruf awal kapital saja (Title Case)
+            $nama_bersih = ucwords(strtolower(trim($nama)));
+        }
+
         $this->view('admin/absensi/pdf_export', [
-            'title'     => 'Laporan Absensi - ' . $kegiatan['nama_kegiatan'],
-            'kegiatan'  => $kegiatan,
-            'absensi'   => $absensi,
+            'title' => 'Laporan Absensi - ' . $kegiatan['nama_kegiatan'],
+            'kegiatan' => $kegiatan,
+            'absensi' => $absensi,
             'statistik' => $statistik,
-            'filter'    => $filter
+            'filter' => $filter,
+            'penandatangan' => [
+                'jabatan' => 'Kepala Bagian Tata Usaha',
+                'nama' => $nama_bersih,
+                'nip' => '', // Tidak dipakai di view
+            ],
         ]);
     }
 
@@ -1304,7 +1331,7 @@ class AdminController extends Controller
 
         $model = $this->model('AbsensiModel');
         if (ctype_digit($identifier)) {
-            $absensi = $model->findById((int)$identifier);
+            $absensi = $model->findById((int) $identifier);
         } else {
             $absensi = $model->findByKodeAbsensi($identifier);
         }
@@ -1333,7 +1360,7 @@ class AdminController extends Controller
                 return;
             }
 
-            if ($model->updateStatus((int)$absensi['id_absensi'], $status)) {
+            if ($model->updateStatus((int) $absensi['id_absensi'], $status)) {
                 setFlash('success', 'Status kehadiran berhasil diperbarui.');
                 $this->redirect('admin/absensi-detail/' . $kode_kegiatan);
                 return;
@@ -1352,7 +1379,7 @@ class AdminController extends Controller
     public function absensi_delete($identifier = null): void
     {
         Middleware::authAdmin();
-        
+
         $redirectUrl = 'admin/absensi';
 
         if (isPost() && $identifier) {
@@ -1362,16 +1389,16 @@ class AdminController extends Controller
             } else {
                 $model = $this->model('AbsensiModel');
                 if (ctype_digit($identifier)) {
-                    $absensi = $model->findById((int)$identifier);
+                    $absensi = $model->findById((int) $identifier);
                 } else {
                     $absensi = $model->findByKodeAbsensi($identifier);
                 }
-                
+
                 if ($absensi) {
                     $redirectUrl = 'admin/absensi-detail/' . $absensi['kode_kegiatan'];
                 }
-                
-                if ($absensi && $model->delete((int)$absensi['id_absensi'])) {
+
+                if ($absensi && $model->delete((int) $absensi['id_absensi'])) {
                     setFlash('success', 'Data absensi berhasil dihapus.');
                 } else {
                     setFlash('error', 'Gagal menghapus data absensi.');
