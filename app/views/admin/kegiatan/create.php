@@ -63,6 +63,25 @@
                     <input type="text" id="lokasi_kegiatan" name="lokasi_kegiatan" class="form-control" >
                 </div>
 
+                <!-- === Cari Lokasi via URL Google Maps === -->
+                <div class="form-group">
+                    <label for="url_lokasi" class="form-label">
+                        <i class='bx bx-link'></i> URL Google Maps
+                        <span style="color: var(--text-muted); font-weight: 400;">(opsional)</span>
+                    </label>
+                    <div style="display: flex; gap: 0.5rem; align-items: stretch;">
+                        <input type="url" id="url_lokasi" class="form-control" style="flex: 1;"
+                               placeholder="Tempel link, cth: https://maps.app.goo.gl/...">
+                        <button type="button" id="btnCariLokasi" class="btn btn-gradient-success" style="white-space: nowrap;">
+                            <i class='bx bx-search-alt'></i> <span id="btnCariLokasiText">Cari Lokasi</span>
+                        </button>
+                    </div>
+                    <p id="cariLokasiFeedback" style="margin: 0.5rem 0 0 0; font-size: 0.85rem; display: none;"></p>
+                    <p style="margin: 0.5rem 0 0 0; color: var(--text-muted); font-size: 0.8rem;">
+                        Tempel link lokasi dari Google Maps lalu klik <strong>Cari Lokasi</strong>. Koordinat &amp; marker akan terisi otomatis. Anda tetap bisa menggeser marker secara manual.
+                    </p>
+                </div>
+
                 <!-- === SECTION: Pilih Lokasi di Peta === -->
                 <div class="form-group" style="margin-top: 0.5rem;">
                     <label class="form-label">
@@ -177,6 +196,67 @@ if (document.getElementById('map')) {
         marker.on('dragend', function (e) {
             const pos = e.target.getLatLng();
             setLocation(pos.lat, pos.lng);
+        });
+    }
+
+    // === Tombol "Cari Lokasi" dari URL Google Maps ===
+    const btnCari = document.getElementById('btnCariLokasi');
+    if (btnCari) {
+        const urlInput = document.getElementById('url_lokasi');
+        const feedback = document.getElementById('cariLokasiFeedback');
+        const btnText  = document.getElementById('btnCariLokasiText');
+
+        function showFeedback(msg, ok) {
+            feedback.style.display = 'block';
+            feedback.style.color = ok ? '#10b981' : '#ef4444';
+            feedback.textContent = (ok ? '✔ ' : '⚠ ') + msg;
+        }
+
+        function cariLokasi() {
+            const url = urlInput.value.trim();
+            if (!url) { showFeedback('Tempel URL Google Maps terlebih dahulu.', false); return; }
+
+            // Jalur cepat: kalau user menempel "lat,lng" langsung, proses tanpa server
+            const direct = url.match(/^\s*(-?\d{1,3}\.\d+)\s*,\s*(-?\d{1,3}\.\d+)\s*$/);
+            if (direct) {
+                const lat = parseFloat(direct[1]), lng = parseFloat(direct[2]);
+                setLocation(lat, lng); map.setView([lat, lng], 17);
+                showFeedback('Koordinat ditemukan: ' + lat.toFixed(6) + ', ' + lng.toFixed(6), true);
+                return;
+            }
+
+            // Status loading
+            btnCari.disabled = true;
+            const oldText = btnText.textContent;
+            btnText.textContent = 'Mencari...';
+            feedback.style.display = 'none';
+
+            const token = document.querySelector('input[name="csrf_token"]').value;
+            const body = new URLSearchParams({ url: url, csrf_token: token });
+
+            fetch('<?= url('admin/kegiatan-resolve-lokasi') ?>', {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                body: body
+            })
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                if (data.success) {
+                    const lat = parseFloat(data.latitude), lng = parseFloat(data.longitude);
+                    setLocation(lat, lng);
+                    map.setView([lat, lng], 17);
+                    showFeedback('Koordinat ditemukan: ' + lat.toFixed(6) + ', ' + lng.toFixed(6), true);
+                } else {
+                    showFeedback(data.message || 'Lokasi tidak ditemukan.', false);
+                }
+            })
+            .catch(function () { showFeedback('Gagal menghubungi server. Coba lagi.', false); })
+            .finally(function () { btnCari.disabled = false; btnText.textContent = oldText; });
+        }
+
+        btnCari.addEventListener('click', cariLokasi);
+        urlInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') { e.preventDefault(); cariLokasi(); }  // Enter = cari
         });
     }
 
