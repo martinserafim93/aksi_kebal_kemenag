@@ -6,6 +6,11 @@
     <meta name="description" content="AKSI KEBAL - Sistem Informasi Absensi Kegiatan Pegawai Kementerian Agama">
     <title><?= e($title ?? APP_NAME) ?></title>
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="<?= asset('img/favicon.ico') ?>">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?= asset('img/favicon-32.png') ?>">
+    <link rel="apple-touch-icon" href="<?= asset('img/apple-touch-icon.png') ?>">
+    
     <!-- Link ke file CSS eksternal baru -->
     <link rel="stylesheet" href="<?= asset('css/home.css') ?>?v=<?= time() ?>">
     <!-- Particles.js -->
