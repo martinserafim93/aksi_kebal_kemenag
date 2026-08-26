@@ -1030,6 +1030,10 @@ class AdminController extends Controller
         if (preg_match('/[?&](?:q|query|ll|destination|center)=(-?\d{1,3}\.\d+),(-?\d{1,3}\.\d+)/', $text, $m)) {
             return ['lat' => $m[1], 'lng' => $m[2]];
         }
+        // Prioritas 4: /maps/search/lat,lng atau /maps/place/lat,lng
+        if (preg_match('/\/maps\/(?:search|place)\/(-?\d{1,3}\.\d+)\s*,\s*(-?\d{1,3}\.\d+)/', $text, $m)) {
+            return ['lat' => $m[1], 'lng' => $m[2]];
+        }
         return null;
     }
 
