@@ -11,9 +11,10 @@
             background: #fff;
             margin: 0;
             padding: 20px;
+            -webkit-print-color-adjust: exact; print-color-adjust: exact;
         }
         .header {
-            border-bottom: 3px double #000;
+            border-bottom: 3px double #10b981;
             padding-bottom: 15px;
             margin-bottom: 20px;
         }
@@ -74,21 +75,26 @@
             padding: 8px;
             text-align: left;
         }
+        .data-table thead { display: table-header-group; }
+        .data-table tr    { page-break-inside: avoid; }
         .data-table th {
-            background-color: #f0f0f0;
+            background-color: #d1fae5;
+            color: #334155;
             font-weight: bold;
             text-align: center;
         }
         .text-center {
             text-align: center !important;
         }
+        .report-footer-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 30px; margin-top: 20px; }
         .summary {
-            float: right;
             border: 1px solid #000;
             padding: 10px;
             font-size: 12px;
             width: 250px;
+            page-break-inside: avoid;
         }
+        .summary-title { font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #000; padding-bottom: 5px; }
         .summary-row {
             display: flex;
             justify-content: space-between;
@@ -100,6 +106,18 @@
             padding-top: 5px;
             margin-top: 5px;
         }
+        .signature-block { width: 300px; text-align: center; font-size: 12px; page-break-inside: avoid; }
+        .signature-block p { margin: 2px 0; }
+        .signature-space { height: 70px; }
+        .signature-name { font-weight: normal; }
+        
+        .print-footer {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            font-size: 9px; color: #64748b; text-align: center;
+            border-top: 1px solid #d1fae5; padding-top: 4px;
+        }
+        @media screen { .print-footer { display: none; } }
+        
         @media print {
             body {
                 padding: 0;
@@ -128,7 +146,7 @@
         }
     </style>
 </head>
-<body onload="window.print()">
+<body>
 
     <button class="print-btn no-print" onclick="window.print()">Cetak Laporan / Simpan PDF</button>
 
@@ -207,25 +225,22 @@
         </tbody>
     </table>
 
-    <div class="summary">
-        <div style="font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #000; padding-bottom: 5px;">Rekapitulasi Kehadiran</div>
-        <div class="summary-row">
-            <span>Hadir</span>
-            <span><?= $statistik['hadir'] ?> Orang</span>
+    <div class="report-footer-row">
+        <div class="summary">
+            <div class="summary-title">Rekapitulasi Kehadiran</div>
+            <div class="summary-row"><span>Hadir</span><span><?= $statistik['hadir'] ?> Orang</span></div>
+            <div class="summary-row"><span>Tidak Hadir</span><span><?= $statistik['tidak_hadir'] ?> Orang</span></div>
+            <div class="summary-row"><span>Tidak Mengisi Absen</span><span><?= $statistik['tidak_absen'] ?> Orang</span></div>
+            <div class="summary-row total"><span>Total Pegawai</span><span><?= $statistik['total_pegawai'] ?> Orang</span></div>
         </div>
-        <div class="summary-row">
-            <span>Tidak Hadir</span>
-            <span><?= $statistik['tidak_hadir'] ?> Orang</span>
-        </div>
-        <div class="summary-row">
-            <span>Tidak Mengisi Absen</span>
-            <span><?= $statistik['tidak_absen'] ?> Orang</span>
-        </div>
-        <div class="summary-row total">
-            <span>Total Pegawai</span>
-            <span><?= $statistik['total_pegawai'] ?> Orang</span>
+        <div class="signature-block">
+            <p>Tanjung Selor, <?= date('d F Y') ?></p>
+            <p><?= e($penandatangan['jabatan']) ?></p>
+            <div class="signature-space"></div>
+            <p class="signature-name"><?= !empty($penandatangan['nama']) ? e($penandatangan['nama']) : '.............................' ?></p>
         </div>
     </div>
 
+    <div class="print-footer">Dicetak dari AKSI KEBAL — Kanwil Kemenag Kalimantan Utara</div>
 </body>
 </html>
