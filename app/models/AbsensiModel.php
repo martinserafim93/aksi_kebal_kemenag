@@ -388,6 +388,9 @@ class AbsensiModel
         if (!empty($filters['tanggal'])) {
             $clause .= " AND k.tanggal_kegiatan = :tanggal";
         }
+        if (!empty($filters['search'])) {
+            $clause .= " AND (p.nama_lengkap LIKE :search OR p.nip LIKE :search)";
+        }
 
         return $clause;
     }
@@ -405,6 +408,9 @@ class AbsensiModel
         }
         if (!empty($filters['tanggal'])) {
             $this->db->bind(':tanggal', $filters['tanggal']);
+        }
+        if (!empty($filters['search'])) {
+            $this->db->bind(':search', '%' . $filters['search'] . '%');
         }
     }
 }
