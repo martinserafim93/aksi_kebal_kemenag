@@ -35,6 +35,7 @@ CREATE TABLE `absensi` (
   `foto` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `file_bukti` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `tipe_file_bukti` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `alasan_tidak_hadir` text COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_absensi`),
   UNIQUE KEY `uk_absensi_pegawai_kegiatan` (`nip`,`id_kegiatan`),

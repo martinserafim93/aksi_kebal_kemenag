@@ -163,6 +163,24 @@
 
             <!-- === SECTION: Form Tidak Hadir === -->
             <div id="section-tidak-hadir" class="fade-section" style="display: none;">
+                <!-- FIELD BARU: Alasan Tidak Hadir -->
+                <div class="form-group">
+                    <label for="alasan_tidak_hadir" class="form-label">
+                        Alasan Tidak Hadir <span style="color: var(--danger-color)">*</span>
+                    </label>
+                    <textarea 
+                        name="alasan_tidak_hadir" 
+                        id="alasan_tidak_hadir" 
+                        class="form-control" 
+                        rows="3" 
+                        placeholder="Jelaskan alasan ketidakhadiran Anda (contoh: sakit, tugas dinas, dll.)"
+                        style="resize: vertical; min-height: 80px;"
+                    ></textarea>
+                    <small class="text-muted" style="display: block; margin-top: 0.5rem; font-size: 0.85rem;">
+                        Wajib diisi. Minimal 10 karakter.
+                    </small>
+                </div>
+
                 <div class="form-group">
                     <label for="file_bukti" class="form-label">
                         Upload Bukti Ketidakhadiran <span style="color: var(--danger-color)">*</span>
@@ -171,8 +189,9 @@
                            accept="image/jpeg, image/png, application/pdf" 
                            onchange="previewFileBukti(event)">
                     <small class="text-muted" style="display: block; margin-top: 0.5rem; font-size: 0.85rem;">
-                        Format: JPG/PNG/PDF, Maksimal: 5MB.<br>
-                        Contoh: Surat izin, surat sakit, atau bukti lainnya.
+                        Format: JPG/PNG/PDF, Maksimal: 2MB.<br>
+                        Contoh: Surat izin, surat sakit, atau bukti lainnya.<br>
+                        <strong>Tips:</strong> Jika file PDF terlalu besar, kompres terlebih dahulu menggunakan <a href="https://www.ilovepdf.com/compress_pdf" target="_blank" style="color: var(--primary);">ilovepdf.com</a>.
                     </small>
                     
                     <div id="buktiPreviewContainer" class="preview-container" style="display: none;">
@@ -433,6 +452,7 @@
                 sectionTidakHadir.classList.add('show');
                 
                 document.getElementById('file_bukti').setAttribute('required', '');
+                document.getElementById('alasan_tidak_hadir').setAttribute('required', '');
                 document.getElementById('foto').removeAttribute('required');
                 
                 btnSubmit.disabled = false;
@@ -455,8 +475,8 @@
         
         if (!file) return;
         
-        if (file.size > 5 * 1024 * 1024) {
-            alert('⚠️ Ukuran file maksimal 5MB. File Anda: ' + (file.size / 1024 / 1024).toFixed(2) + ' MB');
+        if (file.size > 2 * 1024 * 1024) {
+            alert('⚠️ Ukuran file maksimal 2MB. File Anda: ' + (file.size / 1024 / 1024).toFixed(2) + ' MB.\n\nTips: Kompres file PDF Anda di ilovepdf.com');
             input.value = '';
             return;
         }
@@ -605,6 +625,13 @@ document.querySelector('form').addEventListener('submit', function(e) {
     }
     
     if (statusKehadiran === 'Tidak Hadir') {
+        const alasan = document.getElementById('alasan_tidak_hadir').value.trim();
+        if (!alasan || alasan.length < 10) {
+            e.preventDefault();
+            alert('⚠️ Alasan tidak hadir wajib diisi (minimal 10 karakter).');
+            return false;
+        }
+
         const fileBukti = document.getElementById('file_bukti');
         if (!fileBukti.files || fileBukti.files.length === 0) {
             e.preventDefault();
