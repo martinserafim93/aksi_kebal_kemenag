@@ -53,6 +53,13 @@
                         <option value="Tidak Hadir" <?= $absensi['status_kehadiran'] === 'Tidak Hadir' ? 'selected' : '' ?>>Tidak Hadir</option>
                     </select>
                 </div>
+
+                <?php if ($absensi['status_kehadiran'] === 'Tidak Hadir'): ?>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label class="form-label">Alasan Tidak Hadir</label>
+                    <textarea class="form-control" rows="3" readonly style="background: #f8fafc; color: var(--text-muted); resize: vertical;"><?= e($absensi['alasan_tidak_hadir'] ?? '-') ?></textarea>
+                </div>
+                <?php endif; ?>
                 
                 <div class="form-group" style="grid-column: 1 / -1;">
                     <label class="form-label">Bukti (Foto/File)</label>

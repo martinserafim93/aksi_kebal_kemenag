@@ -94,13 +94,14 @@
                     <th style="padding: 1rem; text-align: center; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">Kehadiran</th>
                     <th style="padding: 1rem; text-align: center; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">Foto</th>
                     <th style="padding: 1rem; text-align: left; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">Waktu Submit</th>
+                    <th style="padding: 1rem; text-align: left; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">Alasan</th>
                     <th style="padding: 1rem; text-align: center; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">Aksi</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($absensi)): ?>
                     <tr>
-                        <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-muted);">Belum ada data absensi untuk kegiatan ini.</td>
+                        <td colspan="7" style="text-align: center; padding: 2rem; color: var(--text-muted);">Belum ada data absensi untuk kegiatan ini.</td>
                     </tr>
                 <?php else: ?>
                     <?php 
@@ -141,6 +142,15 @@
                             </td>
                             <td style="padding: 1rem; vertical-align: middle; font-size: 0.9rem;">
                                 <?= date('d M Y, H:i', strtotime($a['created_at'])) ?>
+                            </td>
+                            <td style="padding: 1rem; vertical-align: middle; font-size: 0.85rem; max-width: 200px;">
+                                <?php if ($a['status_kehadiran'] === 'Tidak Hadir' && !empty($a['alasan_tidak_hadir'])): ?>
+                                    <span style="color: var(--text-main);" title="<?= e($a['alasan_tidak_hadir']) ?>">
+                                        <?= e(mb_strimwidth($a['alasan_tidak_hadir'], 0, 50, '...')) ?>
+                                    </span>
+                                <?php else: ?>
+                                    <span style="color: var(--text-muted);">-</span>
+                                <?php endif; ?>
                             </td>
                             <td style="padding: 1rem; vertical-align: middle; text-align: center;">
                                 <div style="display: flex; gap: 0.35rem; justify-content: center; flex-wrap: wrap;">

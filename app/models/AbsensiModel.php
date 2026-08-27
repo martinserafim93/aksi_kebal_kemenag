@@ -345,8 +345,8 @@ class AbsensiModel
     {
         $kode_absensi = $this->generateKodeAbsensi();
 
-        $this->db->query("INSERT INTO absensi (kode_absensi, nip, id_kegiatan, foto, file_bukti, tipe_file_bukti, status_kehadiran, latitude_absensi, longitude_absensi, jarak_meter, lokasi_valid) 
-                          VALUES (:kode_absensi, :nip, :id_kegiatan, :foto, :file_bukti, :tipe_file_bukti, :status_kehadiran, :latitude_absensi, :longitude_absensi, :jarak_meter, :lokasi_valid)");
+        $this->db->query("INSERT INTO absensi (kode_absensi, nip, id_kegiatan, foto, file_bukti, tipe_file_bukti, alasan_tidak_hadir, status_kehadiran, latitude_absensi, longitude_absensi, jarak_meter, lokasi_valid) 
+                          VALUES (:kode_absensi, :nip, :id_kegiatan, :foto, :file_bukti, :tipe_file_bukti, :alasan_tidak_hadir, :status_kehadiran, :latitude_absensi, :longitude_absensi, :jarak_meter, :lokasi_valid)");
         
         $this->db->bind(':kode_absensi', $kode_absensi);
         $this->db->bind(':nip', $data['nip']);
@@ -354,6 +354,7 @@ class AbsensiModel
         $this->db->bind(':foto', $data['foto']);
         $this->db->bind(':file_bukti', $data['file_bukti'] ?? null);
         $this->db->bind(':tipe_file_bukti', $data['tipe_file_bukti'] ?? null);
+        $this->db->bind(':alasan_tidak_hadir', $data['alasan_tidak_hadir'] ?? null);
         $this->db->bind(':status_kehadiran', $data['status_kehadiran'] ?? 'Hadir');
         $this->db->bind(':latitude_absensi', !empty($data['latitude_absensi']) ? $data['latitude_absensi'] : null);
         $this->db->bind(':longitude_absensi', !empty($data['longitude_absensi']) ? $data['longitude_absensi'] : null);

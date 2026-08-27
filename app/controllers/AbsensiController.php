@@ -304,8 +304,18 @@ class AbsensiController extends Controller
                 return;
             }
         } else {
-            // ========== UPLOAD FILE BUKTI (untuk Tidak Hadir) ==========
-            if (isset($_FILES['file_bukti']) && $_FILES['file_bukti']['error'] === UPLOAD_ERR_OK) {
+            // ========== VALIDASI ALASAN & UPLOAD FILE BUKTI (untuk Tidak Hadir) ==========
+            $alasan_tidak_hadir = null;
+            if ($status_kehadiran === 'Tidak Hadir') {
+                $alasan_tidak_hadir = trim($_POST['alasan_tidak_hadir'] ?? '');
+                if (empty($alasan_tidak_hadir) || mb_strlen($alasan_tidak_hadir) < 10) {
+                    setFlash('error', 'Alasan tidak hadir wajib diisi (minimal 10 karakter).');
+                    $this->redirect('absensi?kegiatan=' . $redirect_kegiatan);
+                    return;
+                }
+            }
+
+            if (isset($_FILES['file_bukti'])) {
                 $result = $this->prosesFileBukti($_FILES['file_bukti'], $nip, (string)$id_kegiatan);
                 
                 if ($result['success']) {
@@ -330,6 +340,7 @@ class AbsensiController extends Controller
             'foto'              => $foto ?: null,
             'file_bukti'        => $file_bukti ?: null,
             'tipe_file_bukti'   => $tipe_file_bukti,
+            'alasan_tidak_hadir' => $alasan_tidak_hadir ?? null,
             'status_kehadiran'  => $status_kehadiran,
             'latitude_absensi'  => ($status_kehadiran === 'Hadir') ? $latitude_absensi : null,
             'longitude_absensi' => ($status_kehadiran === 'Hadir') ? $longitude_absensi : null,
@@ -419,6 +430,20 @@ class AbsensiController extends Controller
      */
     private function prosesFileBukti(array $file, string $nip, string $id_kegiatan): array
     {
+        // Cek error upload terlebih dahulu
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            $errorMessages = [
+                UPLOAD_ERR_INI_SIZE   => 'File terlalu besar (melebihi batas server). Maksimal 2MB untuk PDF.',
+                UPLOAD_ERR_FORM_SIZE  => 'File terlalu besar (melebihi batas form).',
+                UPLOAD_ERR_PARTIAL    => 'File hanya terupload sebagian. Silakan coba lagi.',
+                UPLOAD_ERR_NO_FILE    => 'Tidak ada file yang dipilih.',
+                UPLOAD_ERR_NO_TMP_DIR => 'Terjadi kesalahan server (temporary folder tidak ditemukan).',
+                UPLOAD_ERR_CANT_WRITE => 'Terjadi kesalahan server (gagal menulis file).',
+            ];
+            $msg = $errorMessages[$file['error']] ?? 'Terjadi kesalahan saat upload file.';
+            return ['success' => false, 'error' => $msg];
+        }
+
         $tmp_name = $file['tmp_name'];
         $file_name = $file['name'];
         $file_size = $file['size'];
@@ -453,9 +478,9 @@ class AbsensiController extends Controller
             return ['success' => false, 'error' => 'Ekstensi file tidak cocok dengan isi file. Kemungkinan file telah dimanipulasi.'];
         }
         
-        // 4. Validasi ukuran (max 5 MB)
-        if ($file_size > 5 * 1024 * 1024) {
-            return ['success' => false, 'error' => 'Ukuran file maksimal 5MB.'];
+        // 4. Validasi ukuran (max 2 MB)
+        if ($file_size > 2 * 1024 * 1024) {
+            return ['success' => false, 'error' => 'Ukuran file maksimal 2MB. Silakan kompres file PDF Anda terlebih dahulu.'];
         }
         
         // 5. SECURITY CHECK: Scan konten file untuk script jahat
