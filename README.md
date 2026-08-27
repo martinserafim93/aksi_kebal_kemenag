@@ -1,6 +1,6 @@
 <div align="center">
   <img src="public/assets/img/kemenag-new-2025.png" alt="Logo Kemenag" width="150" />
-  <h1>✨ AKSI KEBAL ✨</h1>
+  <h1>✨ AKSI KEBAL v1.1.0 ✨</h1>
   <p><strong>A</strong>bsensi <strong>K</strong>egiatan <strong>S</strong>erentak <strong>K</strong>ementerian <strong>B</strong>eramal dan <strong>A</strong>ndal</p>
   <p><i>Sistem Informasi Absensi Kegiatan Pegawai Kementerian Agama yang Modern, Cepat, dan Andal</i></p>
 
@@ -10,6 +10,7 @@
     <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="Vanilla JS" />
     <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5" />
     <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3" />
+    <img src="https://img.shields.io/badge/Version-1.1.0-success?style=for-the-badge" alt="Version 1.1.0" />
   </p>
 </div>
 
@@ -20,6 +21,16 @@
 **AKSI KEBAL** adalah sistem informasi absensi modern berbasis web yang dirancang khusus untuk memfasilitasi pencatatan kehadiran pegawai dalam berbagai kegiatan di lingkungan **Kementerian Agama**. Terinspirasi dari semangat **"Ikhlas Beramal"**, aplikasi ini dibangun secara mandiri *(from scratch)* menggunakan arsitektur **MVC (Model-View-Controller)** murni dengan PHP Native, tanpa bergantung pada framework pihak ketiga. Hal ini menjamin performa yang cepat, ringan, dan sangat mudah dikustomisasi.
 
 Sistem ini menghadirkan antarmuka admin yang elegan serta alur absensi pegawai berbasis **QR Code** yang praktis, membawa revolusi digitalisasi birokrasi ke tingkat yang lebih baik.
+
+---
+
+## 🆕 Pembaruan Terbaru (Versi 1.1.0)
+Kami terus mengembangkan AKSI KEBAL untuk memberikan pengalaman terbaik!
+- ✅ **Penyesuaian Timezone Presisi**: Tidak ada lagi perbedaan waktu saat absensi, sistem otomatis menyelaraskan waktu ke zona WITA (`Asia/Makassar`) pada *server hosting*.
+- ✅ **Fitur "Alasan Tidak Hadir"**: Kini pegawai dapat melampirkan alasan spesifik saat berstatus tidak hadir, lengkap dengan fitur pratinjau *(readonly)* di sisi admin.
+- ✅ **Optimalisasi Upload PDF**: Memperkecil rasio batas unggah dokumen (`< 2MB`) dengan validasi MIME pintar agar proses lebih mulus dan anti-*error* di semua *device*.
+- ✅ **Pencarian Pintar Absensi**: Kemudahan filter berdasarkan **Nama** atau **NIP** untuk Admin pada halaman *Detail Absensi*.
+- ✅ **Penyempurnaan UI Pagination**: *Layout pagination* tabel kini seragam, modern, dan sangat rapi.
 
 ---
 
@@ -88,11 +99,11 @@ Ikuti langkah-langkah di bawah ini untuk menjalankan aplikasi pada *local enviro
 2. **Konfigurasi Database**  
    - Buat sebuah database baru melalui *phpMyAdmin* atau *MySQL Console* (contoh: `aksi_kebal`).
    - Impor struktur tabel aplikasi dari file `database/aksi_kebal.sql` (bila disediakan).
-   - Buka file `config/database.php` dan sesuaikan informasi kredensial (*host, username, password, dan nama database*).
+   - Buka file `config/app.php` (serta `Database.php` jika ada) dan sesuaikan informasi kredensial (*host, username, password, dan nama database*).
 
 3. **Penyesuaian Base URL**  
-   - Buka file `core/helpers.php` atau file utama pengaturan URL.
-   - Ubah parameter konstanta `BASE_URL` agar sesuai dengan *path* aplikasi Anda (contoh: `http://localhost/aksi_kebal_kemenag/public/`).
+   - Buka file `config/app.php` atau set up di *web server* Anda.
+   - Ubah parameter konstanta atau setup host lokal Anda agar sesuai dengan *path* aplikasi.
 
 4. **Jalankan Aplikasi!**  
    Aplikasi Anda siap digunakan. Buka peramban (*web browser*) dan akses URL berikut:
