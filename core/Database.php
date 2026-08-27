@@ -23,6 +23,8 @@ class Database
 
         try {
             $this->pdo = new PDO($dsn, $config['username'], $config['password'], $config['options']);
+            // Set timezone for the MySQL session to UTC+8 (WITA)
+            $this->pdo->exec("SET time_zone = '+08:00'");
         } catch (PDOException $e) {
             if (APP_ENV === 'development') {
                 die('Database connection failed: ' . $e->getMessage());

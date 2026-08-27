@@ -20,7 +20,7 @@ define('APP_VERSION', '1.0.0');
 define('APP_ENV', 'development');
 
 // Timezone
-date_default_timezone_set('Asia/Jakarta');
+date_default_timezone_set('Asia/Makassar');
 
 // Upload Configuration
 define('UPLOAD_PATH', __DIR__ . '/../public/uploads/');
