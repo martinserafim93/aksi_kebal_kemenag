@@ -1,6 +1,6 @@
 <div align="center">
   <img src="public/assets/img/kemenag-new-2025.png" alt="Logo Kemenag" width="150" />
-  <h1>✨ AKSI KEBAL v1.1.0 ✨</h1>
+  <h1>✨ AKSI KEBAL v1.2.0 ✨</h1>
   <p><strong>A</strong>bsensi <strong>K</strong>egiatan <strong>S</strong>erentak <strong>K</strong>ementerian <strong>B</strong>eramal dan <strong>A</strong>ndal</p>
   <p><i>Sistem Informasi Absensi Kegiatan Pegawai Kementerian Agama yang Modern, Cepat, dan Andal</i></p>
 
@@ -10,7 +10,7 @@
     <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="Vanilla JS" />
     <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5" />
     <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3" />
-    <img src="https://img.shields.io/badge/Version-1.1.0-success?style=for-the-badge" alt="Version 1.1.0" />
+    <img src="https://img.shields.io/badge/Version-1.2.0-success?style=for-the-badge" alt="Version 1.2.0" />
   </p>
 </div>
 
@@ -24,7 +24,7 @@ Sistem ini menghadirkan antarmuka admin yang elegan serta alur absensi pegawai b
 
 ---
 
-## 🆕 Pembaruan Terbaru (Versi 1.1.0)
+## 🆕 Pembaruan Terbaru (Versi 1.2.0)
 Kami terus mengembangkan AKSI KEBAL untuk memberikan pengalaman terbaik!
 - ✅ **Penyesuaian Timezone Presisi**: Tidak ada lagi perbedaan waktu saat absensi, sistem otomatis menyelaraskan waktu ke zona WITA (`Asia/Makassar`) pada *server hosting*.
 - ✅ **Fitur "Alasan Tidak Hadir"**: Kini pegawai dapat melampirkan alasan spesifik saat berstatus tidak hadir, lengkap dengan fitur pratinjau *(readonly)* di sisi admin.

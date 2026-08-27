@@ -14,7 +14,7 @@ define('APP_NAME', 'AKSI KEBAL');
 define('APP_FULL_NAME', 'Absensi Kegiatan Serentak Kementerian Beramal dan Andal');
 
 // Versi Aplikasi
-define('APP_VERSION', '1.1.0');
+define('APP_VERSION', '1.2.0');
 
 // Environment (development / production)
 define('APP_ENV', 'development');
