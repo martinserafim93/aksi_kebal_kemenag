@@ -1282,7 +1282,11 @@ class AdminController extends Controller
 
         $model = $this->model('AbsensiModel');
 
-        $filters = ['kegiatan' => $kegiatan['id_kegiatan']];
+        $search = query('search', '');
+        $filters = [
+            'kegiatan' => $kegiatan['id_kegiatan'],
+            'search'   => $search
+        ];
 
         $page = (int) query('page', 1);
         if ($page < 1)
@@ -1299,6 +1303,7 @@ class AdminController extends Controller
         $this->view('admin/absensi/detail', [
             'title' => 'Detail Absensi - ' . $kegiatan['nama_kegiatan'],
             'absensi' => $absensi,
+            'search' => $search,
             'kegiatan' => $kegiatan,
             'page' => $page,
             'total_page' => $total_page,

@@ -57,9 +57,30 @@
 </div>
 
 <div class="card" style="border-radius: var(--radius-xl); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
-    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem; border-bottom: 1px solid var(--border-color);">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 1rem;">
         <h3 class="card-title" style="margin: 0;">Daftar Hadir Pegawai</h3>
-        <div style="display: flex; gap: 0.5rem;">
+        <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+            
+            <!-- Form Pencarian -->
+            <form action="<?= url('admin/absensi-detail/' . $kegiatan['kode_kegiatan']) ?>" method="GET"
+                style="display: flex; gap: 0.5rem; align-items: center;">
+                <div style="position: relative; display: flex; align-items: center;">
+                    <i class='bx bx-search' style="position: absolute; left: 1rem; color: #94a3b8; font-size: 1.1rem;"></i>
+                    <input type="text" name="search" value="<?= e($search ?? '') ?>" placeholder="Cari NIP atau Nama..."
+                        class="form-control"
+                        style="width: 250px; padding: 0.6rem 1.2rem 0.6rem 2.5rem; border-radius: 9999px; border: 1px solid #e2e8f0; outline: none; transition: all 0.3s ease; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);"
+                        onfocus="this.style.borderColor='var(--primary)'; this.style.boxShadow='0 0 0 3px rgba(16, 185, 129, 0.2)';"
+                        onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='0 1px 2px 0 rgba(0, 0, 0, 0.05)';">
+                </div>
+                <button type="submit" class="btn btn-gradient-primary"
+                    style="padding: 0.6rem 1.2rem; border-radius: 9999px; font-weight: 500;">
+                    Cari
+                </button>
+                <?php if (!empty($search)): ?>
+                    <a href="<?= url('admin/absensi-detail/' . $kegiatan['kode_kegiatan']) ?>" class="btn"
+                        style="background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main); padding: 0.6rem 1.2rem; border-radius: 9999px;">Reset</a>
+                <?php endif; ?>
+            </form>
             <div style="position: relative; display: inline-block;" class="pdf-dropdown-container">
                 <button class="btn btn-danger" style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; padding: 0.5rem 1rem; cursor: pointer;" onclick="document.getElementById('pdfDropdown').style.display = document.getElementById('pdfDropdown').style.display === 'none' ? 'block' : 'none'; event.stopPropagation();">
                     <i class='bx bxs-file-pdf'></i> Export PDF <i class='bx bx-chevron-down'></i>
@@ -183,7 +204,7 @@
             <div style="display: flex; gap: 0.25rem; align-items: center;">
                 <!-- Tombol Sebelumnya -->
                 <?php if ($page > 1): ?>
-                    <a href="<?= url('admin/absensi-detail/' . $kegiatan['kode_kegiatan'] . '?page=' . ($page - 1)) ?>"
+                    <a href="<?= url('admin/absensi-detail/' . $kegiatan['kode_kegiatan'] . '?page=' . ($page - 1) . (!empty($search) ? '&search=' . urlencode($search) : '')) ?>"
                         style="padding: 0.5rem 0.75rem; border-radius: 0.25rem; text-decoration: none; font-size: 0.9rem; font-weight: 500; background: #f1f5f9; color: #475569;">
                         &laquo; Sebelumnya
                     </a>
@@ -203,7 +224,7 @@
                 }
                 
                 for ($i = $start; $i <= $end; $i++): ?>
-                    <a href="<?= url('admin/absensi-detail/' . $kegiatan['kode_kegiatan'] . '?page=' . $i) ?>"
+                    <a href="<?= url('admin/absensi-detail/' . $kegiatan['kode_kegiatan'] . '?page=' . $i . (!empty($search) ? '&search=' . urlencode($search) : '')) ?>"
                         style="padding: 0.5rem 0.75rem; border-radius: 0.25rem; text-decoration: none; font-size: 0.9rem; font-weight: 500; 
                         <?= $i === $page ? 'background: var(--primary); color: white;' : 'background: #f1f5f9; color: #475569;' ?>">
                         <?= $i ?>
@@ -217,7 +238,7 @@
 
                 <!-- Tombol Selanjutnya -->
                 <?php if ($page < $total_page): ?>
-                    <a href="<?= url('admin/absensi-detail/' . $kegiatan['kode_kegiatan'] . '?page=' . ($page + 1)) ?>"
+                    <a href="<?= url('admin/absensi-detail/' . $kegiatan['kode_kegiatan'] . '?page=' . ($page + 1) . (!empty($search) ? '&search=' . urlencode($search) : '')) ?>"
                         style="padding: 0.5rem 0.75rem; border-radius: 0.25rem; text-decoration: none; font-size: 0.9rem; font-weight: 500; background: #f1f5f9; color: #475569;">
                         Selanjutnya &raquo;
                     </a>
