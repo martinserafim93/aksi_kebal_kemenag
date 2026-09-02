@@ -333,3 +333,9 @@
     opacity: 1;
     transform: translateY(0);
 }
+
+.swal2-toast-custom {
+    font-family: 'Figtree', sans-serif !important;
+    border-radius: 0.5rem !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+}

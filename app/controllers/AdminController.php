@@ -79,6 +79,7 @@ class AdminController extends Controller
         $admin = $authModel->findAdminByEmailOrNip($identifier);
 
         if (!$admin) {
+            $this->logAktivitas('login_gagal', 'auth', 'Percobaan login gagal: identifier "' . $identifier . '" tidak ditemukan.', null, $identifier);
             setFlash('error', 'Email/NIP atau password salah.');
             $this->redirect('admin/login');
             return;
@@ -86,6 +87,7 @@ class AdminController extends Controller
 
         // Verifikasi password
         if (!password_verify($password, $admin['password'])) {
+            $this->logAktivitas('login_gagal', 'auth', 'Percobaan login gagal: password salah.', $admin['nip'], $admin['nama_lengkap']);
             setFlash('error', 'Email/NIP atau password salah.');
             $this->redirect('admin/login');
             return;
@@ -105,6 +107,8 @@ class AdminController extends Controller
         ];
         $_SESSION['last_activity'] = time();
 
+        $this->logAktivitas('login', 'auth', 'Login berhasil ke panel admin.', $admin['nip'], $admin['nama_lengkap']);
+
         setFlash('success', 'Selamat datang, ' . e($admin['nama_lengkap']) . '!');
         $this->redirect('admin/dashboard');
     }
@@ -121,6 +125,10 @@ class AdminController extends Controller
             $this->redirect('admin/dashboard');
             return;
         }
+
+        // Simpan identitas aktor sebelum sesi dihancurkan (untuk audit trail)
+        $logoutNip = adminData('nip');
+        $logoutNama = adminData('nama_lengkap');
 
         // Hapus semua data session
         $_SESSION = [];
@@ -144,6 +152,7 @@ class AdminController extends Controller
 
         // Mulai session baru untuk flash message
         session_start();
+        $this->logAktivitas('logout', 'auth', 'Logout dari panel admin.', $logoutNip, $logoutNama);
         setFlash('success', 'Anda berhasil logout.');
         $this->redirect('admin/login');
     }
@@ -264,6 +273,7 @@ class AdminController extends Controller
             ];
 
             if ($pegawaiModel->create($data)) {
+                $this->logAktivitas('tambah', 'pegawai', 'Menambahkan pegawai ' . $nama . ' (NIP ' . $nip . ').');
                 setFlash('success', 'Data pegawai berhasil ditambahkan.');
                 $this->redirect('admin/pegawai');
             } else {
@@ -358,6 +368,7 @@ class AdminController extends Controller
             }
 
             if ($pegawaiModel->update($nip, $data)) {
+                $this->logAktivitas('ubah', 'pegawai', 'Memperbarui data pegawai ' . $nama . ' (NIP ' . $nip_baru . ').');
                 setFlash('success', 'Data pegawai berhasil diperbarui.');
                 $this->redirect('admin/pegawai');
             } else {
@@ -398,7 +409,9 @@ class AdminController extends Controller
                     setFlash('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
                 } else {
                     $pegawaiModel = $this->model('PegawaiModel');
+                    $pegawaiDihapus = $pegawaiModel->findByNip($nip);
                     if ($pegawaiModel->delete($nip)) {
+                        $this->logAktivitas('hapus', 'pegawai', 'Menghapus pegawai ' . ($pegawaiDihapus['nama_lengkap'] ?? '-') . ' (NIP ' . $nip . ').');
                         setFlash('success', 'Data pegawai berhasil dihapus.');
                     } else {
                         setFlash('error', 'Gagal menghapus data pegawai.');
@@ -472,6 +485,7 @@ class AdminController extends Controller
             }
 
             if ($model->create(['nama_tim_kerja' => $nama_tim_kerja])) {
+                $this->logAktivitas('tambah', 'tim_kerja', 'Menambahkan tim kerja: ' . $nama_tim_kerja . '.');
                 setFlash('success', 'Tim Kerja berhasil ditambahkan.');
                 $this->redirect('admin/tim-kerja');
                 return;
@@ -529,6 +543,7 @@ class AdminController extends Controller
             }
 
             if ($model->update((int) $tim_kerja['id_tim_kerja'], ['nama_tim_kerja' => $nama_tim_kerja])) {
+                $this->logAktivitas('ubah', 'tim_kerja', 'Memperbarui tim kerja: ' . $nama_tim_kerja . '.');
                 setFlash('success', 'Tim Kerja berhasil diperbarui.');
                 $this->redirect('admin/tim-kerja');
                 return;
@@ -560,6 +575,7 @@ class AdminController extends Controller
                 $tim_kerja = $model->findBySlug($slug);
 
                 if ($tim_kerja && $model->delete((int) $tim_kerja['id_tim_kerja'])) {
+                    $this->logAktivitas('hapus', 'tim_kerja', 'Menghapus tim kerja: ' . $tim_kerja['nama_tim_kerja'] . '.');
                     setFlash('success', 'Tim Kerja berhasil dihapus.');
                 } else {
                     setFlash('error', 'Gagal menghapus! Tim Kerja ini masih memiliki anggota pegawai atau tidak ditemukan.');
@@ -632,6 +648,7 @@ class AdminController extends Controller
             }
 
             if ($model->create(['nama_unit_kerja' => $nama_unit_kerja])) {
+                $this->logAktivitas('tambah', 'unit_kerja', 'Menambahkan unit kerja: ' . $nama_unit_kerja . '.');
                 setFlash('success', 'Unit Kerja berhasil ditambahkan.');
                 $this->redirect('admin/unit-kerja');
                 return;
@@ -689,6 +706,7 @@ class AdminController extends Controller
             }
 
             if ($model->update((int) $id, ['nama_unit_kerja' => $nama_unit_kerja])) {
+                $this->logAktivitas('ubah', 'unit_kerja', 'Memperbarui unit kerja: ' . $nama_unit_kerja . '.');
                 setFlash('success', 'Unit Kerja berhasil diperbarui.');
                 $this->redirect('admin/unit-kerja');
                 return;
@@ -720,6 +738,7 @@ class AdminController extends Controller
                 $unit_kerja = $model->findById((int) $id);
 
                 if ($unit_kerja && $model->delete((int) $id)) {
+                    $this->logAktivitas('hapus', 'unit_kerja', 'Menghapus unit kerja: ' . $unit_kerja['nama_unit_kerja'] . '.');
                     setFlash('success', 'Unit Kerja berhasil dihapus.');
                 } else {
                     setFlash('error', 'Gagal menghapus! Unit Kerja ini masih memiliki anggota pegawai atau tidak ditemukan.');
@@ -792,6 +811,7 @@ class AdminController extends Controller
             }
 
             if ($model->create(['nama_jabatan' => $nama_jabatan])) {
+                $this->logAktivitas('tambah', 'jabatan', 'Menambahkan jabatan: ' . $nama_jabatan . '.');
                 setFlash('success', 'Jabatan berhasil ditambahkan.');
                 $this->redirect('admin/jabatan');
                 return;
@@ -849,6 +869,7 @@ class AdminController extends Controller
             }
 
             if ($model->update((int) $jabatan['id_jabatan'], ['nama_jabatan' => $nama_jabatan])) {
+                $this->logAktivitas('ubah', 'jabatan', 'Memperbarui jabatan: ' . $nama_jabatan . '.');
                 setFlash('success', 'Jabatan berhasil diperbarui.');
                 $this->redirect('admin/jabatan');
                 return;
@@ -880,6 +901,7 @@ class AdminController extends Controller
                 $jabatan = $model->findBySlug($slug);
 
                 if ($jabatan && $model->delete((int) $jabatan['id_jabatan'])) {
+                    $this->logAktivitas('hapus', 'jabatan', 'Menghapus jabatan: ' . $jabatan['nama_jabatan'] . '.');
                     setFlash('success', 'Jabatan berhasil dihapus.');
                 } else {
                     setFlash('error', 'Gagal menghapus! Jabatan ini masih memiliki anggota pegawai atau tidak ditemukan.');
@@ -1069,6 +1091,7 @@ class AdminController extends Controller
                 setFlash('error', 'Semua kolom wajib (*) harus diisi.');
             } else {
                 if ($model->create($data)) {
+                    $this->logAktivitas('tambah', 'kegiatan', 'Menambahkan kegiatan: ' . $data['nama_kegiatan'] . '.');
                     setFlash('success', 'Kegiatan baru berhasil ditambahkan.');
                     $this->redirect('admin/kegiatan');
                     return;
@@ -1130,6 +1153,7 @@ class AdminController extends Controller
                 setFlash('error', 'Semua kolom wajib (*) harus diisi.');
             } else {
                 if ($model->update((int) $kegiatan['id_kegiatan'], $data)) {
+                    $this->logAktivitas('ubah', 'kegiatan', 'Memperbarui kegiatan: ' . $data['nama_kegiatan'] . ' (' . $kegiatan['kode_kegiatan'] . ').');
                     setFlash('success', 'Kegiatan berhasil diperbarui.');
                     $this->redirect('admin/kegiatan');
                     return;
@@ -1163,6 +1187,7 @@ class AdminController extends Controller
                 }
 
                 if ($kegiatan && $model->delete((int) $kegiatan['id_kegiatan'])) {
+                    $this->logAktivitas('hapus', 'kegiatan', 'Menghapus kegiatan: ' . $kegiatan['nama_kegiatan'] . ' (' . $kegiatan['kode_kegiatan'] . ').');
                     setFlash('success', 'Kegiatan berhasil dihapus.');
                 } else {
                     setFlash('error', 'Gagal menghapus! Kegiatan ini memiliki data absensi terikat atau tidak ditemukan.');
@@ -1191,6 +1216,7 @@ class AdminController extends Controller
                 if ($kegiatan) {
                     $url = url("absensi?kegiatan=" . $kegiatan['kode_kegiatan']);
                     if ($model->publish((int) $kegiatan['id_kegiatan'], $url)) {
+                        $this->logAktivitas('publish', 'kegiatan', 'Mem-publish kegiatan: ' . $kegiatan['nama_kegiatan'] . ' (' . $kegiatan['kode_kegiatan'] . ').');
                         setFlash('success', 'Kegiatan berhasil di-publish!');
                     } else {
                         setFlash('error', 'Gagal mem-publish kegiatan.');
@@ -1336,6 +1362,8 @@ class AdminController extends Controller
         $model = $this->model('AbsensiModel');
         $absensi = $model->getAllFilteredForExport(['kegiatan' => $kegiatan['id_kegiatan']]);
 
+        $this->logAktivitas('ekspor', 'absensi', 'Mengekspor laporan absensi (CSV) kegiatan: ' . $kegiatan['nama_kegiatan'] . '.');
+
         $filename = "Laporan_Kehadiran_Pegawai_" . date('Ymd_His') . ".csv";
 
         header('Content-Type: text/csv; charset=utf-8');
@@ -1385,6 +1413,8 @@ class AdminController extends Controller
 
         $model = $this->model('AbsensiModel');
         $filter = query('filter', 'semua');
+
+        $this->logAktivitas('ekspor', 'absensi', 'Mengekspor laporan absensi (PDF, filter: ' . $filter . ') kegiatan: ' . $kegiatan['nama_kegiatan'] . '.');
 
         // Ambil data absensi yang sudah diisi
         $semuaAbsensi = $model->getAllFilteredForExport(['kegiatan' => $kegiatan['id_kegiatan']]);
@@ -1497,6 +1527,7 @@ class AdminController extends Controller
             }
 
             if ($model->updateStatus((int) $absensi['id_absensi'], $status)) {
+                $this->logAktivitas('ubah', 'absensi', 'Mengoreksi status kehadiran ' . ($absensi['nama_lengkap'] ?? $absensi['nip']) . ' menjadi "' . $status . '" pada kegiatan: ' . ($absensi['nama_kegiatan'] ?? '-') . '.');
                 setFlash('success', 'Status kehadiran berhasil diperbarui.');
                 $this->redirect('admin/absensi-detail/' . $kode_kegiatan);
                 return;
@@ -1535,6 +1566,7 @@ class AdminController extends Controller
                 }
 
                 if ($absensi && $model->delete((int) $absensi['id_absensi'])) {
+                    $this->logAktivitas('hapus', 'absensi', 'Menghapus data absensi ' . ($absensi['nama_lengkap'] ?? $absensi['nip']) . ' pada kegiatan: ' . ($absensi['nama_kegiatan'] ?? '-') . '.');
                     setFlash('success', 'Data absensi berhasil dihapus.');
                 } else {
                     setFlash('error', 'Gagal menghapus data absensi.');
@@ -1542,5 +1574,53 @@ class AdminController extends Controller
             }
         }
         $this->redirect($redirectUrl);
+    }
+
+    // ==========================================
+    // LOG AKTIVITAS (AUDIT TRAIL)
+    // ==========================================
+
+    /**
+     * Halaman Log Aktivitas (audit trail).
+     * URL: admin/log-aktivitas → method log_aktivitas (dash menjadi underscore).
+     */
+    public function log_aktivitas(): void
+    {
+        Middleware::authAdmin();
+        $model = $this->model('LogAktivitasModel');
+
+        $search  = query('search', '');
+        $aksi    = query('aksi', '');
+        $modul   = query('modul', '');
+        $tanggal = query('tanggal', '');
+        $page    = max(1, (int) query('page', 1));
+        $limit   = 15;
+        $offset  = ($page - 1) * $limit;
+
+        $filters = [
+            'search'  => $search,
+            'aksi'    => $aksi,
+            'modul'   => $modul,
+            'tanggal' => $tanggal,
+        ];
+
+        $total_data = $model->countAll($filters);
+        $total_page = (int) ceil($total_data / $limit);
+        $log        = $model->getAllPaginated($filters, $limit, $offset);
+
+        $this->view('admin/log-aktivitas/index', [
+            'title'       => 'Log Aktivitas - AKSI KEBAL',
+            'log'         => $log,
+            'search'      => $search,
+            'aksi'        => $aksi,
+            'modul'       => $modul,
+            'tanggal'     => $tanggal,
+            'page'        => $page,
+            'total_page'  => $total_page,
+            'total_data'  => $total_data,
+            'modul_list'  => $model->getModulList(),
+            'aksi_list'   => $model->getAksiList(),
+            'active_menu' => 'log_aktivitas',
+        ]);
     }
 }

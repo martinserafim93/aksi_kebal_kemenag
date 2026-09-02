@@ -72,6 +72,39 @@ class Controller
     }
 
     /**
+     * Catat aktivitas ke tabel log_aktivitas (audit trail).
+     *
+     * Bersifat "best-effort": kegagalan pencatatan TIDAK BOLEH menggagalkan
+     * aksi utama, sehingga seluruh proses dibungkus try/catch.
+     *
+     * @param string      $aksi      Jenis aksi: login, login_gagal, logout, tambah, ubah, hapus, publish, ekspor, absensi
+     * @param string      $modul     Modul terkait: auth, pegawai, tim_kerja, unit_kerja, jabatan, kegiatan, absensi
+     * @param string      $deskripsi Deskripsi singkat yang mudah dibaca manusia
+     * @param string|null $aktorNip  NIP pelaku; jika null diambil dari sesi admin (adminData)
+     * @param string|null $aktorNama Nama pelaku; jika null diambil dari sesi admin (adminData)
+     */
+    protected function logAktivitas(string $aksi, string $modul, string $deskripsi, ?string $aktorNip = null, ?string $aktorNama = null): void
+    {
+        try {
+            $model = $this->model('LogAktivitasModel');
+            $model->catat([
+                'aktor_nip'  => $aktorNip ?? adminData('nip'),
+                'aktor_nama' => $aktorNama ?? adminData('nama_lengkap'),
+                'aksi'       => $aksi,
+                'modul'      => $modul,
+                'deskripsi'  => $deskripsi,
+                'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+                'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+            ]);
+        } catch (\Throwable $e) {
+            // Jangan pernah menggagalkan aksi utama hanya karena logging gagal.
+            if (defined('APP_ENV') && APP_ENV === 'development') {
+                error_log('[log_aktivitas] ' . $e->getMessage());
+            }
+        }
+    }
+
+    /**
      * Halaman 404 Not Found
      */
     public function notFound(): void

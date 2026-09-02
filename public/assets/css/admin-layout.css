@@ -503,3 +503,34 @@ a {
     background-color: #dc2626;
     color: white;
 }
+
+/* ============================================================
+   SweetAlert2 Custom UI/UX
+   ============================================================ */
+.swal-popup-custom {
+    font-family: 'Figtree', sans-serif !important;
+    border-radius: var(--radius-xl) !important;
+    box-shadow: var(--shadow-glass) !important;
+}
+.swal-popup-custom .swal2-title {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+    color: var(--text-main) !important;
+}
+.swal-popup-custom .swal2-html-container {
+    color: var(--text-muted) !important;
+}
+.swal-popup-custom .swal2-confirm, .swal-popup-custom .swal2-cancel {
+    border-radius: var(--radius-md) !important;
+    padding: 0.6rem 1.2rem !important;
+    font-weight: 500 !important;
+}
+.swal-popup-custom .swal2-cancel {
+    background-color: #f1f5f9 !important;
+    color: #475569 !important;
+}
+.swal2-toast-custom {
+    font-family: 'Figtree', sans-serif !important;
+    border-radius: var(--radius-md) !important;
+    box-shadow: var(--shadow-md) !important;
+}
