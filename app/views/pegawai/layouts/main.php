@@ -47,6 +47,27 @@
         </footer>
     </div>
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        <?php $swalFlash = getFlash(); ?>
+        <?php if ($swalFlash): ?>
+            Swal.fire({
+                icon: '<?= $swalFlash['type'] === 'success' ? 'success' : 'error' ?>',
+                title: '<?= $swalFlash['type'] === 'success' ? 'Berhasil!' : 'Gagal!' ?>',
+                text: '<?= addslashes($swalFlash['message']) ?>',
+                timer: 3000,
+                timerProgressBar: true,
+                showConfirmButton: false,
+                toast: true,
+                position: 'top-end',
+                customClass: { popup: 'swal2-toast-custom' }
+            });
+        <?php endif; ?>
+    });
+    </script>
+    
     <!-- Extra JS -->
     <?= $extra_js ?? '' ?>
 </body>

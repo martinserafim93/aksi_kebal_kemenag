@@ -74,7 +74,10 @@ $qrCodeUrl = !empty($kegiatan['qr_code']) ? $kegiatan['qr_code'] : url("absensi?
             title: 'Berhasil!',
             text: 'URL Absensi berhasil disalin ke clipboard.',
             timer: 2000,
-            showConfirmButton: false
+            showConfirmButton: false,
+            toast: true,
+            position: 'top-end',
+            customClass: { popup: 'swal2-toast-custom' }
         });
     }
 
@@ -93,6 +96,8 @@ $qrCodeUrl = !empty($kegiatan['qr_code']) ? $kegiatan['qr_code'] : url("absensi?
                 icon: 'error',
                 title: 'Gagal',
                 text: 'QR Code belum siap untuk diunduh.',
+                confirmButtonColor: '#10b981',
+                customClass: { popup: 'swal-popup-custom' }
             });
         }
     }

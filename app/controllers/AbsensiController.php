@@ -351,6 +351,18 @@ class AbsensiController extends Controller
         $insertId = $absensiModel->create($data);
 
         if ($insertId) {
+            // Catat ke audit trail (aktor = pegawai). Best-effort, tidak menggagalkan absensi.
+            $pegawaiModel = $this->model('PegawaiModel');
+            $pegawai = $pegawaiModel->findByNip($nip);
+            $namaPegawai = $pegawai['nama_lengkap'] ?? $nip;
+            $this->logAktivitas(
+                'absensi',
+                'absensi',
+                'Mengisi absensi "' . $status_kehadiran . '" untuk kegiatan: ' . $kegiatan['nama_kegiatan'] . '.',
+                $nip,
+                $namaPegawai
+            );
+
             // Redirect ke halaman sukses
             $this->redirect('absensi/sukses/' . $insertId);
         } else {

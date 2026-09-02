@@ -2,15 +2,6 @@
 
 <link rel="stylesheet" href="<?= asset('css/absensi.css') ?>?v=<?= time() ?>">
 
-<?php $flash = getFlash(); ?>
-<?php if ($flash): ?>
-    <div class="abs-flash abs-flash-<?= $flash['type'] ?>">
-        <i class='bx <?= $flash['type'] === 'error' ? 'bxs-error-circle' : ($flash['type'] === 'success' ? 'bxs-check-circle' : 'bxs-info-circle') ?>'
-            style="font-size: 1.25rem;"></i>
-        <?= $flash['message'] ?>
-    </div>
-<?php endif; ?>
-
 <div class="card abs-card stagger-1">
     <div class="card-body">
         <h1 class="card-title">Formulir Absensi</h1>
@@ -594,14 +585,26 @@
         const nip = document.getElementById('nip').value;
         if (!nip) {
             e.preventDefault();
-            alert('⚠️ Silakan pilih Nama Pegawai dari daftar pilihan.');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Validasi',
+                text: 'Silakan pilih Nama Pegawai dari daftar pilihan.',
+                confirmButtonColor: '#10b981',
+                customClass: { popup: 'swal-popup-custom' }
+            });
             return false;
         }
 
         const statusKehadiran = document.getElementById('status_kehadiran').value;
         if (!statusKehadiran) {
             e.preventDefault();
-            alert('⚠️ Silakan pilih Status Kehadiran.');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Validasi',
+                text: 'Silakan pilih Status Kehadiran.',
+                confirmButtonColor: '#10b981',
+                customClass: { popup: 'swal-popup-custom' }
+            });
             return false;
         }
 
@@ -610,7 +613,13 @@
                 const lokasiValid = document.getElementById('lokasi_valid').value;
                 if (lokasiValid !== '1') {
                     e.preventDefault();
-                    alert('⚠️ Lokasi Anda belum terverifikasi atau di luar radius.');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lokasi Tidak Valid',
+                        text: 'Lokasi Anda belum terverifikasi atau di luar radius.',
+                        confirmButtonColor: '#10b981',
+                        customClass: { popup: 'swal-popup-custom' }
+                    });
                     return false;
                 }
             }
@@ -618,7 +627,13 @@
             const fotoInput = document.getElementById('foto');
             if (!fotoInput.files || fotoInput.files.length === 0) {
                 e.preventDefault();
-                alert('⚠️ Foto kehadiran wajib diunggah.');
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Validasi',
+                    text: 'Foto kehadiran wajib diunggah.',
+                    confirmButtonColor: '#10b981',
+                    customClass: { popup: 'swal-popup-custom' }
+                });
                 return false;
             }
         }
@@ -627,14 +642,26 @@
             const alasan = document.getElementById('alasan_tidak_hadir').value.trim();
             if (!alasan || alasan.length < 10) {
                 e.preventDefault();
-                alert('⚠️ Alasan tidak hadir wajib diisi (minimal 10 karakter).');
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Validasi',
+                    text: 'Alasan tidak hadir wajib diisi (minimal 10 karakter).',
+                    confirmButtonColor: '#10b981',
+                    customClass: { popup: 'swal-popup-custom' }
+                });
                 return false;
             }
 
             const fileBukti = document.getElementById('file_bukti');
             if (!fileBukti.files || fileBukti.files.length === 0) {
                 e.preventDefault();
-                alert('⚠️ File bukti wajib diunggah.');
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Validasi',
+                    text: 'File bukti wajib diunggah.',
+                    confirmButtonColor: '#10b981',
+                    customClass: { popup: 'swal-popup-custom' }
+                });
                 return false;
             }
         }

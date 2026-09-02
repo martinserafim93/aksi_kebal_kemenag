@@ -124,6 +124,42 @@ LOCK TABLES `kegiatan` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `log_aktivitas`
+--
+-- Catatan: tidak ada FOREIGN KEY ke `pegawai` (aktor_nip) secara sengaja agar
+-- audit trail tetap utuh walau pegawai dihapus & mendukung aktor login gagal.
+
+DROP TABLE IF EXISTS `log_aktivitas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `log_aktivitas` (
+  `id_log` int NOT NULL AUTO_INCREMENT,
+  `aktor_nip` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `aktor_nama` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `aksi` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `modul` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `deskripsi` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ip_address` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `user_agent` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_log`),
+  KEY `idx_log_aktor` (`aktor_nip`),
+  KEY `idx_log_aksi` (`aksi`),
+  KEY `idx_log_modul` (`modul`),
+  KEY `idx_log_created` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `log_aktivitas`
+--
+
+LOCK TABLES `log_aktivitas` WRITE;
+/*!40000 ALTER TABLE `log_aktivitas` DISABLE KEYS */;
+/*!40000 ALTER TABLE `log_aktivitas` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `pegawai`
 --
 

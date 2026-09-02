@@ -627,3 +627,9 @@ body.auth-page {
         padding: 1.5rem 1.25rem;
     }
 }
+
+.swal2-toast-custom {
+    font-family: 'Figtree', sans-serif !important;
+    border-radius: var(--radius-md) !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+}

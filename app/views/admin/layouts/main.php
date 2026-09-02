@@ -124,6 +124,12 @@ $admin_role = adminData('nama_jabatan') ?? 'Administrator';
 
                 <div class="menu-label">Pengaturan</div>
                 <li>
+                    <a href="<?= url('admin/log-aktivitas') ?>" class="<?= $active_menu === 'log-aktivitas' || $active_menu === 'log_aktivitas' ? 'active' : '' ?>">
+                        <i class='bx bx-history'></i>
+                        <span>Log Aktivitas</span>
+                    </a>
+                </li>
+                <li>
                     <form action="<?= url('admin/logout') ?>" method="POST" class="form-logout" style="margin:0;">
                         <?= csrfField() ?>
                         <button type="submit">
@@ -276,7 +282,8 @@ $admin_role = adminData('nama_jabatan') ?? 'Administrator';
                 timerProgressBar: true,
                 showConfirmButton: false,
                 toast: true,
-                position: 'top-end'
+                position: 'top-end',
+                customClass: { popup: 'swal2-toast-custom' }
             });
         <?php endif; ?>
     });

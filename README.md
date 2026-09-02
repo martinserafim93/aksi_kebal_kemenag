@@ -31,6 +31,7 @@ Kami terus mengembangkan AKSI KEBAL untuk memberikan pengalaman terbaik!
 - ✅ **Optimalisasi Upload PDF**: Memperkecil rasio batas unggah dokumen (`< 2MB`) dengan validasi MIME pintar agar proses lebih mulus dan anti-*error* di semua *device*.
 - ✅ **Pencarian Pintar Absensi**: Kemudahan filter berdasarkan **Nama** atau **NIP** untuk Admin pada halaman *Detail Absensi*.
 - ✅ **Penyempurnaan UI Pagination**: *Layout pagination* tabel kini seragam, modern, dan sangat rapi.
+- ✅ **Konsistensi UI/UX Modern**: Standarisasi seluruh peringatan, dialog konfirmasi, dan validasi formulir (menggantikan *native alert*) menggunakan *SweetAlert2* yang dirancang selaras dengan identitas visual *The Modern Institution*.
 
 ---
 
