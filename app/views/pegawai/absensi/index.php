@@ -96,16 +96,22 @@
                 <div class="form-group">
                     <label for="foto" class="form-label">Upload Foto Kehadiran <span
                             style="color: var(--danger-color)">*</span></label>
-                    <input type="file" name="foto" id="foto" class="form-control" accept="image/jpeg, image/png"
-                        onchange="previewImage(event)">
-                    <small class="text-muted" style="display: block; margin-top: 0.5rem; font-size: 0.85rem;">Format:
-                        JPG/PNG, Maksimal: 5MB.</small>
-
-                    <div id="imagePreviewContainer" class="preview-container" style="display: none;">
-                        <span class="preview-label">Preview:</span>
-                        <img id="imagePreview" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
-                            alt="Preview" class="preview-image">
+                    <div class="custom-file-upload" id="foto-upload-wrapper">
+                        <input type="file" 
+                               name="foto" 
+                               id="foto" 
+                               accept="image/jpeg, image/png" 
+                               onchange="handleFotoUpload(event)">
+                        <label for="foto">
+                            <i class='bx bx-cloud-upload'></i>
+                            <span>Klik untuk upload foto atau drag & drop</span>
+                        </label>
                     </div>
+                    <div class="file-info" id="foto-info"></div>
+                    <small class="text-muted" style="display: block; margin-top: 0.5rem; font-size: 0.85rem;">Format:
+                        JPG/PNG, Maksimal: 2MB.</small>
+
+                    <div id="preview-foto" class="upload-preview"></div>
                 </div>
 
                 <div id="lokasi-status" class="lokasi-status-container">
@@ -176,26 +182,24 @@
                     <label for="file_bukti" class="form-label">
                         Upload Bukti Ketidakhadiran <span style="color: var(--danger-color)">*</span>
                     </label>
-                    <input type="file" name="file_bukti" id="file_bukti" class="form-control"
-                        accept="image/jpeg, image/png, application/pdf" onchange="previewFileBukti(event)">
+                    <div class="custom-file-upload" id="bukti-upload-wrapper">
+                        <input type="file" 
+                               name="file_bukti" 
+                               id="file_bukti" 
+                               accept="image/jpeg, image/png, application/pdf" 
+                               onchange="handleBuktiUpload(event)">
+                        <label for="file_bukti">
+                            <i class='bx bx-cloud-upload'></i>
+                            <span>Klik untuk upload bukti (foto/PDF)</span>
+                        </label>
+                    </div>
+                    <div class="file-info" id="bukti-info"></div>
                     <small class="text-muted" style="display: block; margin-top: 0.5rem; font-size: 0.85rem;">
                         Format: JPG/PNG/PDF, Maksimal: 2MB.<br>
                         Contoh: Surat Tugas, Surat Izin/Cuti, Surat Sakit, atau bukti lainnya.<br>
                     </small>
 
-                    <div id="buktiPreviewContainer" class="preview-container" style="display: none;">
-                        <span class="preview-label">Preview:</span>
-                        <img id="buktiImagePreview" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
-                            alt="Preview Bukti" class="preview-image">
-                    </div>
-
-                    <div id="buktiPdfInfo" class="preview-pdf" style="display: none; margin-top: 1rem;">
-                        <i class='bx bxs-file-pdf preview-pdf-icon'></i>
-                        <div>
-                            <p class="preview-pdf-name" id="buktiPdfName">-</p>
-                            <span class="preview-pdf-size" id="buktiPdfSize">-</span>
-                        </div>
-                    </div>
+                    <div id="preview-file-bukti" class="upload-preview"></div>
                 </div>
 
                 <div class="lokasi-alert lokasi-error" style="margin-bottom: 1rem;">
@@ -387,24 +391,51 @@
             });
     }
 
-    function previewImage(event) {
-        const input = event.target;
-        const container = document.getElementById('imagePreviewContainer');
-        const preview = document.getElementById('imagePreview');
-
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-
-            reader.onload = function (e) {
-                preview.src = e.target.result;
-                container.style.display = 'block';
-            }
-
-            reader.readAsDataURL(input.files[0]);
-        } else {
-            preview.src = '';
-            container.style.display = 'none';
+    function handleFotoUpload(event) {
+        const file = event.target.files[0];
+        const wrapper = document.getElementById('foto-upload-wrapper');
+        const fileInfo = document.getElementById('foto-info');
+        const preview = document.getElementById('preview-foto');
+        
+        if (!file) return;
+        
+        // Validasi ukuran file (max 2MB)
+        if (file.size > 2 * 1024 * 1024) {
+            Swal.fire({
+                icon: 'error',
+                title: 'File Terlalu Besar',
+                text: 'Ukuran file maksimal 2MB. File Anda: ' + (file.size / 1024 / 1024).toFixed(2) + 'MB',
+                confirmButtonColor: '#10b981'
+            });
+            event.target.value = '';
+            return;
         }
+        
+        // Validasi tipe file
+        const allowedTypes = ['image/jpeg', 'image/png'];
+        if (!allowedTypes.includes(file.type)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Format File Tidak Didukung',
+                text: 'Hanya file JPG dan PNG yang diperbolehkan',
+                confirmButtonColor: '#10b981'
+            });
+            event.target.value = '';
+            return;
+        }
+        
+        // Update UI
+        wrapper.classList.add('has-file');
+        fileInfo.innerHTML = '<strong>File dipilih:</strong> ' + file.name + ' (' + (file.size / 1024).toFixed(2) + ' KB)';
+        fileInfo.classList.add('active');
+        
+        // Preview image
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.innerHTML = '<img src="' + e.target.result + '" alt="Preview Foto"><p style="margin-top: 0.5rem; font-size: 0.875rem; color: #6b7280;">Preview foto kehadiran</p>';
+            preview.classList.add('active');
+        };
+        reader.readAsDataURL(file);
     }
 
     document.getElementById('status_kehadiran').addEventListener('change', function () {
@@ -450,38 +481,55 @@
         }, 50);
     });
 
-    function previewFileBukti(event) {
-        const input = event.target;
-        const file = input.files[0];
-
-        const imgContainer = document.getElementById('buktiPreviewContainer');
-        const imgPreview = document.getElementById('buktiImagePreview');
-        const pdfContainer = document.getElementById('buktiPdfInfo');
-        const pdfName = document.getElementById('buktiPdfName');
-        const pdfSize = document.getElementById('buktiPdfSize');
-
-        imgContainer.style.display = 'none';
-        pdfContainer.style.display = 'none';
-
+    function handleBuktiUpload(event) {
+        const file = event.target.files[0];
+        const wrapper = document.getElementById('bukti-upload-wrapper');
+        const fileInfo = document.getElementById('bukti-info');
+        const preview = document.getElementById('preview-file-bukti');
+        
         if (!file) return;
-
+        
+        // Validasi ukuran file (max 2MB)
         if (file.size > 2 * 1024 * 1024) {
-            alert('⚠️ Ukuran file maksimal 2MB. File Anda: ' + (file.size / 1024 / 1024).toFixed(2) + ' MB.\n\nTips: Kompres file PDF Anda di ilovepdf.com');
-            input.value = '';
+            Swal.fire({
+                icon: 'error',
+                title: 'File Terlalu Besar',
+                text: 'Ukuran file maksimal 2MB. File Anda: ' + (file.size / 1024 / 1024).toFixed(2) + 'MB',
+                confirmButtonColor: '#10b981'
+            });
+            event.target.value = '';
             return;
         }
-
-        if (file.type === 'application/pdf') {
-            pdfName.textContent = file.name;
-            pdfSize.textContent = (file.size / 1024).toFixed(1) + ' KB';
-            pdfContainer.style.display = 'flex';
-        } else if (file.type.startsWith('image/')) {
+        
+        // Validasi tipe file
+        const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+        if (!allowedTypes.includes(file.type)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Format File Tidak Didukung',
+                text: 'Hanya file JPG, PNG, dan PDF yang diperbolehkan',
+                confirmButtonColor: '#10b981'
+            });
+            event.target.value = '';
+            return;
+        }
+        
+        // Update UI
+        wrapper.classList.add('has-file');
+        fileInfo.innerHTML = '<strong>File dipilih:</strong> ' + file.name + ' (' + (file.size / 1024).toFixed(2) + ' KB)';
+        fileInfo.classList.add('active');
+        
+        // Preview
+        if (file.type.startsWith('image/')) {
             const reader = new FileReader();
-            reader.onload = function (e) {
-                imgPreview.src = e.target.result;
-                imgContainer.style.display = 'block';
+            reader.onload = function(e) {
+                preview.innerHTML = '<img src="' + e.target.result + '" alt="Preview Bukti"><p style="margin-top: 0.5rem; font-size: 0.875rem; color: #6b7280;">Preview bukti ketidakhadiran</p>';
+                preview.classList.add('active');
             };
             reader.readAsDataURL(file);
+        } else if (file.type === 'application/pdf') {
+            preview.innerHTML = '<div style="text-align: center; padding: 2rem;"><i class="bx bxs-file-pdf" style="font-size: 3rem; color: #ef4444;"></i><p style="margin-top: 0.5rem; font-weight: 500;">File PDF: ' + file.name + '</p></div>';
+            preview.classList.add('active');
         }
     }
 

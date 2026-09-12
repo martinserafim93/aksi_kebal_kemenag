@@ -1,6 +1,6 @@
 <div align="center">
   <img src="public/assets/img/kemenag-new-2025.png" alt="Logo Kemenag" width="150" />
-  <h1>✨ AKSI KEBAL v1.2.0 ✨</h1>
+  <h1>✨ AKSI KEBAL v1.2.1 ✨</h1>
   <p><strong>A</strong>bsensi <strong>K</strong>egiatan <strong>S</strong>erentak <strong>K</strong>ementerian <strong>B</strong>eramal dan <strong>A</strong>ndal</p>
   <p><i>Sistem Informasi Absensi Kegiatan Pegawai Kementerian Agama yang Modern, Cepat, dan Andal</i></p>
 
@@ -10,7 +10,7 @@
     <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="Vanilla JS" />
     <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5" />
     <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3" />
-    <img src="https://img.shields.io/badge/Version-1.2.0-success?style=for-the-badge" alt="Version 1.2.0" />
+    <img src="https://img.shields.io/badge/Version-1.2.1-success?style=for-the-badge" alt="Version 1.2.1" />
   </p>
 </div>
 
@@ -24,13 +24,14 @@ Sistem ini menghadirkan antarmuka admin yang elegan serta alur absensi pegawai b
 
 ---
 
-## 🆕 Pembaruan Terbaru (Versi 1.2.0)
+## 🆕 Pembaruan Terbaru (Versi 1.2.1)
 Kami terus mengembangkan AKSI KEBAL untuk memberikan pengalaman terbaik!
 - ✅ **Penyesuaian Timezone Presisi**: Tidak ada lagi perbedaan waktu saat absensi, sistem otomatis menyelaraskan waktu ke zona WITA (`Asia/Makassar`) pada *server hosting*.
 - ✅ **Fitur "Alasan Tidak Hadir"**: Kini pegawai dapat melampirkan alasan spesifik saat berstatus tidak hadir, lengkap dengan fitur pratinjau *(readonly)* di sisi admin.
 - ✅ **Optimalisasi Upload PDF**: Memperkecil rasio batas unggah dokumen (`< 2MB`) dengan validasi MIME pintar agar proses lebih mulus dan anti-*error* di semua *device*.
 - ✅ **Pencarian Pintar Absensi**: Kemudahan filter berdasarkan **Nama** atau **NIP** untuk Admin pada halaman *Detail Absensi*.
 - ✅ **Penyempurnaan UI Pagination**: *Layout pagination* tabel kini seragam, modern, dan sangat rapi.
+- ✅ **Standarisasi UI Unggah Berkas**: Tampilan antarmuka unggah foto dan dokumen kini lebih modern dengan gaya *The Modern Institution*, lengkap dengan pratinjau *file* interaktif dan batas validasi ukuran secara langsung (Klien/Browser).
 - ✅ **Konsistensi UI/UX Modern**: Standarisasi seluruh peringatan, dialog konfirmasi, dan validasi formulir (menggantikan *native alert*) menggunakan *SweetAlert2* yang dirancang selaras dengan identitas visual *The Modern Institution*.
 
 ---

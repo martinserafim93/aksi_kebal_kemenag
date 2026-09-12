@@ -107,3 +107,14 @@ desktop.ini
 # Session files (PHP)
 sess_*
 session_*
+
+# Graphify
+.graphify_analysis.json
+.graphify_ast.json
+.graphify_detect.json
+.graphify_extract.json
+.graphify_old.json
+.graphify_query.py
+.graphifyignore
+graphify-out/
+.agents/skills/graphify/
