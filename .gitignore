@@ -69,3 +69,41 @@ prompt.txt
 # IDE
 .vscode/
 .idea/
+
+# Log files (unrelated to project)
+*.log
+!storage/logs/.gitkeep
+!storage/logs/audit-*.log  # Keep application audit logs
+
+# Server logs (Apache/XAMPP)
+logs/
+apache/logs/
+xampp/logs/
+php_error.log
+
+# Development environment logs
+error_log
+access_log
+stderr.log
+stdout.log
+
+# Cache and temp files
+.cache/
+.temp/
+tmp/
+*.tmp
+*.temp
+
+# OS specific
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Backup files
+*.bak
+*.backup
+~*
+
+# Session files (PHP)
+sess_*
+session_*
