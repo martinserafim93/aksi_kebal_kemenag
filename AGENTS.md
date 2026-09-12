@@ -25,6 +25,8 @@ throughout: code identifiers, DB columns, and UI.
 - DB creds live in `config/database.php` (defaults `root` / empty password).
 - `config/app.php` `APP_ENV`: `development` shows errors; `production` hides them and logs
   to `storage/logs/error.log`.
+- Default admin login (from seed): NIP `199001012020011001` / password `admin123`.
+  **Change immediately in production.**
 
 ## Routing (`core/App.php`) — easy to get wrong
 - URL shape `/{controller}/{method}/{param...}` → `{Controller}Controller::{method}($param...)`.
