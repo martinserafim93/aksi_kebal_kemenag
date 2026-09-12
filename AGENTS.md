@@ -110,3 +110,6 @@ throughout: code identifiers, DB columns, and UI.
 - Logging is centralized via `$this->logAktivitas('aksi', 'modul', 'deskripsi')` in controllers.
 - The `LogAktivitasModel` automatically handles reading (newest first), searching, filtering, paginating, and an auto-cleanup process (logs >30 days old are probabilistically deleted).
 - Logging is always best-effort (`try/catch`); it will never block the main request if the file system is inaccessible.
+
+## Development Philosophy
+- **Ponytail Rule**: Think like the laziest senior developer. Before writing new code: (1) Check if it's really needed (YAGNI). (2) Reuse existing functions/helpers in the codebase. (3) Use native PHP features. (4) Write the absolute minimum code required to make it work. Tracing and reading the flow is required, but keep solutions minimal and elegant.
