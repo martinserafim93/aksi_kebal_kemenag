@@ -58,6 +58,21 @@
             </div>
 
             <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                <!-- === Toggle Lokasi === -->
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label class="form-label" style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer;">
+                        <input type="checkbox" id="toggle_lokasi" name="pakai_lokasi" value="1"
+                               <?= !isset($kegiatan['pakai_lokasi']) || !empty($kegiatan['pakai_lokasi']) ? 'checked' : '' ?>
+                               style="width: 1.1rem; height: 1.1rem; accent-color: var(--primary);">
+                        <span>Kegiatan ini <strong>memakai lokasi fisik</strong> (luring)</span>
+                    </label>
+                    <p style="margin: 0.35rem 0 0 1.85rem; color: var(--text-muted); font-size: 0.8rem;">
+                        Nonaktifkan jika kegiatan dilaksanakan daring (Zoom Meeting, Google Meet, dll.)
+                        — koordinat GPS tidak diperlukan.
+                    </p>
+                </div>
+
+                <div id="blok-lokasi">
                 <div class="form-group">
                     <label for="lokasi_kegiatan" class="form-label">Lokasi</label>
                     <input type="text" id="lokasi_kegiatan" name="lokasi_kegiatan" class="form-control" value="<?= e($kegiatan['lokasi_kegiatan']) ?>" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;">
@@ -118,6 +133,7 @@
                     </div>
                 </div>
                 <!-- === END: Pilih Lokasi di Peta === -->
+                </div>
                 
                 <div class="form-group">
                     <label for="deskripsi_kegiatan" class="form-label">Deskripsi</label>
@@ -138,6 +154,25 @@
 ob_start();
 ?>
 <script>
+// === Toggle Lokasi ===
+const toggleLokasi = document.getElementById('toggle_lokasi');
+const blokLokasi   = document.getElementById('blok-lokasi');
+
+function applyToggleLokasi() {
+    if (toggleLokasi.checked) {
+        blokLokasi.style.display = '';
+    } else {
+        blokLokasi.style.display = 'none';
+        document.getElementById('latitude_kegiatan').value  = '';
+        document.getElementById('longitude_kegiatan').value = '';
+        document.getElementById('lat_display').value = '';
+        document.getElementById('lng_display').value = '';
+    }
+}
+
+toggleLokasi.addEventListener('change', applyToggleLokasi);
+applyToggleLokasi(); // jalankan sekali saat load
+
 // =========================================================
 // SCRIPT: Peta Interaktif untuk Pilih Lokasi Kegiatan
 // =========================================================

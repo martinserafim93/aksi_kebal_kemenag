@@ -1087,6 +1087,19 @@ class AdminController extends Controller
                 'radius_meter' => input('radius_meter') ?: 50
             ];
 
+            // Checkbox yang tidak dicentang tidak mengirimkan key sama sekali ke $_POST.
+            // Karena itu kita periksa dengan isset(), bukan input() yang mengembalikan null/empty
+            // untuk keduanya (key tidak ada maupun value kosong).
+            $data['pakai_lokasi'] = isset($_POST['pakai_lokasi']) ? 1 : 0;
+            
+            // Jika tidak pakai lokasi, kosongkan koordinat agar tidak tersimpan
+            if (!$data['pakai_lokasi']) {
+                $data['latitude_kegiatan']  = null;
+                $data['longitude_kegiatan'] = null;
+                $data['radius_meter']       = null;
+                $data['lokasi_kegiatan']    = null;
+            }
+
             if (empty($data['nama_kegiatan']) || empty($data['jenis_kegiatan']) || empty($data['tanggal_kegiatan']) || empty($data['waktu_mulai']) || empty($data['waktu_selesai'])) {
                 setFlash('error', 'Semua kolom wajib (*) harus diisi.');
             } else {
@@ -1148,6 +1161,15 @@ class AdminController extends Controller
                 'longitude_kegiatan' => input('longitude_kegiatan'),
                 'radius_meter' => input('radius_meter') ?: 50
             ];
+
+            $data['pakai_lokasi'] = isset($_POST['pakai_lokasi']) ? 1 : 0;
+            
+            if (!$data['pakai_lokasi']) {
+                $data['latitude_kegiatan']  = null;
+                $data['longitude_kegiatan'] = null;
+                $data['radius_meter']       = null;
+                $data['lokasi_kegiatan']    = null;
+            }
 
             if (empty($data['nama_kegiatan']) || empty($data['jenis_kegiatan']) || empty($data['tanggal_kegiatan']) || empty($data['waktu_mulai']) || empty($data['waktu_selesai'])) {
                 setFlash('error', 'Semua kolom wajib (*) harus diisi.');

@@ -161,8 +161,8 @@ class KegiatanModel
     public function create(array $data): bool
     {
         $kode = $this->generateKode();
-        $query = "INSERT INTO kegiatan (kode_kegiatan, nama_kegiatan, jenis_kegiatan, tanggal_kegiatan, waktu_mulai, waktu_selesai, lokasi_kegiatan, deskripsi_kegiatan, latitude_kegiatan, longitude_kegiatan, radius_meter, status_kegiatan) 
-                  VALUES (:kode, :nama, :jenis, :tanggal, :waktu_mulai, :waktu_selesai, :lokasi, :deskripsi, :latitude, :longitude, :radius, 'Draft')";
+        $query = "INSERT INTO kegiatan (kode_kegiatan, nama_kegiatan, jenis_kegiatan, tanggal_kegiatan, waktu_mulai, waktu_selesai, lokasi_kegiatan, deskripsi_kegiatan, latitude_kegiatan, longitude_kegiatan, radius_meter, pakai_lokasi, status_kegiatan) 
+                  VALUES (:kode, :nama, :jenis, :tanggal, :waktu_mulai, :waktu_selesai, :lokasi, :deskripsi, :latitude, :longitude, :radius, :pakai_lokasi, 'Draft')";
         
         $this->db->query($query);
         $this->db->bind(':kode', $kode);
@@ -176,6 +176,7 @@ class KegiatanModel
         $this->db->bind(':latitude', !empty($data['latitude_kegiatan']) ? $data['latitude_kegiatan'] : null);
         $this->db->bind(':longitude', !empty($data['longitude_kegiatan']) ? $data['longitude_kegiatan'] : null);
         $this->db->bind(':radius', !empty($data['radius_meter']) ? (int)$data['radius_meter'] : 50);
+        $this->db->bind(':pakai_lokasi', isset($data['pakai_lokasi']) ? (int)$data['pakai_lokasi'] : 1, PDO::PARAM_INT);
         
         return $this->db->execute();
     }
@@ -192,7 +193,8 @@ class KegiatanModel
                     deskripsi_kegiatan = :deskripsi,
                     latitude_kegiatan = :latitude,
                     longitude_kegiatan = :longitude,
-                    radius_meter = :radius
+                    radius_meter = :radius,
+                    pakai_lokasi = :pakai_lokasi
                   WHERE id_kegiatan = :id";
         
         $this->db->query($query);
@@ -206,6 +208,7 @@ class KegiatanModel
         $this->db->bind(':latitude', !empty($data['latitude_kegiatan']) ? $data['latitude_kegiatan'] : null);
         $this->db->bind(':longitude', !empty($data['longitude_kegiatan']) ? $data['longitude_kegiatan'] : null);
         $this->db->bind(':radius', !empty($data['radius_meter']) ? (int)$data['radius_meter'] : 50);
+        $this->db->bind(':pakai_lokasi', isset($data['pakai_lokasi']) ? (int)$data['pakai_lokasi'] : 1, PDO::PARAM_INT);
         $this->db->bind(':id', $id, PDO::PARAM_INT);
         
         return $this->db->execute();
