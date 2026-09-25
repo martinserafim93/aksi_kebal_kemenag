@@ -105,7 +105,7 @@ class PegawaiModel
     /**
      * Cek apakah NIP sudah ada (kecuali untuk NIP tertentu saat edit)
      */
-    public function isNipExists(string $nip, string $excludeNip = null): bool
+    public function isNipExists(string $nip, ?string $excludeNip = null): bool
     {
         $query = "SELECT nip FROM pegawai WHERE nip = :nip";
         if ($excludeNip) {

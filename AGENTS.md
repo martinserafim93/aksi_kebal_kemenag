@@ -65,9 +65,8 @@ throughout: code identifiers, DB columns, and UI.
   pass `false` as the 2nd arg (see `AdminController::kegiatan_resolve_lokasi`). Emit tokens in
   forms with `csrfField()`.
 - Escape all output with `e()`. Hash passwords with `password_hash(..., PASSWORD_DEFAULT)`.
-- Uploads (`AbsensiController::prosesFileBukti` / `scanFileSecurity`) validate extension +
-  real MIME (finfo) + magic bytes + dangerous-content regex + size, then recompress images to
-  JPEG via GD. Reuse this pipeline; never trust the client-supplied extension.
+- Uploads (`AbsensiController::prosesFileBukti` / `scanFileSecurity`) validate extension + real MIME (finfo) + magic bytes + dangerous-content regex + size, then recompress images to JPEG via GD. Reuse this pipeline; never trust the client-supplied extension.
+- **Client-Side Compression**: Untuk menghindari limit *upload* dari *shared hosting* (misal batas 10MB InfinityFree), form *upload* foto dari pegawai **wajib** melakukan *client-side compression* menggunakan HTML5 Canvas (seperti pada `handleFotoUpload`). Izinkan file mentah hingga 25MB di sisi JS, kompres ke JPEG (max 1920px, quality 0.7), ganti objek `File` via `DataTransfer`, baru kemudian dikirim ke server. PDF tidak dikompres lokal (tetap batas 2MB).
 
 ## Domain model (DB)
 - Tables (Indonesian columns): `pegawai` (PK `nip`, a string), `jabatan`, `tim_kerja`,
