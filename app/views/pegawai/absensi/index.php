@@ -114,6 +114,7 @@
                     <div id="preview-foto" class="upload-preview"></div>
                 </div>
 
+                <?php if (!empty($kegiatan['pakai_lokasi'])): ?>
                 <div id="lokasi-status" class="lokasi-status-container">
                     <label class="lokasi-status-title">
                         <i class='bx bx-map-pin'></i> Verifikasi Lokasi
@@ -161,6 +162,7 @@
                         </div>
                     </div>
                 </div>
+                <?php endif; ?>
             </div>
 
             <!-- === SECTION: Form Tidak Hadir === -->
@@ -454,7 +456,8 @@
 
             if (status === 'Hadir') {
                 sectionHadir.style.display = 'block';
-                document.getElementById('lokasi-status').style.display = 'block';
+                const ls = document.getElementById('lokasi-status');
+                if (ls) ls.style.display = 'block';
 
                 // Allow reflow
                 void sectionHadir.offsetWidth;
@@ -559,15 +562,21 @@
     }
 
     function hideAllStatus() {
-        elLoading.style.display = 'none';
-        elOk.style.display = 'none';
-        elFail.style.display = 'none';
-        elError.style.display = 'none';
+        if(elLoading) elLoading.style.display = 'none';
+        if(elOk) elOk.style.display = 'none';
+        if(elFail) elFail.style.display = 'none';
+        if(elError) elError.style.display = 'none';
     }
 
+    <?php if (empty($kegiatan['pakai_lokasi'])): ?>
+    function detectLocation() {
+        // noop — kegiatan daring, skip GPS
+    }
+    <?php else: ?>
     function detectLocation() {
         if (!HAS_LOCATION) {
-            document.getElementById('lokasi-status').style.display = 'none';
+            const ls = document.getElementById('lokasi-status');
+            if (ls) ls.style.display = 'none';
             return;
         }
 
@@ -628,6 +637,7 @@
             { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
         );
     }
+    <?php endif; ?>
 
     document.querySelector('form').addEventListener('submit', function (e) {
         const nip = document.getElementById('nip').value;

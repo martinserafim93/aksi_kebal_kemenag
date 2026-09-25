@@ -81,7 +81,15 @@
                             <td style="padding: 1.25rem 1rem; vertical-align: middle;">
                                 <div style="font-weight: 500;"><?= date('d M Y', strtotime($k['tanggal_kegiatan'])) ?></div>
                                 <small style="color: var(--text-muted); display: flex; align-items: center; gap: 0.25rem; margin-top: 0.25rem;"><i class='bx bx-time-five'></i> <?= date('H:i', strtotime($k['waktu_mulai'])) ?> - <?= date('H:i', strtotime($k['waktu_selesai'])) ?></small>
-                                <small style="color: var(--text-muted); display: flex; align-items: center; gap: 0.25rem; margin-top: 0.25rem;"><i class='bx bx-map'></i> <?= e($k['lokasi_kegiatan']) ?></small>
+                                <?php if (empty($k['pakai_lokasi'])): ?>
+                                    <small style="display: flex; align-items: center; gap: 0.25rem; margin-top: 0.25rem; background: #e0f2fe; color: #0284c7; padding: 0.25rem 0.5rem; border-radius: 0.25rem; width: fit-content; font-weight: 500;">
+                                        <i class='bx bx-video'></i> Daring (Online)
+                                    </small>
+                                <?php else: ?>
+                                    <small style="color: var(--text-muted); display: flex; align-items: center; gap: 0.25rem; margin-top: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;" title="<?= e($k['lokasi_kegiatan']) ?>">
+                                        <i class='bx bx-map'></i> <?= e($k['lokasi_kegiatan']) ?: '-' ?>
+                                    </small>
+                                <?php endif; ?>
                             </td>
                             <td style="padding: 1.25rem 1rem; vertical-align: middle;">
                                 <?php if ($k['status_kegiatan'] === 'Published'): ?>

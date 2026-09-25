@@ -103,6 +103,7 @@ CREATE TABLE `kegiatan` (
   `latitude_kegiatan` decimal(10,8) DEFAULT NULL,
   `longitude_kegiatan` decimal(11,8) DEFAULT NULL,
   `radius_meter` int DEFAULT '50',
+  `pakai_lokasi` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1 = luring (ada koordinat), 0 = daring (Zoom, dll.)',
   `status_kegiatan` enum('Draft','Published') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Draft',
   `qr_code` text COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,

@@ -96,7 +96,19 @@
                                 <div style="font-weight: 500;"><?= date('d M Y', strtotime($k['tanggal_kegiatan'])) ?></div>
                                 <small style="color: var(--text-muted); display: flex; align-items: center; gap: 0.25rem; margin-top: 0.25rem;"><i class='bx bx-time-five'></i> <?= date('H:i', strtotime($k['waktu_mulai'])) ?> - <?= date('H:i', strtotime($k['waktu_selesai'])) ?></small>
                             </td>
-                            <td style="padding: 1.25rem 1rem; vertical-align: middle;"><div style="max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="<?= e($k['lokasi_kegiatan']) ?>"><i class='bx bx-map'></i> <?= e($k['lokasi_kegiatan']) ?></div></td>
+                            <td style="padding: 1.25rem 1rem; vertical-align: middle;">
+                                <?php if (empty($k['pakai_lokasi'])): ?>
+                                    <div style="max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="Kegiatan Daring (Online)">
+                                        <span style="background: #e0f2fe; color: #0284c7; padding: 0.35rem 0.6rem; border-radius: 0.25rem; font-size: 0.85rem; font-weight: 500;">
+                                            <i class='bx bx-video'></i> Daring
+                                        </span>
+                                    </div>
+                                <?php else: ?>
+                                    <div style="max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="<?= e($k['lokasi_kegiatan']) ?>">
+                                        <i class='bx bx-map'></i> <?= e($k['lokasi_kegiatan']) ?: '-' ?>
+                                    </div>
+                                <?php endif; ?>
+                            </td>
                             <td style="padding: 1.25rem 1rem; vertical-align: middle;">
                                 <?php if ($k['status_kegiatan'] === 'Published'): ?>
                                     <span class="badge" style="background: #dcfce7; color: #166534; padding: 0.35rem 0.6rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">Published</span>
