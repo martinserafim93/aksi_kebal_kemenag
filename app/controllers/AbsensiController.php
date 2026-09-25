@@ -201,8 +201,8 @@ class AbsensiController extends Controller
                     return;
                 }
 
-                if ($file_size > 5 * 1024 * 1024) {
-                    setFlash('error', 'Ukuran foto maksimal 5MB.');
+                if ($file_size > 10 * 1024 * 1024) {
+                    setFlash('error', 'Ukuran foto maksimal 10MB.');
                     $this->redirect('absensi?kegiatan=' . $redirect_kegiatan);
                     return;
                 }
@@ -284,8 +284,24 @@ class AbsensiController extends Controller
                         }
                     }
 
-                    // Simpan sbg JPEG dengan quality 75 agar ukuran < 1MB
-                    if (!imagejpeg($source_image, $target_file, 75)) {
+                    // Adaptive compression (Target < 1MB)
+                    $quality = 90;
+                    $target_size = 1000000; // 1 MB
+                    $tmp_compressed = $target_file . '.tmp';
+                
+                    do {
+                        imagejpeg($source_image, $tmp_compressed, $quality);
+                        $current_size = filesize($tmp_compressed);
+                        
+                        if ($current_size > $target_size && $quality > 30) {
+                            $quality -= 10;
+                        } else {
+                            break;
+                        }
+                    } while ($quality >= 30);
+                    
+                    if (!rename($tmp_compressed, $target_file)) {
+                        @unlink($tmp_compressed);
                         throw new Exception('Gagal menyimpan file gambar hasil kompresi.');
                     }
                     

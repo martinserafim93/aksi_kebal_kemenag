@@ -97,11 +97,8 @@
                     <label for="foto" class="form-label">Upload Foto Kehadiran <span
                             style="color: var(--danger-color)">*</span></label>
                     <div class="custom-file-upload" id="foto-upload-wrapper">
-                        <input type="file" 
-                               name="foto" 
-                               id="foto" 
-                               accept="image/jpeg, image/png" 
-                               onchange="handleFotoUpload(event)">
+                        <input type="file" name="foto" id="foto" accept="image/jpeg, image/png"
+                            onchange="handleFotoUpload(event)">
                         <label for="foto">
                             <i class='bx bx-cloud-upload'></i>
                             <span>Klik untuk upload foto atau drag & drop</span>
@@ -109,59 +106,59 @@
                     </div>
                     <div class="file-info" id="foto-info"></div>
                     <small class="text-muted" style="display: block; margin-top: 0.5rem; font-size: 0.85rem;">Format:
-                        JPG/PNG, Maksimal: 2MB.</small>
+                        JPG/PNG, Maksimal: 10MB</small>
 
                     <div id="preview-foto" class="upload-preview"></div>
                 </div>
 
                 <?php if (!empty($kegiatan['pakai_lokasi'])): ?>
-                <div id="lokasi-status" class="lokasi-status-container">
-                    <label class="lokasi-status-title">
-                        <i class='bx bx-map-pin'></i> Verifikasi Lokasi
-                    </label>
+                    <div id="lokasi-status" class="lokasi-status-container">
+                        <label class="lokasi-status-title">
+                            <i class='bx bx-map-pin'></i> Verifikasi Lokasi
+                        </label>
 
-                    <div id="lokasi-loading" class="lokasi-alert lokasi-loading">
-                        <div class="lokasi-alert-header">
-                            <div class="abs-spinner"></div>
-                            <span>Mendeteksi lokasi Anda...</span>
+                        <div id="lokasi-loading" class="lokasi-alert lokasi-loading">
+                            <div class="lokasi-alert-header">
+                                <div class="abs-spinner"></div>
+                                <span>Mendeteksi lokasi Anda...</span>
+                            </div>
+                        </div>
+
+                        <div id="lokasi-ok" class="lokasi-alert lokasi-ok" style="display: none;">
+                            <div class="lokasi-alert-header">
+                                <i class='bx bxs-check-circle' style="font-size: 1.25rem;"></i>
+                                <span>Lokasi Valid</span>
+                            </div>
+                            <p id="lokasi-ok-detail" class="lokasi-alert-desc"></p>
+                        </div>
+
+                        <div id="lokasi-fail" class="lokasi-alert lokasi-fail" style="display: none;">
+                            <div class="lokasi-alert-header">
+                                <i class='bx bxs-x-circle' style="font-size: 1.25rem;"></i>
+                                <span>Lokasi Tidak Sesuai!</span>
+                            </div>
+                            <p id="lokasi-fail-detail" class="lokasi-alert-desc"></p>
+                            <div class="lokasi-alert-action">
+                                <button type="button" id="btn-retry-lokasi" class="btn-alert btn-retry-fail"
+                                    onclick="detectLocation()">
+                                    <i class='bx bx-refresh'></i> Coba Deteksi Ulang
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="lokasi-error" class="lokasi-alert lokasi-error" style="display: none;">
+                            <div class="lokasi-alert-header">
+                                <i class='bx bxs-error' style="font-size: 1.25rem;"></i>
+                                <span>Akses Lokasi Diperlukan</span>
+                            </div>
+                            <p id="lokasi-error-detail" class="lokasi-alert-desc"></p>
+                            <div class="lokasi-alert-action">
+                                <button type="button" class="btn-alert btn-retry-error" onclick="detectLocation()">
+                                    <i class='bx bx-refresh'></i> Coba Lagi
+                                </button>
+                            </div>
                         </div>
                     </div>
-
-                    <div id="lokasi-ok" class="lokasi-alert lokasi-ok" style="display: none;">
-                        <div class="lokasi-alert-header">
-                            <i class='bx bxs-check-circle' style="font-size: 1.25rem;"></i>
-                            <span>Lokasi Valid</span>
-                        </div>
-                        <p id="lokasi-ok-detail" class="lokasi-alert-desc"></p>
-                    </div>
-
-                    <div id="lokasi-fail" class="lokasi-alert lokasi-fail" style="display: none;">
-                        <div class="lokasi-alert-header">
-                            <i class='bx bxs-x-circle' style="font-size: 1.25rem;"></i>
-                            <span>Lokasi Tidak Sesuai!</span>
-                        </div>
-                        <p id="lokasi-fail-detail" class="lokasi-alert-desc"></p>
-                        <div class="lokasi-alert-action">
-                            <button type="button" id="btn-retry-lokasi" class="btn-alert btn-retry-fail"
-                                onclick="detectLocation()">
-                                <i class='bx bx-refresh'></i> Coba Deteksi Ulang
-                            </button>
-                        </div>
-                    </div>
-
-                    <div id="lokasi-error" class="lokasi-alert lokasi-error" style="display: none;">
-                        <div class="lokasi-alert-header">
-                            <i class='bx bxs-error' style="font-size: 1.25rem;"></i>
-                            <span>Akses Lokasi Diperlukan</span>
-                        </div>
-                        <p id="lokasi-error-detail" class="lokasi-alert-desc"></p>
-                        <div class="lokasi-alert-action">
-                            <button type="button" class="btn-alert btn-retry-error" onclick="detectLocation()">
-                                <i class='bx bx-refresh'></i> Coba Lagi
-                            </button>
-                        </div>
-                    </div>
-                </div>
                 <?php endif; ?>
             </div>
 
@@ -185,11 +182,8 @@
                         Upload Bukti Ketidakhadiran <span style="color: var(--danger-color)">*</span>
                     </label>
                     <div class="custom-file-upload" id="bukti-upload-wrapper">
-                        <input type="file" 
-                               name="file_bukti" 
-                               id="file_bukti" 
-                               accept="image/jpeg, image/png, application/pdf" 
-                               onchange="handleBuktiUpload(event)">
+                        <input type="file" name="file_bukti" id="file_bukti"
+                            accept="image/jpeg, image/png, application/pdf" onchange="handleBuktiUpload(event)">
                         <label for="file_bukti">
                             <i class='bx bx-cloud-upload'></i>
                             <span>Klik untuk upload bukti (foto/PDF)</span>
@@ -398,21 +392,23 @@
         const wrapper = document.getElementById('foto-upload-wrapper');
         const fileInfo = document.getElementById('foto-info');
         const preview = document.getElementById('preview-foto');
-        
+
         if (!file) return;
-        
-        // Validasi ukuran file (max 2MB)
-        if (file.size > 2 * 1024 * 1024) {
+
+        // Validasi ukuran file mentah dari kamera HP sebelum dikompres
+        // Kita naikkan ke 25MB agar kamera flagship (Samsung S23/iPhone 15) tidak langsung ditolak.
+        // Berapapun ukurannya (asal <25MB), akan kita paksa jadi <1MB sebelum dikirim ke server.
+        if (file.size > 25 * 1024 * 1024) {
             Swal.fire({
                 icon: 'error',
                 title: 'File Terlalu Besar',
-                text: 'Ukuran file maksimal 2MB. File Anda: ' + (file.size / 1024 / 1024).toFixed(2) + 'MB',
+                text: 'Ukuran file asli dari kamera terlalu besar (Maksimal 25MB). File Anda: ' + (file.size / 1024 / 1024).toFixed(2) + 'MB. Silakan turunkan resolusi kamera Anda.',
                 confirmButtonColor: '#10b981'
             });
             event.target.value = '';
             return;
         }
-        
+
         // Validasi tipe file
         const allowedTypes = ['image/jpeg', 'image/png'];
         if (!allowedTypes.includes(file.type)) {
@@ -425,17 +421,65 @@
             event.target.value = '';
             return;
         }
-        
-        // Update UI
+
+        // Update UI untuk loading state
         wrapper.classList.add('has-file');
-        fileInfo.innerHTML = '<strong>File dipilih:</strong> ' + file.name + ' (' + (file.size / 1024).toFixed(2) + ' KB)';
+        fileInfo.innerHTML = '<strong>Memproses foto...</strong> <div class="abs-spinner" style="width:12px;height:12px;display:inline-block;border-width:2px;border-top-color:var(--primary-color);"></div>';
         fileInfo.classList.add('active');
-        
-        // Preview image
+
+        // Kompresi di sisi Client (HTML5 Canvas)
         const reader = new FileReader();
-        reader.onload = function(e) {
-            preview.innerHTML = '<img src="' + e.target.result + '" alt="Preview Foto"><p style="margin-top: 0.5rem; font-size: 0.875rem; color: #6b7280;">Preview foto kehadiran</p>';
-            preview.classList.add('active');
+        reader.onload = function (e) {
+            const img = new Image();
+            img.onload = function () {
+                // Resize maksimum lebar/tinggi 1920px
+                let width = img.width;
+                let height = img.height;
+                const maxDim = 1920;
+
+                if (width > maxDim || height > maxDim) {
+                    if (width > height) {
+                        height = Math.round((height * maxDim) / width);
+                        width = maxDim;
+                    } else {
+                        width = Math.round((width * maxDim) / height);
+                        height = maxDim;
+                    }
+                }
+
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                
+                // Beri latar putih untuk PNG transparan sebelum di-convert ke JPG
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, width, height);
+                ctx.drawImage(img, 0, 0, width, height);
+
+                // Kompres jadi JPEG dengan quality 70%
+                canvas.toBlob(function (blob) {
+                    // Buat file virtual baru
+                    const newFileName = file.name.replace(/\.png$/i, '.jpg');
+                    const newFile = new File([blob], newFileName, {
+                        type: 'image/jpeg',
+                        lastModified: Date.now()
+                    });
+
+                    // Ganti file input asli dengan hasil kompresi via DataTransfer API
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(newFile);
+                    event.target.files = dataTransfer.files;
+
+                    // Update UI dengan hasil kompresi
+                    fileInfo.innerHTML = '<strong>File siap diunggah:</strong> ' + newFile.name + ' (' + (newFile.size / 1024).toFixed(2) + ' KB)';
+                    
+                    preview.innerHTML = '<img src="' + URL.createObjectURL(newFile) + '" alt="Preview Foto"><p style="margin-top: 0.5rem; font-size: 0.875rem; color: #6b7280;">Preview foto kehadiran</p>';
+                    preview.classList.add('active');
+                    
+                }, 'image/jpeg', 0.7);
+            };
+            img.src = e.target.result;
         };
         reader.readAsDataURL(file);
     }
@@ -489,22 +533,10 @@
         const wrapper = document.getElementById('bukti-upload-wrapper');
         const fileInfo = document.getElementById('bukti-info');
         const preview = document.getElementById('preview-file-bukti');
-        
+
         if (!file) return;
-        
-        // Validasi ukuran file (max 2MB)
-        if (file.size > 2 * 1024 * 1024) {
-            Swal.fire({
-                icon: 'error',
-                title: 'File Terlalu Besar',
-                text: 'Ukuran file maksimal 2MB. File Anda: ' + (file.size / 1024 / 1024).toFixed(2) + 'MB',
-                confirmButtonColor: '#10b981'
-            });
-            event.target.value = '';
-            return;
-        }
-        
-        // Validasi tipe file
+
+        // Validasi tipe file terlebih dahulu
         const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
         if (!allowedTypes.includes(file.type)) {
             Swal.fire({
@@ -516,23 +548,92 @@
             event.target.value = '';
             return;
         }
-        
-        // Update UI
-        wrapper.classList.add('has-file');
-        fileInfo.innerHTML = '<strong>File dipilih:</strong> ' + file.name + ' (' + (file.size / 1024).toFixed(2) + ' KB)';
-        fileInfo.classList.add('active');
-        
-        // Preview
-        if (file.type.startsWith('image/')) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                preview.innerHTML = '<img src="' + e.target.result + '" alt="Preview Bukti"><p style="margin-top: 0.5rem; font-size: 0.875rem; color: #6b7280;">Preview bukti ketidakhadiran</p>';
-                preview.classList.add('active');
-            };
-            reader.readAsDataURL(file);
-        } else if (file.type === 'application/pdf') {
+
+        // Logika terpisah untuk PDF vs Gambar (JPG/PNG)
+        if (file.type === 'application/pdf') {
+            // PDF: Batas ketat 2MB, tidak dikompres
+            if (file.size > 2 * 1024 * 1024) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'File PDF Terlalu Besar',
+                    text: 'Ukuran maksimal untuk dokumen PDF adalah 2MB. File Anda: ' + (file.size / 1024 / 1024).toFixed(2) + 'MB',
+                    confirmButtonColor: '#10b981'
+                });
+                event.target.value = '';
+                return;
+            }
+            // Langsung update UI untuk PDF
+            wrapper.classList.add('has-file');
+            fileInfo.innerHTML = '<strong>File siap diunggah:</strong> ' + file.name + ' (' + (file.size / 1024).toFixed(2) + ' KB)';
+            fileInfo.classList.add('active');
             preview.innerHTML = '<div style="text-align: center; padding: 2rem;"><i class="bx bxs-file-pdf" style="font-size: 3rem; color: #ef4444;"></i><p style="margin-top: 0.5rem; font-weight: 500;">File PDF: ' + file.name + '</p></div>';
             preview.classList.add('active');
+        } else {
+            // Gambar: Izinkan dari kamera HP (sampai 25MB) untuk dikompres lokal
+            if (file.size > 25 * 1024 * 1024) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Foto Terlalu Besar',
+                    text: 'Ukuran foto maksimal 25MB sebelum dikompres. File Anda: ' + (file.size / 1024 / 1024).toFixed(2) + 'MB. Turunkan resolusi kamera.',
+                    confirmButtonColor: '#10b981'
+                });
+                event.target.value = '';
+                return;
+            }
+
+            // Update UI loading state untuk foto
+            wrapper.classList.add('has-file');
+            fileInfo.innerHTML = '<strong>Memproses foto bukti...</strong> <div class="abs-spinner" style="width:12px;height:12px;display:inline-block;border-width:2px;border-top-color:var(--primary-color);"></div>';
+            fileInfo.classList.add('active');
+
+            // Kompresi HTML5 Canvas
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = new Image();
+                img.onload = function () {
+                    let width = img.width;
+                    let height = img.height;
+                    const maxDim = 1920;
+
+                    if (width > maxDim || height > maxDim) {
+                        if (width > height) {
+                            height = Math.round((height * maxDim) / width);
+                            width = maxDim;
+                        } else {
+                            width = Math.round((width * maxDim) / height);
+                            height = maxDim;
+                        }
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fillRect(0, 0, width, height);
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    canvas.toBlob(function (blob) {
+                        const newFileName = file.name.replace(/\.png$/i, '.jpg');
+                        const newFile = new File([blob], newFileName, {
+                            type: 'image/jpeg',
+                            lastModified: Date.now()
+                        });
+
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(newFile);
+                        event.target.files = dataTransfer.files;
+
+                        fileInfo.innerHTML = '<strong>File siap diunggah:</strong> ' + newFile.name + ' (' + (newFile.size / 1024).toFixed(2) + ' KB)';
+                        preview.innerHTML = '<img src="' + URL.createObjectURL(newFile) + '" alt="Preview Bukti"><p style="margin-top: 0.5rem; font-size: 0.875rem; color: #6b7280;">Preview foto bukti</p>';
+                        preview.classList.add('active');
+                        
+                    }, 'image/jpeg', 0.7);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
         }
     }
 
@@ -562,81 +663,81 @@
     }
 
     function hideAllStatus() {
-        if(elLoading) elLoading.style.display = 'none';
-        if(elOk) elOk.style.display = 'none';
-        if(elFail) elFail.style.display = 'none';
-        if(elError) elError.style.display = 'none';
+        if (elLoading) elLoading.style.display = 'none';
+        if (elOk) elOk.style.display = 'none';
+        if (elFail) elFail.style.display = 'none';
+        if (elError) elError.style.display = 'none';
     }
 
     <?php if (empty($kegiatan['pakai_lokasi'])): ?>
-    function detectLocation() {
-        // noop — kegiatan daring, skip GPS
-    }
+        function detectLocation() {
+            // noop — kegiatan daring, skip GPS
+        }
     <?php else: ?>
-    function detectLocation() {
-        if (!HAS_LOCATION) {
-            const ls = document.getElementById('lokasi-status');
-            if (ls) ls.style.display = 'none';
-            return;
-        }
+        function detectLocation() {
+            if (!HAS_LOCATION) {
+                const ls = document.getElementById('lokasi-status');
+                if (ls) ls.style.display = 'none';
+                return;
+            }
 
-        hideAllStatus();
-        elLoading.style.display = 'flex';
-        btnSubmit.disabled = true;
-
-        if (!navigator.geolocation) {
             hideAllStatus();
-            elError.style.display = 'flex';
-            document.getElementById('lokasi-error-detail').textContent = 'Browser Anda tidak mendukung GPS.';
-            return;
-        }
+            elLoading.style.display = 'flex';
+            btnSubmit.disabled = true;
 
-        navigator.geolocation.getCurrentPosition(
-            function (position) {
-                const userLat = position.coords.latitude;
-                const userLng = position.coords.longitude;
-                const jarak = hitungJarak(userLat, userLng, KEGIATAN_LAT, KEGIATAN_LNG);
-                const jarakBulat = Math.round(jarak * 100) / 100;
-
-                document.getElementById('latitude_absensi').value = userLat.toFixed(8);
-                document.getElementById('longitude_absensi').value = userLng.toFixed(8);
-                document.getElementById('jarak_meter').value = jarakBulat;
-
-                hideAllStatus();
-
-                if (jarak <= KEGIATAN_RADIUS) {
-                    document.getElementById('lokasi_valid').value = '1';
-                    elOk.style.display = 'flex';
-                    document.getElementById('lokasi-ok-detail').textContent = 'Anda berada ' + jarakBulat + ' meter dari lokasi kegiatan (radius: ' + KEGIATAN_RADIUS + ' m).';
-                    btnSubmit.disabled = false;
-                } else {
-                    document.getElementById('lokasi_valid').value = '0';
-                    elFail.style.display = 'flex';
-                    document.getElementById('lokasi-fail-detail').textContent = 'Anda berada ' + jarakBulat + ' meter dari lokasi. Maksimal radius: ' + KEGIATAN_RADIUS + ' m.';
-                    btnSubmit.disabled = true;
-                }
-            },
-            function (error) {
+            if (!navigator.geolocation) {
                 hideAllStatus();
                 elError.style.display = 'flex';
+                document.getElementById('lokasi-error-detail').textContent = 'Browser Anda tidak mendukung GPS.';
+                return;
+            }
 
-                let pesan = '';
-                switch (error.code) {
-                    case error.PERMISSION_DENIED:
-                        pesan = 'Anda menolak akses lokasi. Aktifkan GPS dan izinkan browser.'; break;
-                    case error.POSITION_UNAVAILABLE:
-                        pesan = 'Informasi lokasi tidak tersedia. Pastikan GPS aktif.'; break;
-                    case error.TIMEOUT:
-                        pesan = 'Waktu deteksi habis. Pastikan sinyal GPS baik.'; break;
-                    default:
-                        pesan = 'Terjadi kesalahan saat mendeteksi lokasi.';
-                }
-                document.getElementById('lokasi-error-detail').textContent = pesan;
-                btnSubmit.disabled = true;
-            },
-            { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-        );
-    }
+            navigator.geolocation.getCurrentPosition(
+                function (position) {
+                    const userLat = position.coords.latitude;
+                    const userLng = position.coords.longitude;
+                    const jarak = hitungJarak(userLat, userLng, KEGIATAN_LAT, KEGIATAN_LNG);
+                    const jarakBulat = Math.round(jarak * 100) / 100;
+
+                    document.getElementById('latitude_absensi').value = userLat.toFixed(8);
+                    document.getElementById('longitude_absensi').value = userLng.toFixed(8);
+                    document.getElementById('jarak_meter').value = jarakBulat;
+
+                    hideAllStatus();
+
+                    if (jarak <= KEGIATAN_RADIUS) {
+                        document.getElementById('lokasi_valid').value = '1';
+                        elOk.style.display = 'flex';
+                        document.getElementById('lokasi-ok-detail').textContent = 'Anda berada ' + jarakBulat + ' meter dari lokasi kegiatan (radius: ' + KEGIATAN_RADIUS + ' m).';
+                        btnSubmit.disabled = false;
+                    } else {
+                        document.getElementById('lokasi_valid').value = '0';
+                        elFail.style.display = 'flex';
+                        document.getElementById('lokasi-fail-detail').textContent = 'Anda berada ' + jarakBulat + ' meter dari lokasi. Maksimal radius: ' + KEGIATAN_RADIUS + ' m.';
+                        btnSubmit.disabled = true;
+                    }
+                },
+                function (error) {
+                    hideAllStatus();
+                    elError.style.display = 'flex';
+
+                    let pesan = '';
+                    switch (error.code) {
+                        case error.PERMISSION_DENIED:
+                            pesan = 'Anda menolak akses lokasi. Aktifkan GPS dan izinkan browser.'; break;
+                        case error.POSITION_UNAVAILABLE:
+                            pesan = 'Informasi lokasi tidak tersedia. Pastikan GPS aktif.'; break;
+                        case error.TIMEOUT:
+                            pesan = 'Waktu deteksi habis. Pastikan sinyal GPS baik.'; break;
+                        default:
+                            pesan = 'Terjadi kesalahan saat mendeteksi lokasi.';
+                    }
+                    document.getElementById('lokasi-error-detail').textContent = pesan;
+                    btnSubmit.disabled = true;
+                },
+                { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+            );
+        }
     <?php endif; ?>
 
     document.querySelector('form').addEventListener('submit', function (e) {

@@ -30,9 +30,12 @@
     <div class="pegawai-wrapper">
         <header class="pegawai-header">
             <div class="container header-container">
-                <div class="brand">
-                    <img src="<?= asset('img/kemenag-new-2025.png') ?>" alt="Logo Kemenag" class="brand-logo">
-                    <span>AKSI KEBAL</span>
+                <div class="brand" style="display: flex; align-items: center; gap: 1.25rem;">
+                    <img src="<?= asset('img/kemenag-new-2025.png') ?>" alt="Logo Kemenag" class="brand-logo" style="height: 65px; width: auto; max-height: none; margin: 0;">
+                    <div style="display: flex; flex-direction: column; justify-content: center;">
+                        <span style="font-size: 1.3rem; font-weight: 700; line-height: 1.1; letter-spacing: 0.5px;">AKSI KEBAL</span>
+                        <span style="font-size: 0.8rem; font-family: 'Figtree', sans-serif; font-weight: 400; opacity: 0.9; margin-top: 0.25rem; letter-spacing: 0.2px; max-width: 300px; line-height: 1.4; text-align: justify; text-justify: inter-word; hyphens: auto;"><?= APP_FULL_NAME ?></span>
+                    </div>
                 </div>
             </div>
         </header>
