@@ -27,11 +27,12 @@ Sistem ini menghadirkan antarmuka admin yang elegan serta alur absensi pegawai b
 ## 🆕 Pembaruan Terbaru (Versi 1.3.0)
 Kami terus mengembangkan AKSI KEBAL untuk memberikan pengalaman terbaik!
 - ✅ **Kompresi Foto Client-Side (HTML5 Canvas)**: Implementasi kompresi gambar langsung di browser HP pegawai sebelum proses *upload*. Foto dari kamera *flagship* berukuran masif (hingga 25MB) kini menyusut drastis menjadi ~500KB di *client*, menjadikan website **100% tahan banting (kebal)** dari penolakan server (Error 500 / Post Max Size Limit) pada *shared hosting* (terutama InfinityFree).
+- ✅ **Pagination Halaman Kegiatan**: Daftar kegiatan di panel admin kini menggunakan paginasi 10 data per halaman — filter pencarian, status, dan jenis tetap dipertahankan saat berpindah halaman.
+- ✅ **Fix Cetak Laporan (PDF Export)**: Kegiatan Daring kini menampilkan label "Daring" (bukan kosong) pada kolom Lokasi. Footer yang sebelumnya menimpa baris tabel terakhir saat dicetak juga telah dihapus.
 - ✅ **Header Elegan Pegawai**: Penyempurnaan *Visual Hierarchy* pada layout header untuk tampilan lencana/stempel vertikal proporsional dengan judul yang kokoh dan sub-judul berformat *justify*.
 - ✅ **Optimasi Kompatibilitas PHP 8.4**: Penyelesaian peringatan *Deprecated Implicit Nullable Type* pada `PegawaiModel`.
 - ✅ **Penyesuaian Timezone Presisi**: Tidak ada lagi perbedaan waktu saat absensi, sistem otomatis menyelaraskan waktu ke zona WITA (`Asia/Makassar`) pada *server hosting*.
 - ✅ **Standarisasi UI Unggah Berkas**: Tampilan antarmuka unggah foto dan dokumen kini lebih modern dengan gaya *The Modern Institution*, lengkap dengan pratinjau *file* interaktif.
-
 ---
 
 ## ✨ Fitur Unggulan
