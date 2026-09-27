@@ -111,12 +111,6 @@
         .signature-space { height: 70px; }
         .signature-name { font-weight: normal; }
         
-        .print-footer {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            font-size: 9px; color: #64748b; text-align: center;
-            border-top: 1px solid #d1fae5; padding-top: 4px;
-        }
-        @media screen { .print-footer { display: none; } }
         
         @media print {
             body {
@@ -192,7 +186,14 @@
         </tr>
         <tr>
             <td>Lokasi</td>
-            <td>: <?= e($kegiatan['lokasi_kegiatan']) ?></td>
+            <td>: <?php
+                $lokasi = trim($kegiatan['lokasi_kegiatan'] ?? '');
+                if ($lokasi === '') {
+                    echo 'Daring';
+                } else {
+                    echo e($lokasi);
+                }
+            ?></td>
         </tr>
     </table>
 
@@ -241,6 +242,5 @@
         </div>
     </div>
 
-    <div class="print-footer">Dicetak dari AKSI KEBAL — Kanwil Kemenag Kalimantan Utara</div>
 </body>
 </html>
