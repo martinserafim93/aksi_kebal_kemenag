@@ -921,18 +921,26 @@ class AdminController extends Controller
         Middleware::authAdmin();
         $model = $this->model('KegiatanModel');
 
-        $search = input('search') ?? '';
-        $status = input('status') ?? '';
-        $jenis = input('jenis') ?? '';
+        $search = query('search', '');
+        $status = query('status', '');
+        $jenis  = query('jenis', '');
+        $page   = max(1, (int) query('page', 1));
+        $limit  = 10;
+        $offset = ($page - 1) * $limit;
 
-        $kegiatan = $model->getAll($search, $status, $jenis);
+        $kegiatan   = $model->getAllPaginated($search, $status, $jenis, $limit, $offset);
+        $total_data = $model->countAll($search, $status, $jenis);
+        $total_page = max(1, (int) ceil($total_data / $limit));
 
         $this->view('admin/kegiatan/index', [
-            'title' => 'Manajemen Kegiatan - AKSI KEBAL',
-            'kegiatan' => $kegiatan,
-            'search' => $search,
-            'status' => $status,
-            'jenis' => $jenis,
+            'title'       => 'Manajemen Kegiatan - AKSI KEBAL',
+            'kegiatan'    => $kegiatan,
+            'search'      => $search,
+            'status'      => $status,
+            'jenis'       => $jenis,
+            'page'        => $page,
+            'total_page'  => $total_page,
+            'total_data'  => $total_data,
             'active_menu' => 'kegiatan'
         ]);
     }

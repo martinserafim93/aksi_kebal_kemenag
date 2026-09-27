@@ -24,7 +24,7 @@
                 <label for="search" class="form-label">Nama Kegiatan</label>
                 <div style="position: relative;">
                     <i class='bx bx-search' style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 1.1rem;"></i>
-                    <input type="text" name="search" id="search" value="<?= e($search) ?>" placeholder="Masukkan kata kunci..." class="form-control" style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1.5px solid #e2e8f0; border-radius: 0.5rem; font-size: 0.95rem; transition: all 0.2s;" onfocus="this.style.borderColor='var(--primary)'; this.style.boxShadow='0 0 0 3px rgba(37,99,235,0.1)';">
+                    <input type="text" name="search" id="search" value="<?= e($search) ?>" placeholder="Masukkan kata kunci..." class="form-control" style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1.5px solid #e2e8f0; border-radius: 0.5rem; font-size: 0.95rem; transition: all 0.2s;" onfocus="this.style.borderColor='var(--primary)'; this.style.boxShadow='0 0 0 3px rgba(37,99,235,0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                 </div>
             </div>
             <div class="form-group" style="flex: 1; min-width: 180px;">
@@ -61,8 +61,11 @@
 </div>
 
 <div class="card" >
-    <div class="card-header" >
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
         <h3 class="card-title">Daftar Kegiatan</h3>
+        <span style="font-size: 0.875rem; color: var(--text-muted);">
+            Total: <strong style="color: var(--text-main);"><?= $total_data ?></strong> kegiatan
+        </span>
     </div>
     
     <div class="table-responsive" style="overflow-x: auto;">
@@ -84,7 +87,7 @@
                         <td colspan="7" style="text-align: center; padding: 2rem; color: var(--text-muted);">Tidak ada data kegiatan ditemukan.</td>
                     </tr>
                 <?php else: ?>
-                    <?php $no = 1; ?>
+                    <?php $no = ($page - 1) * 10 + 1; ?>
                     <?php foreach ($kegiatan as $k): ?>
                         <tr style="border-bottom: 1px solid var(--border-color); transition: background-color 0.2s;">
                             <td style="padding: 1.25rem 1rem; vertical-align: middle; text-align: center; font-weight: 500; color: var(--text-muted);"><?= $no++ ?></td>
@@ -148,6 +151,66 @@
             </tbody>
         </table>
     </div>
+
+    <!-- Pagination -->
+    <?php if ($total_page > 1): ?>
+        <?php
+        // Bangun query string filter agar pagination mempertahankan filter aktif
+        $query_parts = [];
+        if (!empty($search)) $query_parts[] = 'search=' . urlencode($search);
+        if (!empty($status)) $query_parts[] = 'status=' . urlencode($status);
+        if (!empty($jenis))  $query_parts[] = 'jenis='  . urlencode($jenis);
+        $filter_qs = !empty($query_parts) ? '&' . implode('&', $query_parts) : '';
+        ?>
+        <div class="card-body" style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding: 1.25rem 1.5rem; flex-wrap: wrap; gap: 0.75rem;">
+            <span style="color: var(--text-muted); font-size: 0.875rem;">
+                Halaman <strong style="color: var(--text-main);"><?= $page ?></strong> dari <strong style="color: var(--text-main);"><?= $total_page ?></strong>
+            </span>
+            <div style="display: flex; gap: 0.25rem; align-items: center;">
+                <!-- Sebelumnya -->
+                <?php if ($page > 1): ?>
+                    <a href="<?= url('admin/kegiatan?page=' . ($page - 1) . $filter_qs) ?>"
+                       style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; text-decoration: none; font-size: 0.875rem; font-weight: 500; background: #f1f5f9; color: #475569; transition: background 0.15s;"
+                       onmouseover="this.style.background='#e2e8f0';" onmouseout="this.style.background='#f1f5f9';">
+                        &laquo; Sebelumnya
+                    </a>
+                <?php else: ?>
+                    <span style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; font-weight: 500; background: #f8fafc; color: #cbd5e1; cursor: not-allowed;">&laquo; Sebelumnya</span>
+                <?php endif; ?>
+
+                <!-- Angka halaman -->
+                <?php
+                $start = max(1, $page - 2);
+                $end   = min($total_page, $page + 2);
+                if ($start > 1) echo '<span style="padding: 0.5rem 0.25rem; color: #94a3b8; font-size: 0.875rem;">…</span>';
+                for ($i = $start; $i <= $end; $i++):
+                    $is_active = ($i === $page);
+                ?>
+                    <a href="<?= url('admin/kegiatan?page=' . $i . $filter_qs) ?>"
+                       style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; text-decoration: none; font-size: 0.875rem; font-weight: 600;
+                              <?= $is_active ? 'background: var(--primary); color: #fff; pointer-events: none;' : 'background: #f1f5f9; color: #475569;' ?>
+                              transition: background 0.15s;"
+                       <?= $is_active ? 'aria-current="page"' : '' ?>
+                       <?= !$is_active ? 'onmouseover="this.style.background=\'#e2e8f0\';" onmouseout="this.style.background=\'#f1f5f9\';"' : '' ?>>
+                        <?= $i ?>
+                    </a>
+                <?php endfor;
+                if ($end < $total_page) echo '<span style="padding: 0.5rem 0.25rem; color: #94a3b8; font-size: 0.875rem;">…</span>';
+                ?>
+
+                <!-- Selanjutnya -->
+                <?php if ($page < $total_page): ?>
+                    <a href="<?= url('admin/kegiatan?page=' . ($page + 1) . $filter_qs) ?>"
+                       style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; text-decoration: none; font-size: 0.875rem; font-weight: 500; background: #f1f5f9; color: #475569; transition: background 0.15s;"
+                       onmouseover="this.style.background='#e2e8f0';" onmouseout="this.style.background='#f1f5f9';">
+                        Selanjutnya &raquo;
+                    </a>
+                <?php else: ?>
+                    <span style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; font-weight: 500; background: #f8fafc; color: #cbd5e1; cursor: not-allowed;">Selanjutnya &raquo;</span>
+                <?php endif; ?>
+            </div>
+        </div>
+    <?php endif; ?>
 </div>
 
 
