@@ -79,7 +79,7 @@ All methods call `Middleware::authAdmin()` first (except `login`, `index`, `logo
 | `admin/jabatan-create` | `jabatan_create()` | Create position |
 | `admin/jabatan-edit/{slug}` | `jabatan_edit($slug)` | Edit position |
 | `admin/jabatan-delete/{slug}` | `jabatan_delete($slug)` | Delete position |
-| `admin/kegiatan` | `kegiatan()` | Event list |
+| `admin/kegiatan` | `kegiatan()` | Paginated event list |
 | `admin/kegiatan-resolve-lokasi` | `kegiatan_resolve_lokasi()` | AJAX: geocode lat/lng → address (does NOT consume CSRF) |
 | `admin/kegiatan-create` | `kegiatan_create()` | Create event |
 | `admin/kegiatan-edit/{kode}` | `kegiatan_edit($kode)` | Edit event |
