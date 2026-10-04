@@ -111,6 +111,37 @@ class AbsensiModel
     }
 
     /**
+     * Data laporan kehadiran per kegiatan sesuai filter (dipakai ekspor PDF & CSV).
+     *
+     * @param string $filter 'semua' | 'hadir' | 'tidak_hadir' | 'tidak_absen'
+     * @return array Baris absensi; pegawai belum absen ditambahkan sebagai baris
+     *               dengan status 'Tidak Melakukan Absensi'
+     */
+    public function getDataLaporan(int $id_kegiatan, string $filter = 'semua'): array
+    {
+        $tidakAbsen = array_map(fn($p) => [
+            'nip'                => $p['nip'],
+            'nama_lengkap'       => $p['nama_lengkap'],
+            'status_kehadiran'   => 'Tidak Melakukan Absensi',
+            'alasan_tidak_hadir' => null,
+            'created_at'         => null,
+        ], $filter === 'hadir' || $filter === 'tidak_hadir' ? [] : $this->getPegawaiTidakAbsen($id_kegiatan));
+
+        if ($filter === 'tidak_absen') {
+            return $tidakAbsen;
+        }
+
+        $absensi = $this->getAllFilteredForExport(['kegiatan' => $id_kegiatan]);
+
+        if ($filter === 'hadir' || $filter === 'tidak_hadir') {
+            $status = $filter === 'hadir' ? 'Hadir' : 'Tidak Hadir';
+            return array_values(array_filter($absensi, fn($r) => $r['status_kehadiran'] === $status));
+        }
+
+        return array_merge($absensi, $tidakAbsen); // semua
+    }
+
+    /**
      * Hitung statistik absensi yang mencakup pegawai tidak mengisi absensi
      */
     public function getStatistikLengkap(int $id_kegiatan): array

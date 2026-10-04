@@ -1390,32 +1390,55 @@ class AdminController extends Controller
         }
 
         $model = $this->model('AbsensiModel');
-        $absensi = $model->getAllFilteredForExport(['kegiatan' => $kegiatan['id_kegiatan']]);
+        $filter = query('filter', 'semua');
+        if (!in_array($filter, ['hadir', 'tidak_hadir', 'tidak_absen'], true)) {
+            $filter = 'semua';
+        }
+        $absensi = $model->getDataLaporan($kegiatan['id_kegiatan'], $filter);
+        $showKeterangan = $filter === 'tidak_hadir' || $filter === 'semua'; // sama dengan PDF
 
-        $this->logAktivitas('ekspor', 'absensi', 'Mengekspor laporan absensi (CSV) kegiatan: ' . $kegiatan['nama_kegiatan'] . '.');
+        $this->logAktivitas('ekspor', 'absensi', 'Mengekspor laporan absensi (CSV, filter: ' . $filter . ') kegiatan: ' . $kegiatan['nama_kegiatan'] . '.');
 
-        $filename = "Laporan_Kehadiran_Pegawai_" . date('Ymd_His') . ".csv";
+        $filename = "Laporan_Kehadiran_Pegawai_" . $filter . "_" . date('Ymd_His') . ".csv";
 
         header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename="' . $filename . '"');
 
         $output = fopen('php://output', 'w');
-        fputcsv($output, ['No', 'NIP', 'Nama Pegawai', 'Kegiatan', 'Jenis Kegiatan', 'Tanggal', 'Waktu', 'Lokasi', 'Status Kehadiran', 'Waktu Submit']);
+        $header = ['No', 'NIP', 'Nama Pegawai', 'Kegiatan', 'Jenis Kegiatan', 'Tanggal', 'Waktu', 'Lokasi', 'Status Kehadiran', 'Waktu Submit'];
+        if ($showKeterangan) {
+            $header[] = 'Keterangan';
+        }
+        fputcsv($output, $header, ',', '"', '\\');
+
+        // Data kegiatan sama untuk semua baris -> ambil dari $kegiatan (baris "belum absen" tidak punya field ini)
+        $tanggal = date('d M Y', strtotime($kegiatan['tanggal_kegiatan']));
+        $waktu = date('H:i', strtotime($kegiatan['waktu_mulai'])) . ' - ' . date('H:i', strtotime($kegiatan['waktu_selesai'])) . ' WITA';
 
         $no = 1;
         foreach ($absensi as $row) {
-            fputcsv($output, [
+            $baris = [
                 $no++,
                 $row['nip'],
                 $row['nama_lengkap'],
-                $row['nama_kegiatan'],
-                $row['jenis_kegiatan'],
-                date('d M Y', strtotime($row['tanggal_kegiatan'])),
-                date('H:i', strtotime($row['waktu_mulai'])) . ' - ' . date('H:i', strtotime($row['waktu_selesai'])),
-                $row['lokasi_kegiatan'],
+                $kegiatan['nama_kegiatan'],
+                $kegiatan['jenis_kegiatan'],
+                $tanggal,
+                $waktu,
+                $kegiatan['lokasi_kegiatan'],
                 $row['status_kehadiran'],
-                date('d M Y, H:i', strtotime($row['created_at']))
-            ]);
+                !empty($row['created_at']) ? date('d M Y, H:i', strtotime($row['created_at'])) . ' WITA' : '-'
+            ];
+            if ($showKeterangan) {
+                $alasan = trim((string) ($row['alasan_tidak_hadir'] ?? ''));
+                if ($row['status_kehadiran'] !== 'Tidak Hadir' || $alasan === '') {
+                    $baris[] = '-';
+                } else {
+                    // Cegah formula injection di Excel/Sheets
+                    $baris[] = preg_match('/^[=+\-@\t\r]/', $alasan) ? "'" . $alasan : $alasan;
+                }
+            }
+            fputcsv($output, $baris, ',', '"', '\\');
         }
         fclose($output);
         exit;
@@ -1443,46 +1466,13 @@ class AdminController extends Controller
 
         $model = $this->model('AbsensiModel');
         $filter = query('filter', 'semua');
+        if (!in_array($filter, ['hadir', 'tidak_hadir', 'tidak_absen'], true)) {
+            $filter = 'semua';
+        }
 
         $this->logAktivitas('ekspor', 'absensi', 'Mengekspor laporan absensi (PDF, filter: ' . $filter . ') kegiatan: ' . $kegiatan['nama_kegiatan'] . '.');
 
-        // Ambil data absensi yang sudah diisi
-        $semuaAbsensi = $model->getAllFilteredForExport(['kegiatan' => $kegiatan['id_kegiatan']]);
-
-        // Ambil pegawai yang tidak melakukan absensi sama sekali
-        $pegawaiTidakAbsen = $model->getPegawaiTidakAbsen($kegiatan['id_kegiatan']);
-
-        // Siapkan data berdasarkan filter
-        switch ($filter) {
-            case 'hadir':
-                $absensi = array_filter($semuaAbsensi, fn($r) => $r['status_kehadiran'] === 'Hadir');
-                break;
-            case 'tidak_hadir':
-                $absensi = array_filter($semuaAbsensi, fn($r) => $r['status_kehadiran'] === 'Tidak Hadir');
-                break;
-            case 'tidak_absen':
-                $absensi = [];
-                foreach ($pegawaiTidakAbsen as $p) {
-                    $absensi[] = [
-                        'nip' => $p['nip'],
-                        'nama_lengkap' => $p['nama_lengkap'],
-                        'status_kehadiran' => 'Tidak Melakukan Absensi',
-                        'created_at' => null,
-                    ];
-                }
-                break;
-            default: // semua
-                $absensi = $semuaAbsensi;
-                foreach ($pegawaiTidakAbsen as $p) {
-                    $absensi[] = [
-                        'nip' => $p['nip'],
-                        'nama_lengkap' => $p['nama_lengkap'],
-                        'status_kehadiran' => 'Tidak Melakukan Absensi',
-                        'created_at' => null,
-                    ];
-                }
-                break;
-        }
+        $absensi = $model->getDataLaporan($kegiatan['id_kegiatan'], $filter);
 
         // Hitung statistik lengkap
         $statistik = $model->getStatistikLengkap($kegiatan['id_kegiatan']);
