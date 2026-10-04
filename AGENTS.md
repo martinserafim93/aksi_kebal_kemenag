@@ -5,7 +5,7 @@ Hand-rolled PHP MVC, **no framework**, vanilla CSS/JS. Domain language is Indone
 throughout: code identifiers, DB columns, and UI.
 
 **Full name:** Absensi Kegiatan Serentak Kementerian Beramal dan Andal
-**Version:** 1.3.0 (see `APP_VERSION` in `config/app.php`)
+**Version:** 1.4.0 (see `APP_VERSION` in `config/app.php`)
 **Brand:** Kementerian Agama Provinsi Kalimantan Utara — warna hijau emerald (`#10b981`).
 
 ## Tooling reality (read first)

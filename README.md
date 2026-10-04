@@ -1,6 +1,6 @@
 <div align="center">
   <img src="public/assets/img/kemenag-new-2025.png" alt="Logo Kemenag" width="150" />
-  <h1>✨ AKSI KEBAL v1.3.0 ✨</h1>
+  <h1>✨ AKSI KEBAL v1.4.0 ✨</h1>
   <p><strong>A</strong>bsensi <strong>K</strong>egiatan <strong>S</strong>erentak <strong>K</strong>ementerian <strong>B</strong>eramal dan <strong>A</strong>ndal</p>
   <p><i>Sistem Informasi Absensi Kegiatan Pegawai Kementerian Agama yang Modern, Cepat, dan Andal</i></p>
 
@@ -10,7 +10,7 @@
     <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="Vanilla JS" />
     <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5" />
     <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3" />
-    <img src="https://img.shields.io/badge/Version-1.3.0-success?style=for-the-badge" alt="Version 1.3.0" />
+    <img src="https://img.shields.io/badge/Version-1.4.0-success?style=for-the-badge" alt="Version 1.4.0" />
   </p>
 </div>
 
@@ -24,8 +24,15 @@ Sistem ini menghadirkan antarmuka admin yang elegan serta alur absensi pegawai b
 
 ---
 
-## 🆕 Pembaruan Terbaru (Versi 1.3.0)
+## 🆕 Pembaruan Terbaru (Versi 1.4.0)
 Kami terus mengembangkan AKSI KEBAL untuk memberikan pengalaman terbaik!
+- ✅ **Standarisasi Laporan PDF & CSV** *(#111)*: Kedua format kini menampilkan kolom **Keterangan** (alasan tidak hadir), tanggal seragam `{tanggal} {nama bulan} {tahun}`, serta waktu berlabel **WITA**.
+- ✅ **Menu Ekspor Konsisten**: Tombol ekspor PDF dan CSV di panel admin kini berupa *dropdown* yang seragam.
+- ✅ **Fix PHP 8.4**: Peringatan *Deprecated* `fputcsv()` pada ekspor CSV telah diperbaiki.
+
+<details>
+<summary>Versi 1.3.0</summary>
+
 - ✅ **Kompresi Foto Client-Side (HTML5 Canvas)**: Implementasi kompresi gambar langsung di browser HP pegawai sebelum proses *upload*. Foto dari kamera *flagship* berukuran masif (hingga 25MB) kini menyusut drastis menjadi ~500KB di *client*, menjadikan website **100% tahan banting (kebal)** dari penolakan server (Error 500 / Post Max Size Limit) pada *shared hosting* (terutama InfinityFree).
 - ✅ **Pagination Halaman Kegiatan**: Daftar kegiatan di panel admin kini menggunakan paginasi 10 data per halaman — filter pencarian, status, dan jenis tetap dipertahankan saat berpindah halaman.
 - ✅ **Fix Cetak Laporan (PDF Export)**: Kegiatan Daring kini menampilkan label "Daring" (bukan kosong) pada kolom Lokasi. Footer yang sebelumnya menimpa baris tabel terakhir saat dicetak juga telah dihapus.
@@ -33,6 +40,9 @@ Kami terus mengembangkan AKSI KEBAL untuk memberikan pengalaman terbaik!
 - ✅ **Optimasi Kompatibilitas PHP 8.4**: Penyelesaian peringatan *Deprecated Implicit Nullable Type* pada `PegawaiModel`.
 - ✅ **Penyesuaian Timezone Presisi**: Tidak ada lagi perbedaan waktu saat absensi, sistem otomatis menyelaraskan waktu ke zona WITA (`Asia/Makassar`) pada *server hosting*.
 - ✅ **Standarisasi UI Unggah Berkas**: Tampilan antarmuka unggah foto dan dokumen kini lebih modern dengan gaya *The Modern Institution*, lengkap dengan pratinjau *file* interaktif.
+
+</details>
+
 ---
 
 ## ✨ Fitur Unggulan
