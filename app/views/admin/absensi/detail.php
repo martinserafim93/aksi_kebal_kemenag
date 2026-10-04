@@ -82,7 +82,7 @@
                 <?php endif; ?>
             </form>
             <div style="position: relative; display: inline-block;" class="pdf-dropdown-container">
-                <button class="btn btn-danger" style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; padding: 0.5rem 1rem; cursor: pointer;" onclick="document.getElementById('pdfDropdown').style.display = document.getElementById('pdfDropdown').style.display === 'none' ? 'block' : 'none'; event.stopPropagation();">
+                <button class="btn btn-danger" style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; padding: 0.5rem 1rem; cursor: pointer;" onclick="document.getElementById('pdfDropdown').style.display = document.getElementById('pdfDropdown').style.display === 'none' ? 'block' : 'none'; document.getElementById('csvDropdown').style.display = 'none'; event.stopPropagation();">
                     <i class='bx bxs-file-pdf'></i> Export PDF <i class='bx bx-chevron-down'></i>
                 </button>
                 <div id="pdfDropdown" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 0.5rem; background: #fff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid var(--border-color); border-radius: 0.5rem; min-width: 200px; z-index: 50; overflow: hidden;">
@@ -100,9 +100,25 @@
                     </a>
                 </div>
             </div>
-            <a href="<?= url('admin/absensi-export/' . $kegiatan['kode_kegiatan']) ?>" class="btn btn-success" style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; padding: 0.5rem 1rem;">
-                <i class='bx bx-export'></i> Export CSV
-            </a>
+            <div style="position: relative; display: inline-block;" class="csv-dropdown-container">
+                <button class="btn btn-success" style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; padding: 0.5rem 1rem; cursor: pointer;" onclick="document.getElementById('csvDropdown').style.display = document.getElementById('csvDropdown').style.display === 'none' ? 'block' : 'none'; document.getElementById('pdfDropdown').style.display = 'none'; event.stopPropagation();">
+                    <i class='bx bx-export'></i> Export CSV <i class='bx bx-chevron-down'></i>
+                </button>
+                <div id="csvDropdown" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 0.5rem; background: #fff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid var(--border-color); border-radius: 0.5rem; min-width: 200px; z-index: 50; overflow: hidden;">
+                    <a href="<?= url('admin/absensi-export/' . $kegiatan['kode_kegiatan'] . '?filter=semua') ?>" style="display: block; padding: 0.75rem 1rem; color: var(--text-main); text-decoration: none; font-size: 0.85rem; border-bottom: 1px solid var(--border-color);">
+                        Semua Pegawai
+                    </a>
+                    <a href="<?= url('admin/absensi-export/' . $kegiatan['kode_kegiatan'] . '?filter=hadir') ?>" style="display: block; padding: 0.75rem 1rem; color: var(--text-main); text-decoration: none; font-size: 0.85rem; border-bottom: 1px solid var(--border-color);">
+                        Pegawai Hadir
+                    </a>
+                    <a href="<?= url('admin/absensi-export/' . $kegiatan['kode_kegiatan'] . '?filter=tidak_hadir') ?>" style="display: block; padding: 0.75rem 1rem; color: var(--text-main); text-decoration: none; font-size: 0.85rem; border-bottom: 1px solid var(--border-color);">
+                        Pegawai Tidak Hadir
+                    </a>
+                    <a href="<?= url('admin/absensi-export/' . $kegiatan['kode_kegiatan'] . '?filter=tidak_absen') ?>" style="display: block; padding: 0.75rem 1rem; color: var(--text-main); text-decoration: none; font-size: 0.85rem;">
+                        Pegawai Tidak Absen
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
     
@@ -276,6 +292,16 @@
         var modal = document.getElementById("imageModal");
         if (event.target == modal) {
             modal.style.display = "none";
+        }
+        
+        // Tutup dropdown jika klik di luar
+        if (!event.target.closest('.pdf-dropdown-container')) {
+            var pdfDropdown = document.getElementById('pdfDropdown');
+            if (pdfDropdown) pdfDropdown.style.display = 'none';
+        }
+        if (!event.target.closest('.csv-dropdown-container')) {
+            var csvDropdown = document.getElementById('csvDropdown');
+            if (csvDropdown) csvDropdown.style.display = 'none';
         }
     }
 </script>

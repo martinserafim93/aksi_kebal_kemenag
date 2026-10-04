@@ -86,6 +86,11 @@
         .text-center {
             text-align: center !important;
         }
+        .col-keterangan {
+            text-align: left;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
         .report-footer-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 30px; margin-top: 20px; }
         .summary {
             border: 1px solid #000;
@@ -178,11 +183,11 @@
         </tr>
         <tr>
             <td>Tanggal</td>
-            <td>: <?= date('d F Y', strtotime($kegiatan['tanggal_kegiatan'])) ?></td>
+            <td>: <?= date('d M Y', strtotime($kegiatan['tanggal_kegiatan'])) ?></td>
         </tr>
         <tr>
             <td>Waktu</td>
-            <td>: <?= date('H:i', strtotime($kegiatan['waktu_mulai'])) ?> - <?= date('H:i', strtotime($kegiatan['waktu_selesai'])) ?></td>
+            <td>: <?= date('H:i', strtotime($kegiatan['waktu_mulai'])) ?> - <?= date('H:i', strtotime($kegiatan['waktu_selesai'])) ?> WITA</td>
         </tr>
         <tr>
             <td>Lokasi</td>
@@ -197,20 +202,29 @@
         </tr>
     </table>
 
+    <?php
+        // Kolom Keterangan hanya untuk laporan "Tidak Hadir" dan "Semua Pegawai"
+        $showKeterangan = !in_array($filter ?? 'semua', ['hadir', 'tidak_absen'], true);
+        $colspan = $showKeterangan ? 6 : 5;
+    ?>
+
     <table class="data-table">
         <thead>
             <tr>
                 <th width="5%">No</th>
-                <th width="20%">NIP</th>
-                <th width="35%">Nama Pegawai</th>
-                <th width="20%">Waktu Submit</th>
-                <th width="20%">Status Kehadiran</th>
+                <th width="<?= $showKeterangan ? '15%' : '20%' ?>">NIP</th>
+                <th width="<?= $showKeterangan ? '25%' : '35%' ?>">Nama Pegawai</th>
+                <th width="<?= $showKeterangan ? '15%' : '20%' ?>">Waktu Submit</th>
+                <th width="<?= $showKeterangan ? '15%' : '20%' ?>">Status Kehadiran</th>
+                <?php if ($showKeterangan): ?>
+                    <th width="25%">Keterangan</th>
+                <?php endif; ?>
             </tr>
         </thead>
         <tbody>
             <?php if (empty($absensi)): ?>
                 <tr>
-                    <td colspan="5" class="text-center">Tidak ada data kehadiran</td>
+                    <td colspan="<?= $colspan ?>" class="text-center">Tidak ada data kehadiran</td>
                 </tr>
             <?php else: ?>
                 <?php $no = 1; foreach ($absensi as $row): ?>
@@ -218,8 +232,12 @@
                         <td class="text-center"><?= $no++ ?></td>
                         <td><?= e($row['nip']) ?></td>
                         <td><?= e($row['nama_lengkap']) ?></td>
-                        <td class="text-center"><?= !empty($row['created_at']) ? date('d/m/Y H:i', strtotime($row['created_at'])) : '-' ?></td>
+                        <td class="text-center"><?= !empty($row['created_at']) ? date('d M Y, H:i', strtotime($row['created_at'])) . ' WITA' : '-' ?></td>
                         <td class="text-center"><?= e($row['status_kehadiran']) ?></td>
+                        <?php if ($showKeterangan): ?>
+                            <?php $alasan = trim((string) ($row['alasan_tidak_hadir'] ?? '')); ?>
+                            <td class="col-keterangan"><?= ($row['status_kehadiran'] === 'Tidak Hadir' && $alasan !== '') ? e($alasan) : '-' ?></td>
+                        <?php endif; ?>
                     </tr>
                 <?php endforeach; ?>
             <?php endif; ?>
