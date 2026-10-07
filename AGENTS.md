@@ -88,8 +88,8 @@ All methods call `Middleware::authAdmin()` first (except `login`, `index`, `logo
 | `admin/kegiatan-qrcode/{identifier}` | `kegiatan_qrcode($identifier)` | View/download QR code page |
 | `admin/absensi` | `absensi()` | Attendance list (all events) |
 | `admin/absensi-detail/{identifier}` | `absensi_detail($identifier)` | Per-event attendance detail |
-| `admin/absensi-export/{identifier}` | `absensi_export($identifier)` | Stream CSV export |
-| `admin/absensi-export-pdf/{identifier}` | `absensi_export_pdf($identifier)` | Render HTML print view |
+| `admin/absensi-export/{identifier}` | `absensi_export($identifier)` | Stream CSV export; `?filter=semua\|hadir\|tidak_hadir\|tidak_absen` (same as PDF) |
+| `admin/absensi-export-pdf/{identifier}` | `absensi_export_pdf($identifier)` | Render HTML print view; `?filter=semua\|hadir\|tidak_hadir\|tidak_absen` |
 | `admin/absensi-edit/{identifier}` | `absensi_edit($identifier)` | Edit attendance record |
 | `admin/absensi-delete/{identifier}` | `absensi_delete($identifier)` | Delete attendance record |
 | `admin/log-aktivitas` | `log_aktivitas()` | Audit log viewer |
@@ -136,7 +136,7 @@ Public-facing (no auth guard). Entry point for employees filling attendance via 
 |---|---|
 | `PegawaiModel` | `getAllPaginated`, `countAll`, `findByNip`, `findDetailByNip`, `isNipExists`, `create`, `update`, `delete`, `getAllJabatan`, `getAllTimKerja`, `getAllUnitKerja`, `getListForDropdown` |
 | `KegiatanModel` | `getAll`, `getAllPaginated`, `countAll`, `findById`, `findByKode`, `generateKode`, `create`, `update`, `publish`, `delete`, `checkAbsensiRelation` |
-| `AbsensiModel` | `getAllPaginated`, `getAllFilteredForExport`, `countAll`, `getStatistik`, `getStatistikLengkap`, `getPegawaiTidakAbsen`, `findById`, `findByKodeAbsensi`, `generateKodeAbsensi`, `create`, `updateStatus`, `delete`, `hasAbsensi`, `getKegiatanList` |
+| `AbsensiModel` | `getAllPaginated`, `getAllFilteredForExport`, `countAll`, `getStatistik`, `getStatistikLengkap`, `getPegawaiTidakAbsen`, `getDataLaporan` (shared PDF+CSV report rows by filter), `findById`, `findByKodeAbsensi`, `generateKodeAbsensi`, `create`, `updateStatus`, `delete`, `hasAbsensi`, `getKegiatanList` |
 | `DashboardModel` | `getTotalPegawai`, `getTotalKegiatan`, `getTotalKegiatanPublished`, + summary stats |
 | `AuthModel` | `findAdminByEmailOrNip`, `findByNip` |
 | `LogAktivitasModel` | File-based JSONL reader; paginate, search, filter, auto-cleanup >30d |
@@ -184,6 +184,19 @@ Public-facing (no auth guard). Entry point for employees filling attendance via 
 
 ## Reporting
 - CSV export streams directly (`AdminController::absensi_export`).
+- **CSV and PDF share one data source**: `AbsensiModel::getDataLaporan($id_kegiatan, $filter)`.
+  Filters: `semua` (default) | `hadir` | `tidak_hadir` | `tidak_absen`. Employees who never
+  submitted are returned as synthetic rows (`status_kehadiran` = `Tidak Melakukan Absensi`,
+  `created_at`/`alasan_tidak_hadir` = null) and lack event fields (`nama_kegiatan`, etc.) —
+  read those from `$kegiatan`, never from the row. Always whitelist `$filter` in the
+  controller (unknown → `semua`) before use. Both exports log `ekspor` with the filter.
+- Column **Keterangan** (`alasan_tidak_hadir`, else `-`) appears only for filters `semua` and
+  `tidak_hadir`, in both CSV and PDF. Empty `created_at` renders as `-`.
+- CSV: free-text reasons are prefixed with `'` when starting with `= + - @ \t \r` (formula
+  injection guard). Keep this for any new free-text CSV column.
+- Shared logic goes in a **model**, not a `private`/`protected` controller helper: the router
+  uses `method_exists()` + `call_user_func_array()`, so non-public controller methods stay
+  reachable by URL.
 - PDF export is **HTML/CSS print**, not a PDF library: it renders
   `app/views/admin/absensi/pdf_export.php` (Times New Roman, `print-color-adjust`) for the
   browser to print. `app/libraries/fpdf/` is vendored but unused — do not route PDF work
